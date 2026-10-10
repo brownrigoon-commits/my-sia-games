@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#B9473B">
+<title>과일 가게 계산대</title>
+<style>
+:root{--ink:#1C2333;--blue:#2F6BFF;--yellow:#F2C14E;--orange:#E88F4D;--green:#3F7D5B;--red:#DB5F52;--wood:#B98B5E}
+html,body{margin:0;height:100%;background:#8B3A30;overflow:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%;font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",Roboto,sans-serif;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;color:var(--ink)}
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{position:relative;width:1024px;height:768px;transform-origin:center center;overflow:hidden;background:#FFF3D6;touch-action:none}
+canvas#game{position:absolute;left:0;top:0;width:1024px;height:768px}
+#ui{position:absolute;inset:0;pointer-events:none}
+.screen{position:absolute;inset:0;pointer-events:none;display:none}
+.screen.on{display:block}
+.screen > *{pointer-events:auto}
+button{font:inherit;color:var(--ink);cursor:pointer;border:0;background:none;padding:0}
+.big{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-width:220px;height:74px;padding:0 34px;border-radius:40px;font-size:30px;font-weight:900;color:#fff;background:linear-gradient(#8FC08A,#3F7D5B);box-shadow:0 6px 0 #2C5A40,0 12px 22px rgba(0,0,0,.25);border:4px solid #fff;transition:transform .08s}
+.big:active{transform:translateY(4px);box-shadow:0 2px 0 #2C5A40,0 6px 12px rgba(0,0,0,.25)}
+.big.blue{background:linear-gradient(#6B9BFF,#2F6BFF);box-shadow:0 6px 0 #1E48B0,0 12px 22px rgba(0,0,0,.25)}
+.big.blue:active{box-shadow:0 2px 0 #1E48B0,0 6px 12px rgba(0,0,0,.25)}
+.big.orange{background:linear-gradient(#F2B48B,#E88F4D);box-shadow:0 6px 0 #B5652A,0 12px 22px rgba(0,0,0,.25)}
+.big.orange:active{box-shadow:0 2px 0 #B5652A,0 6px 12px rgba(0,0,0,.25)}
+.big[disabled]{opacity:.5;transform:none}
+.rbtn{position:absolute;width:64px;height:64px;border-radius:50%;background:#fff;border:4px solid var(--ink);font-size:30px;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.rbtn:active{transform:translateY(3px);box-shadow:none}
+#btnClose{left:18px;top:18px}
+#btnSound{right:18px;top:18px;font-size:26px}
+#btnLang{right:96px;top:18px;font-size:20px}
+#logo{position:absolute;left:0;right:0;top:40px;text-align:center;font-size:74px;font-weight:900;color:#fff;-webkit-text-stroke:2px var(--ink);text-shadow:0 6px 0 var(--ink),0 10px 24px rgba(0,0,0,.25);animation:bob 3s ease-in-out infinite}
+#logo small{display:block;font-size:26px;-webkit-text-stroke:0;text-shadow:none;color:var(--ink);font-weight:700;margin-top:6px}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+#bands{position:absolute;left:0;right:0;top:392px;display:flex;justify-content:center;gap:12px}
+#bands button{height:60px;min-width:150px;padding:0 20px;border-radius:30px;background:#fff;border:4px solid var(--ink);font-size:24px;font-weight:900;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+#bands button.on{background:var(--yellow);transform:scale(1.08)}
+#levels{position:absolute;left:0;right:0;top:470px;display:flex;justify-content:center;align-items:center;gap:12px;font-size:24px;font-weight:800}
+#levels button{width:64px;height:64px;border-radius:50%;background:#fff;border:4px solid var(--ink);font-size:28px;font-weight:900;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+#levels button.on{background:var(--yellow);transform:scale(1.12)}
+#lvlHint{position:absolute;left:40px;right:40px;top:548px;text-align:center;font-size:20px;font-weight:700;color:#5A6377}
+#btnStart{position:absolute;right:44px;top:650px}
+#btnParent{position:absolute;right:18px;top:96px;height:44px;padding:0 16px;border-radius:22px;background:#fff;border:3px solid var(--ink);font-size:16px;font-weight:800;overflow:hidden;box-shadow:0 3px 0 rgba(0,0,0,.15);touch-action:none}
+#btnParent i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--yellow);font-style:normal}
+#btnParent.holding i{width:100%;transition:width 2s linear}
+#btnParent span{position:relative}
+#btnSetAge{position:absolute;right:44px;top:590px;height:44px;padding:0 16px;border-radius:22px;background:#fff;border:3px solid var(--ink);font-size:16px;font-weight:800;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+#gateWrap{position:absolute;inset:0;display:none}
+#gateWrap.on{display:block}
+#gateCard{width:560px;padding:22px 26px 24px;box-sizing:border-box}
+#gateCard h2{margin:0 0 4px;font-size:32px}
+#gateAsk{font-size:21px;font-weight:800;margin:6px 0 12px;line-height:1.35;word-break:keep-all}
+#gateYear{display:flex;justify-content:center;gap:8px;margin:0 0 14px}
+#gateYear span{width:50px;height:58px;box-sizing:border-box;border-radius:12px;border:3px solid var(--ink);background:#F6F8FC;font-size:30px;font-weight:900;display:flex;align-items:center;justify-content:center}
+#gatePad{display:grid;grid-template-columns:repeat(6,66px);gap:8px;justify-content:center;margin:0 0 16px}
+#gatePad button{height:54px;border-radius:14px;background:#fff;border:3px solid var(--ink);font-size:24px;font-weight:900;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+#gatePad button:active{transform:translateY(2px);box-shadow:none}
+.haru{position:absolute;left:22px;bottom:14px;display:flex;align-items:flex-end;gap:10px}
+.haru .face{width:110px;height:110px;flex:none;filter:drop-shadow(0 4px 0 rgba(0,0,0,.15))}
+.haru .face svg{width:100%;height:100%}
+.bubble{position:relative;max-width:520px;background:#fff;border:4px solid var(--ink);border-radius:22px;padding:12px 18px;font-size:22px;font-weight:700;line-height:1.35;margin-bottom:26px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.bubble::before{content:"";position:absolute;left:-18px;bottom:16px;border:10px solid transparent;border-right-color:var(--ink);border-left:0}
+.bubble::after{content:"";position:absolute;left:-12px;bottom:18px;border:8px solid transparent;border-right-color:#fff;border-left:0}
+.bubble.pop{animation:pop .25s}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+#s-title .bubble{max-width:380px}
+#s-play .bubble{max-width:440px;font-size:20px}
+#lvlBadge{position:absolute;left:96px;top:26px;height:48px;padding:0 16px;border-radius:24px;background:var(--yellow);border:4px solid var(--ink);font-size:20px;font-weight:900;display:flex;align-items:center;white-space:nowrap}
+#progress{position:absolute;right:24px;top:22px;height:56px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.9);border:4px solid var(--ink);border-radius:32px;padding:0 18px;font-size:24px;font-weight:900}
+#progress i{font-style:normal;font-size:26px;letter-spacing:2px}
+#btnAct{position:absolute;right:30px;bottom:24px}
+#choices{position:absolute;left:640px;top:400px;width:340px;display:none;flex-wrap:wrap;gap:12px;justify-content:center}
+#choices.on{display:flex}
+#choices button{width:150px;height:74px;border-radius:20px;background:#fff;border:4px solid var(--ink);font-size:34px;font-weight:900;box-shadow:0 5px 0 rgba(0,0,0,.18)}
+#choices.won button{font-size:24px}
+#choices.wide{gap:10px}
+#choices.wide button{width:340px;height:auto;min-height:58px;padding:6px 12px;font-size:19px;line-height:1.25}
+#choices button.ok{background:#DDF3DE;border-color:var(--green)}#choices button.no{background:#FDE7E4;border-color:var(--red);opacity:.6}
+#pad{position:absolute;left:650px;top:384px;width:330px;box-sizing:border-box;display:none;flex-direction:column;gap:8px;padding:10px;background:#CBD2DE;border:4px solid var(--ink);border-radius:20px;box-shadow:0 5px 0 rgba(0,0,0,.18)}
+#pad.on{display:flex}
+#clockIn{position:absolute;left:650px;top:384px;width:330px;box-sizing:border-box;display:none;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;padding:12px;background:#CBD2DE;border:4px solid var(--ink);border-radius:20px;box-shadow:0 5px 0 rgba(0,0,0,.18)}
+#clockIn.on{display:flex}
+#clockIn .cl{display:flex;flex-direction:column;align-items:center;gap:6px}
+#clockIn .cl button{width:76px;height:44px;border-radius:12px;background:#fff;border:3px solid var(--ink);font-size:22px;font-weight:900;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+#clockIn .cl button:active{transform:translateY(2px);box-shadow:none}
+#clockIn .cl div{width:76px;height:60px;border-radius:12px;background:var(--ink);color:#F2C14E;font-size:38px;font-weight:900;display:flex;align-items:center;justify-content:center}
+#clockIn b{font-size:26px;min-width:12px}
+#clOk{width:100%;height:52px;border-radius:14px;background:#DDF3DE;border:3px solid var(--green);font-size:24px;font-weight:900;margin-top:4px}
+#padDisp{height:52px;border-radius:12px;background:var(--ink);color:#F2C14E;font-size:32px;font-weight:900;display:flex;align-items:center;justify-content:flex-end;padding:0 14px}
+#padDisp.empty{color:#5A6377}
+#pad .keys{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+#pad .keys button{height:54px;border-radius:14px;background:#fff;border:3px solid var(--ink);font-size:28px;font-weight:900;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+#pad .keys button:active{transform:translateY(2px);box-shadow:none}
+#pad .keys button.okk{background:#DDF3DE;border-color:var(--green);font-size:24px}
+#pad .keys button.bs{background:#FDE7E4}
+#toast{position:absolute;left:50%;top:110px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:26px;font-weight:900;padding:10px 26px;border-radius:30px;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.on{opacity:1}
+.dim{position:absolute;inset:0;background:rgba(28,35,51,.45)}
+.card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border:5px solid var(--ink);border-radius:30px;box-shadow:0 12px 0 rgba(0,0,0,.2);text-align:center;animation:cardin .35s cubic-bezier(.2,1.4,.4,1)}
+@keyframes cardin{0%{transform:translate(-50%,-50%) scale(.6);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+#doneCard{width:640px;padding:26px 30px 30px}
+#doneCard h2{margin:0;font-size:44px}
+#bigStars{font-size:84px;letter-spacing:6px;margin:6px 0 10px;color:#D9C9A6}
+#bigStars i{font-style:normal;display:inline-block;transform:scale(0)}
+#bigStars i.on{color:var(--yellow);-webkit-text-stroke:2px var(--ink);animation:star .5s cubic-bezier(.2,1.6,.4,1) forwards}
+#bigStars i.off{animation:star .4s forwards}
+@keyframes star{to{transform:scale(1)}}
+#doneCard p{font-size:24px;font-weight:800;color:#3A4358;margin:0 0 6px}
+#doneCard p small{display:block;font-size:17px;font-weight:700;color:#8A93A6;margin:6px 0 10px}
+#feel{margin:4px 0 14px;display:flex;flex-direction:column;align-items:center;gap:8px}
+#feel b{font-size:24px}
+#feel .faces{display:flex;gap:12px}
+#feel .faces button{width:150px;height:66px;border-radius:20px;background:#F6F8FC;border:4px solid var(--ink);font-size:21px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px}
+#feel .faces button i{font-style:normal;font-size:30px}
+#feel .faces button.on{background:#FFF3C4;border-color:var(--orange);transform:scale(1.06)}
+#feelMsg{font-size:20px;font-weight:800;color:var(--blue);min-height:26px}
+#doneCard .row{display:flex;gap:16px;justify-content:center}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage">
+<canvas id="game"></canvas>
+<div id="ui">
+  <div id="s-title" class="screen">
+    <button class="rbtn" id="btnSound">🔊</button>
+    <button class="rbtn" id="btnLang">EN</button>
+    <div id="logo">과일 가게 계산대<small>손님이 원하는 만큼 담고, 돈을 계산해 봐!</small></div>
+    <div id="bands"><button data-b="K">5–7살</button><button data-b="E1">8–9살</button><button data-b="E2">10–11살</button><button data-b="E3">12–13살</button></div>
+    <div id="levels"><span id="lvlLabel">레벨</span><button>1</button><button>2</button><button>3</button><button>4</button><button>5</button></div>
+    <div id="lvlHint"></div>
+    <button class="big" id="btnStart">🍎 가게 열기</button>
+    <button id="btnParent"><i></i><span>나이 바꾸기 (부모님)</span></button>
+    <button id="btnSetAge">아이 나이를 이 묶음으로 저장</button>
+    <div class="haru"><div class="face" id="haruT"></div><div class="bubble" id="bubbleT"></div></div>
+    <div id="gateWrap"><div class="dim"></div><div class="card" id="gateCard"><h2 id="gateTitle">나이 묶음 바꾸기</h2><p id="gateAsk"></p><div id="gateYear"></div><div id="gatePad"></div><button class="big blue" id="btnGateClose">닫기</button></div></div>
+  </div>
+  <div id="s-play" class="screen">
+    <button class="rbtn" id="btnClose">✕</button>
+    <div id="lvlBadge">5–7살 · 레벨 1</div>
+    <div id="progress"><span id="progText">손님 1/6</span><i id="progHearts"></i></div>
+    <div id="choices"></div>
+    <div id="pad"><div id="padDisp"></div><div class="keys"></div></div>
+    <div id="clockIn"><div class="cl"><button data-c="h+">▲</button><div id="clH">9</div><button data-c="h-">▼</button></div><b id="clHl">시</b><div class="cl"><button data-c="m+">▲</button><div id="clM">00</div><button data-c="m-">▼</button></div><b id="clMl">분</b><button id="clOk">확인</button></div>
+    <button class="big orange" id="btnAct">다 담았어!</button>
+    <div class="haru"><div class="face" id="haruP"></div><div class="bubble" id="bubbleP"></div></div>
+    <div id="toast"></div>
+  </div>
+  <div id="s-done" class="screen"><div class="dim"></div>
+    <div class="card" id="doneCard"><h2 id="doneTitle">가게 문 닫는 시간!</h2><div id="bigStars"><i>★</i><i>★</i><i>★</i></div><p id="doneMsg"></p><div id="feel"><b id="feelQ">어땠어?</b><div class="faces"><button data-f="hard"><i>😅</i><span>어려웠어</span></button><button data-f="good"><i>🙂</i><span>딱 좋아</span></button><button data-f="easy"><i>😎</i><span>쉬웠어</span></button></div><div id="feelMsg"></div></div><div class="row"><button class="big" id="btnAgain">다시 하기</button><button class="big blue" id="btnTitle">처음으로</button></div></div>
+  </div>
+</div>
+</div></div>
+<script>
+(function(){
+'use strict';
+const W=1024,H=768,INK='#1C2333',FONT='-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif';
+const Q=new URLSearchParams(location.search);
+let LANG=(Q.get('lang')||navigator.language||'ko').slice(0,2)==='en'?'en':'ko';
+const CHILD=Q.get('name')||'';
+const $=id=>document.getElementById(id);
+const num=n=>Number(n).toLocaleString('en-US');
+const won=n=>LANG==='ko'?num(n)+'원':'₩'+num(n);
+const hasJong=s=>{s=String(s);const c=s.charCodeAt(s.length-1);return c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28!==0;};
+const jo=(s,a,b)=>s+(hasJong(s)?a:b);
+// Korean reading of a number ends in a consonant when the last digit is 0 (십·백·천·만), 1, 3, 6, 7 or 8
+const numJong=n=>[0,1,3,6,7,8].includes(Math.abs(Math.round(n))%10);
+const nj=(n,a,b)=>num(n)+(numJong(n)?a:b);
+// a decimal is read digit by digit after the point ("0.8" = 영 점 팔), so its last digit decides the particle: 0.8은 · 1.25는
+const djo=(s,a,b)=>s+([0,1,3,6,7,8].includes(+String(s).slice(-1))?a:b);
+const ro=n=>[0,3,6].includes(Math.abs(n)%10)?'으로':'로'; // 3으로, 6으로, 10으로 · 2로, 7로, 8로
+const iya=n=>numJong(n)?'이야':'야'; // 6 × 3이야 · 6 × 4야
+const joinRang=a=>a.map((s,i)=>i<a.length-1?jo(s,'이랑','랑'):s).join(' ');
+const joinEn=a=>a.length<=2?a.join(' and '):a.slice(0,-1).join(', ')+' and '+a[a.length-1];
+const pl=(f,n)=>n===1?f:f+'s';
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const pad2=m=>String(m).padStart(2,'0');
+const kgStr=c=>String(c/100); // c = hundredths of a kg (125 → "1.25")
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+
+/* ── age band × level (LEVELS.md RULE v2 §1, §4) ─── */
+const BANDS=['K','E1','E2','E3'],BASE={K:1,E1:6,E2:11,E3:16}; // d = BASE[band] + level − 1 → 1..20, no overlap
+const ageBand=a=>a<=7?'K':a<=9?'E1':a<=11?'E2':'E3';
+const nextBand=b=>BANDS[BANDS.indexOf(b)+1]||null;
+const qBand=(Q.get('band')||'').toUpperCase(),qAge=parseInt(Q.get('age'),10),AGE=Number.isFinite(qAge)?qAge:null;
+const URL_BAND=BANDS.includes(qBand)?qBand:(AGE!=null?ageBand(AGE):null);
+const EMBED=!!URL_BAND; // the app owns band and level: no in-game band or level picker, replays keep the URL level
+const URL_OVERRIDE=BANDS.includes(qBand)&&AGE!=null&&ageBand(AGE)!==qBand; // a parent picked another band in the app
+
+/* ── how fruit is counted (LEVELS.md §6.2): grapes always in 송이 / bunches ── */
+const cntKo=(id,n)=>`${STR.ko.fruit[id]} ${n}${id==='grape'?'송이':'개'}`;
+const cntEn=(id,n)=>id==='grape'?`${n} ${n===1?'bunch':'bunches'} of grapes`:`${n} ${pl(STR.en.fruit[id],n)}`;
+const cnt=(id,n)=>LANG==='ko'?cntKo(id,n):cntEn(id,n);
+const plN=id=>id==='grape'?'bunches of grapes':pl(STR.en.fruit[id],2);
+const PPL_KO=['','','둘이서','셋이서','넷이서','다섯이서','여섯이서'],PPL_EN=['','','two','three','four','five','six'];
+const PFRAC={10:'1/10',20:'1/5',25:'1/4',50:'1/2'};
+const fk=id=>STR.ko.fruit[id],fe=id=>STR.en.fruit[id];
+
+/* ── strings ─────────────────────────────── */
+const STR={
+ko:{title:'과일 가게 계산대',sub:'손님이 원하는 만큼 담고, 돈을 계산해 봐!',start:'🍎 가게 열기',lvl:'레벨',lvlWord:'레벨',
+ band:{K:'5–7살',E1:'8–9살',E2:'10–11살',E3:'12–13살'},parentPick:' · 부모님이 고른 묶음',pickBand:'몇 살이야? 나이를 눌러 줘.',ageQ:'몇 살이야? 나이를 눌러 줘!',
+ parentBtn:'나이 바꾸기 (부모님)',parentHint:'부모님, 묶음을 골라 주세요. 나이와 다르면 “부모님이 고른 묶음”으로 보여요.',setAge:'아이 나이를 이 묶음으로 저장',
+ hint:{1:'과일 한 가지를 다섯 개까지 세어 담기',2:'과일 한 가지를 열 개까지 세어 담기',3:'과일 두 가지를 담고 모두 몇 개인지 (10까지)',4:'20까지의 수: 10을 넘지 않는 더하기·빼기',5:'10을 넘는 더하기·빼기, 몇 개 더 많은지',
+  6:'10개 상자와 낱개로 두 자리 수, 받아올림 있는 덧셈, 받아내림 있는 뺄셈, 10원·100원 내기',7:'두 자리 수끼리 받아올림·받아내림, 몇 개 더 많은지',8:'몇 개씩 몇 봉지: 같은 수를 여러 번 더하고 봉지 값 내기',9:'10원 단위 값을 동전으로 딱 맞게 내기',10:'1,000원을 받고 거스름돈 주기',
+  11:'곱셈과 나눗셈, 단위분수, 숫자판으로 답하기',12:'네 자리 값 더하기, 몇 시간 몇 분 뒤',13:'세 자리 수 × 한 자리 수, 똑같이 나누기, 분모가 같은 분수',14:'10,000원 거스름돈, 이번 손님들의 막대그래프',15:'두 단계 계산, 두 자리 수 곱하기, 몇 분 뒤, 이번 주 장부',
+  16:'분수만큼 (3/8), 소수 더하기·빼기 (kg), 퍼센트 (50%·25%·10%), 똑같이 나눠 내기',17:'무게(kg)로 팔기, 분수만큼의 값, 거스름돈',18:'10%·20%·25%·50% 할인과 거스름돈',19:'비 (3:2), 직사각형의 넓이',20:'더 싼 묶음, 평균, 두 단계 계산'},
+ hello:n=>`안녕${n?' '+n+(hasJong(n)?'아':'야'):''}! 오늘은 네가 과일 가게 사장님이야.`,open:'가게 문 열었어! 손님이 와.',
+ cust:'손님',closing:'마감 정리',order:list=>joinRang(list.map(o=>o.label||cntKo(o.id,o.n)))+' 주세요!',please:'주세요!',
+ pack:'다 담았어!',payBtn:'계산!',give:'거스름돈 주기',clear:'지우기',okKey:'확인',paidLbl:'넣은 돈',chgLbl:'거스름돈',priceGot:(p,b)=>`값 ${won(p)} · 받은 돈 ${won(b)}`,
+ more:f=>`${jo(f,'이','가')} 조금 모자라. 더 담아 볼까?`,less:f=>`${jo(f,'이','가')} 너무 많아. 하나 빼 볼까?`,only:f=>`${f}만 담아야 해.`,packOk:'딱 맞게 담았어!',
+ onlyOrder:ids=>`손님은 ${joinRang(ids.map(fk))}만 사.`,regrouped:'낱개 10개가 모여서 10개 상자 하나가 됐어!',
+ count:'모두 몇 개야?',countOk:'맞았어!',countNo:'하나씩 다시 세어 볼까?',tryAgain:'음, 다시 생각해 볼까?',padNo:'음, 다시 계산해 볼까?',
+ howMuch:'모두 얼마예요? 동전을 눌러 넣어 봐.',paid:m=>`${won(m)} 받았어. 거스름돈은?`,
+ payLow:'돈이 모자라. 동전을 더 넣어 봐.',payHigh:'너무 많이 넣었어. 지우고 다시 해 볼까?',payOk:'계산 끝! 고마워요~',
+ changeLow:'거스름돈이 모자라.',changeHigh:'거스름돈이 너무 많아.',changeOk:'거스름돈까지 딱 맞았어!',
+ thanks:['고맙습니다!','맛있게 먹을게요!','또 올게요!','최고예요!'],
+ done:'가게 문 닫는 시간!',doneMsg:s=>s===3?'실수 없이 손님을 다 받았어. 완벽한 사장님!':s===2?'손님을 다 받았어. 아주 잘했어!':'손님을 다 받았어. 다음엔 더 잘할 수 있어.',
+ starTip:'별: 손님 다 받기 · 실수 2번 이하 · 실수 없음',feel:'어땠어?',hard:'어려웠어',good:'딱 좋아',easy:'쉬웠어',
+ nextUp:n=>`다음엔 레벨 ${n}${ro(n)} 해 보자!`,nextDown:n=>`다음엔 레벨 ${n}${ro(n)} 천천히 가자.`,nextSame:'이 레벨 그대로 한 번 더!',
+ embedEasy:'쉬웠구나! 알려 줘서 고마워.',embedHard:'어려웠구나! 알려 줘서 고마워. 천천히 해도 괜찮아.',
+ bandUp:'레벨 5 완성! 다음 묶음은 부모님과 정해 보자.',topDone:'레벨 5 완성! 가장 높은 단계까지 해냈어.',again:'다시 하기',toTitle:'처음으로',
+ gateTitle:'나이 묶음 바꾸기',gateAsk:'부모님 확인: 태어난 해를 네 자리로 눌러 주세요.',gateWrong:'다시 눌러 주세요.',gateClose:'닫기',
+ fruit:{apple:'사과',tangerine:'귤',pear:'배',banana:'바나나',grape:'포도',melon:'수박'},
+ bundleLabel:id=>({pear:'배 1개',tangerine:'귤 1망',banana:'바나나 1송이',apple:'사과 1개'})[id],
+ crateTen:id=>`${fk(id)} 10개`,crateOne:id=>`${fk(id)} 1개`,
+ tray:'장바구니',trayStock:'진열대',trayBags:'봉지',trayNote:'계산 메모',trayBox:'귤 한 상자',trayScale:'저울',trayPie:'수박',trayClock:'시계',trayRect:'상자 바닥',
+ trayGraph:'오늘 손님들이 산 과일 (개)',trayWeek:'이번 주 장부 (귤 상자)',days:['월','화','수','목','금'],clockStart:'처음 시각',hourLbl:'시',minLbl:'분',
+ tag:{E1:'바자회 준비',E2:'빵집 사장님',E3:'카페 사장님'},
+ // Haru's first-time tips (LEVELS.md §6.3): built from this task's own numbers, never the answer; no 10-frame or finger tip above K
+ ex:{pack:()=>'손님이 말한 만큼 과일을 담아 봐. 상자를 톡 누르면 하나씩 담기고, 바구니 속 과일을 누르면 빠져.',
+  sum:()=>'과일 두 가지를 담고, 모두 몇 개인지 맞혀 봐.',
+  teen:()=>'바구니에 열 칸짜리 줄이 두 개 있어. 윗줄이 꽉 차면 10이야. 10하고 몇인지 세어 봐.',
+  make10:()=>'윗줄 10칸을 먼저 꽉 채워. 넘친 건 아랫줄로 가. 10하고 몇이 될까?',
+  take:()=>'손님이 산 만큼 바구니에서 과일을 톡 눌러 건네줘. 그다음 남은 걸 세어 봐.',
+  compare:()=>'두 줄을 나란히 놓고 비교해 봐. 짝이 없는 과일이 몇 개 더 많은 거야.',
+  tens:k=>`${k.data.a}개는 10개 상자 ${Math.floor(k.data.a/10)}개와 낱개 ${k.data.a%10}개야. 상자는 한 번에 10개!`,
+  take2:k=>`${k.data.stock} − ${k.data.sold}: 낱개 ${k.data.stock%10}개에서 ${k.data.sold}개를 뺄 수 없으면 10개 상자 하나를 풀어서 생각해 봐.`,
+  add2:k=>`${k.data.a} + ${k.data.b}: 낱개끼리 먼저 더해 봐. 10이 넘으면 한 상자로 묶어.`,
+  sub2:k=>`${k.data.stock} − ${k.data.sold}: 낱개 ${k.data.stock%10}개에서 ${k.data.sold%10}개를 뺄 수 없으면 10개 상자 하나를 풀어.`,
+  more2:k=>`몇 개 더 많은지는 ${k.data.big} − ${k.data.small}${ro(k.data.small)} 구해. 낱개가 모자라면 10개 상자 하나를 풀어.`,
+  groups:k=>`${k.data.per}개씩 ${k.data.bags}봉지는 ${nj(k.data.per,'을','를')} ${k.data.bags}번 더하는 거야. 상자를 한 번 누르면 봉지 하나가 꽉 차.`,
+  pay9:k=>`값을 더해 봐: ${k.data.parts.map(won).join(' + ')}. 큰 동전부터 넣으면 쉬워.`,
+  change10:k=>`거스름돈은 ${won(k.data.bill)}에서 물건값을 뺀 만큼이야. 물건값에 얼마를 더하면 ${won(k.data.bill)}이 될까?`,
+  bagsx:k=>`${k.data.per}개씩 ${k.data.bags}봉지는 ${k.data.per} × ${k.data.bags}${iya(k.data.bags)}. 상자를 한 번 누르면 봉지 하나가 꽉 차.`,
+  howmany:k=>`${won(k.data.money)}에 ${won(k.data.price)}이 몇 번 들어갈까? 곱셈구구로 생각해 봐.`,
+  unitfrac:k=>`${k.data.box}개의 1/${k.data.den}은 ${nj(k.data.box,'을','를')} 똑같이 ${k.data.den}묶음으로 나눈 것 중 하나야.`,
+  bundle:k=>`네 자리 수 더하기야: ${k.data.prices.map(won).join(' + ')}. 천 원끼리, 백 원끼리, 십 원끼리 더해.`,
+  time:k=>`${k.data.h}시 ${k.data.m}분에서 ${k.data.H}시간 먼저 가고, ${k.data.M}분 더 가. 60분이 되면 1시간이야.`,
+  unit13:k=>`한 개 ${won(k.data.price)} × ${k.data.q}개야. ${won(k.data.price)}을 ${k.data.q}번 더한 것과 같아.`,
+  share:k=>`${k.data.n}개를 ${k.data.k}봉지에 똑같이 나누면 ${k.data.n} ÷ ${k.data.k}${iya(k.data.k)}. 10개씩 먼저 나눠 봐.`,
+  fracsum:k=>`둘 다 ${k.data.den}조각으로 자른 수박이야. 분모 ${k.data.den}은 그대로 두고, 조각 수만 더해.`,
+  change14:k=>{const [id,n,p]=k.data.lines[0];return `${cntKo(id,n)}는 ${won(p)} × ${n}${iya(n)}. 과일마다 값을 구해서 더하고, ${won(k.data.bill)}에서 빼.`;},
+  graph:k=>`눈금 한 칸은 ${k.data.scale}개야. 가장 긴 막대와 가장 짧은 막대를 찾아.`,
+  week:k=>`눈금 한 칸은 ${k.data.scale}상자야. 다섯 날의 막대를 모두 더해.`,
+  two15a:k=>`먼저 ${k.data.bags}봉지 값을 구하고, ${won(k.data.bill)}에서 빼. 한 봉지에 든 개수는 곱하지 않아.`,
+  two15b:k=>`먼저 ${fk(k.data.id)} ${k.data.q}개 값을 구해. 그다음 ${won(k.data.money)}에서 빼.`,
+  time15:k=>k.data.mins?`${k.data.mins}분은 몇 시간 몇 분일까? 60분이 1시간이야.`:`${k.data.H}시간 먼저 더하고, ${k.data.M}분을 더해. 60분이 넘으면 1시간이 늘어나.`,
+  frac16:k=>`${k.data.box}개의 ${k.data.k}/${k.data.den}: ${nj(k.data.box,'을','를')} ${k.data.den}묶음으로 나누고 ${k.data.k}묶음을 가져가.`,
+  split:k=>`${won(k.data.total)}을 ${k.data.people}명이 똑같이 내면 ${won(k.data.total)} ÷ ${k.data.people}${iya(k.data.people)}.`,
+  pct16:k=>`${k.data.pct}%는 ${PFRAC[k.data.pct]}이야. ${won(k.data.price)}의 ${PFRAC[k.data.pct]}을 구해 봐.`,
+  dec16:k=>{const p=k.data.op==='+'?k.data.b:k.data.a;return `소수점끼리 줄을 맞춰서 세로로 써 봐. ${djo(p,'은','는')} ${djo(p+'0','과','와')} 같아.`;},
+  weight:k=>`1 kg ${won(k.data.rate)}짜리 ${k.data.kg} kg: ${won(k.data.rate)} × ${k.data.kg}.`,
+  fracprice:k=>`${k.data.num}/${k.data.den}통 값은 한 통 값 ${won(k.data.whole)} ÷ ${k.data.den} × ${k.data.num}${iya(k.data.num)}.`,
+  percent:k=>`${k.data.pct}%는 ${PFRAC[k.data.pct]}이야. ${won(k.data.price)}에서 그만큼 빼.`,
+  ratio:k=>`${k.data.a}:${k.data.b}${numJong(k.data.b)?'은':'는'} 모두 ${k.data.a+k.data.b}묶음 중 ${jo(fk(k.data.x),'이','가')} ${k.data.a}묶음이라는 뜻이야.`,
+  juice:k=>`사과:당근 = ${k.data.a}:${k.data.b}. 사과 ${k.data.apple} g이 ${k.data.a}묶음이면 한 묶음은 몇 g일까?`,
+  area:k=>`직사각형의 넓이 = 가로 × 세로. ${k.data.w} cm × ${k.data.h} cm를 계산해.`,
+  deal:()=>'묶음 값 ÷ 개수 = 1개 값. 두 묶음의 1개 값을 비교해.',
+  avg:k=>`${k.data.vals.length}개 값을 모두 더해서 ${k.data.vals.length}${ro(k.data.vals.length)} 나눠.`,
+  two:k=>`먼저 ${won(k.data.price)}에서 ${k.data.pct}% 할인한 값을 구하고, ${k.data.people}명이 나눠.`},
+ // K
+ giveP:(id,n)=>`손님에게 ${cntKo(id,n)}를 건네줘. 바구니에서 톡 눌러.`,leftQ:(id,s,t)=>{const u=id==='grape'?'송이':'개';return `${fk(id)} ${s}${u} 있었는데 ${t}${u} 팔았어. 몇 ${u} 남았지?`;},
+ cmpAsk:(x,y)=>`${jo(fk(x),'이랑','랑')} ${fk(y)}, 어느 게 몇 개 더 많아요?`,cmpQ:(x,y)=>`${jo(fk(x),'은','는')} ${fk(y)}보다 몇 개 더 많아?`,
+ whyTen:'윗줄 10개도 같이 세어야 해.',whyAdd:'더하면 안 돼. 남은 걸 생각해 봐.',whyTake10:'10개 줄에서 빼야 해. 남은 걸 하나씩 세어 봐.',
+ // E1
+ giveTen:(id,n)=>`손님에게 ${cntKo(id,n)}를 건네줘. 10개 상자를 톡 누르면 낱개 10개로 풀려.`,
+ sellQ:(id,s,t)=>`${fk(id)} ${s}개 중에서 ${t}개를 팔면 몇 개 남을까?`,giveCheck:(id,n)=>`이제 손님에게 ${cntKo(id,n)}를 건네주고, 정말 그만큼 남는지 봐. 10개 상자를 톡 누르면 낱개 10개로 풀려.`,leftSee:(id,r)=>`봐, ${fk(id)} ${r}개가 남았지?`,
+ tenPrice:n=>`${n}개는 얼마예요? 10개 한 상자는 100원, 낱개 하나는 10원이죠?`,
+ whyCarry:'낱개끼리 더해서 10이 넘으면 10개 상자가 하나 더 생겨.',whyTens:'10개 상자를 다시 세어 봐.',whyBorrow:'낱개가 모자라면 10개 상자 하나를 풀어서 빼야 해.',
+ groupsOrder:(id,per,b)=>`${fk(id)} ${per}개씩 ${b}봉지 주세요!`,bagsP:(id,per)=>`봉지마다 ${fk(id)} ${per}개씩 담아 줘. 봉지를 눌러 고를 수 있어.`,bagsP1:'상자를 한 번 누르면 봉지 하나가 꽉 차. 봉지를 누르면 다시 비워져.',
+ whyGroups:{E1:(per,b)=>`봉지 수와 개수를 더하면 안 돼. 봉지마다 ${per}개씩, ${b}번 더해 봐.`,E2:(per,b)=>`더하기가 아니라 ${per} × ${b}${iya(b)}.`},
+ bagPrice:(p,b)=>`한 봉지에 ${won(p)}이죠? ${b}봉지는 모두 얼마예요?`,bagWrong:per=>`봉지마다 ${per}개씩 담아야 해.`,bagTotalQ:'봉지 값은 모두 얼마야? 숫자판으로 넣어 봐.',
+ // E2
+ whyMulNotAdd:'더하기가 아니라 곱하기야.',totalQ:'모두 얼마야? 숫자판으로 넣어 봐.',
+ howManyAsk:(m,p,id)=>`${won(m)} 있어요. ${won(p)}짜리 ${fk(id)} 몇 개 살 수 있어요?`,howManyQ:'몇 개 살 수 있을까? 숫자판으로 답해 봐.',whyHowMany:'한 개 값으로 나눠 봐.',
+ unitFracAsk:(n,den)=>`귤 ${n}개 한 상자에서 1/${den}만 주세요.`,fracQ:'몇 개를 담아 줄까?',whyFracRest:'그건 상자에 남는 귤이야.',
+ timeAsk:(h,m,H,M)=>`가게는 ${h}시 ${m}분에 열어요. ${H}시간 ${M}분 뒤에 귤 트럭이 와요. 트럭은 몇 시 몇 분에 와요?`,
+ deliveryAsk:(h,m,H,M,mins)=>`배달은 ${mins?mins+'분':H+'시간 '+M+'분'} 걸려요. ${h}시 ${m}분에 출발하면 몇 시 몇 분에 와요?`,
+ timeQ:'몇 시 몇 분일까? 시와 분을 맞춰 봐.',whyHour:'60분이 넘으면 1시간이 늘어나.',whyTime:'시간을 먼저 더하고, 그다음 분을 더해 봐.',
+ unitAsk:(id,p,q)=>`${fk(id)} 한 개에 ${won(p)}이죠? ${q}개 주세요.`,
+ shareAsk:(n,k)=>`귤 ${n}개를 ${k}봉지에 똑같이 나눠 담아 주세요.`,shareQ:'한 봉지에 몇 개씩이야?',whyShare:'봉지 수로 똑같이 나눠 봐.',
+ fracSumAsk:(den,a,b)=>`수박 한 통을 ${den}조각으로 잘랐어요. 오전에 ${a}/${den}, 오후에 ${b}/${den} 팔았어요. 모두 몇 분의 몇 통을 팔았어요?`,fracSumQ:'수박을 모두 몇 분의 몇 통 팔았을까?',
+ whyDenAdd:'분모는 더하지 않아. 조각 크기는 그대로야.',whyLeft:'그건 남은 수박이야.',pieSlices:den=>`한 통 = ${den}조각`,
+ graphAsk:'마감 정리! 오늘 손님들에게 판 과일을 막대그래프로 정리했어.',graphQ:'가장 많이 팔린 과일은 가장 적게 팔린 과일보다 몇 개 더 팔렸어?',graphTotalQ:'과일이 모두 몇 개 팔렸어?',whyScale:'눈금 한 칸이 몇인지 다시 봐.',
+ weekAsk:'이번 주 장부를 볼까? 날마다 판 귤 상자 수를 막대그래프로 정리했어.',weekQ:'이번 주에 귤을 모두 몇 상자 팔았어?',
+ bagBillAsk:(id,per,b,p,bill)=>`${fk(id)} ${per}개씩 ${b}봉지 주세요. 한 봉지 ${won(p)}이죠? ${won(bill)} 낼게요.`,whyPerBag:'봉지 값 × 봉지 수야. 한 봉지에 든 개수는 곱하지 않아.',
+ noteBags:(id,per,b)=>`${fk(id)} ${per}개씩 ${b}봉지`,noteBagPrice:p=>`한 봉지 ${won(p)}`,notePaid:b=>`손님이 낸 돈 ${won(b)}`,
+ leftMoneyAsk:(m,p,id,q)=>`${won(m)}으로 ${won(p)}짜리 ${fk(id)} ${q}개를 사면 얼마 남아요?`,leftMoneyQ:'얼마 남을까?',whyLeftMoney:'그건 과일값이야. 가진 돈에서 빼 봐.',
+ // E3
+ fracAsk:(n,k,den)=>`귤 ${n}개 한 상자의 ${k}/${den} 주세요.`,whyUnitPart:(den,k)=>`그건 1/${den}이야. ${k}묶음이 필요해.`,
+ splitAsk:(t,k)=>`모두 ${won(t)}이죠? ${PPL_KO[k]} 똑같이 나눠 낼게요.`,splitQ:'한 사람이 얼마씩 내면 될까?',whySplit:'그건 모두 낼 돈이야. 사람 수로 나눠 봐.',noteTotal:t=>`모두 ${won(t)}`,notePeople:k=>`${k}명이 똑같이 나눠 내기`,
+ offAsk:(desc,p,pct)=>`${desc} 주세요. 원래 ${won(p)}인데 오늘 ${pct}% 할인이죠? 얼마를 깎아 줘요?`,offQ:'깎아 주는 돈은 얼마야?',whyOffSale:'그건 할인한 값이야. 깎아 주는 돈만 구해 봐.',whyOffPct:p=>`${p}%는 ${p}원이 아니야. ${PFRAC[p]}을 구해 봐.`,whyOffFull:'그건 원래 값이야. 그중 얼마를 깎아 주는지 구해 봐.',
+ decAddAsk:(x,a,y,b)=>`${fk(x)} ${a} kg이랑 ${fk(y)} ${b} kg 주세요. 모두 몇 kg이에요?`,decSubAsk:(x,a,b)=>`${fk(x)} ${a} kg이 있었는데 ${b} kg을 팔았어요. 남은 ${jo(fk(x),'은','는')} 몇 kg이에요?`,
+ decAddQ:'모두 몇 kg이야?',decSubQ:'남은 건 몇 kg이야?',whyDecAlign:'소수점끼리 줄을 맞춰서 다시 계산해 봐.',whyDecCarry:'받아올림을 다시 확인해 봐.',whyDecBorrow:'받아내림을 다시 확인해 봐.',noteKg:(id,a)=>`${fk(id)} ${a} kg`,noteSold:b=>`판 무게 ${b} kg`,
+ weightAsk:(id,kg,rate)=>`${fk(id)} ${kg} kg 주세요. 1 kg에 ${won(rate)}이죠?`,priceQ:'모두 얼마야? 숫자판으로 넣어 봐.',whyKg:'소수 부분 무게도 계산해야 해.',kgTag:rate=>`1 kg ${won(rate)}`,
+ fracPriceAsk:(n,den,Wp)=>`수박 ${n}/${den}통 주세요. 한 통에 ${won(Wp)}이죠?`,whyUnitFrac:(den,n)=>`그건 1/${den}통 값이야. ${n}조각이 필요해.`,pieWhole:Wp=>`한 통 ${won(Wp)}`,
+ pctAsk:(desc,p,pct)=>`${desc} 주세요. 원래 ${won(p)}인데 오늘 ${pct}% 할인이죠?`,pctQ:'할인한 값은 얼마야?',pctTag:p=>`${p}% 할인`,whyPctWon:p=>`${p}원이 아니라 ${p}%를 빼야 해.`,whyPctPart:'그건 깎아 주는 돈이야. 원래 값에서 빼야 해.',
+ ratioAsk:(x,y,a,b,T)=>`${jo(fk(x),'과','와')} ${jo(fk(y),'을','를')} ${a}:${b}${ro(b)} 담은 선물 상자예요. 과일이 모두 ${T}개면 ${jo(fk(x),'은','는')} 몇 개예요?`,ratioQ:x=>`${jo(fk(x),'은','는')} 몇 개야?`,
+ whyRatioOther:y=>`그건 ${fk(y)}의 개수야.`,whyRatioPart:a=>`그건 한 묶음이야. ${a}묶음을 구해야 해.`,noteRatio:(x,y,a,b)=>`${fk(x)} : ${fk(y)} = ${a} : ${b}`,noteAll:T=>`모두 ${T}개`,
+ juiceAsk:(a,b,g)=>`주스는 사과:당근 = ${a}:${b}${ro(b)} 만들어요. 사과가 ${g} g이면 당근은 몇 g이에요?`,juiceQ:'당근은 몇 g이야?',whyJuice:'비를 다시 봐. 한 묶음이 몇 g인지 먼저 구해.',noteJuice:(a,b)=>`사과 : 당근 = ${a} : ${b}`,noteApple:g=>`사과 ${g} g`,
+ areaAsk:(w,h)=>`귤 상자 바닥이 가로 ${w} cm, 세로 ${h} cm예요. 넓이는 몇 cm²예요?`,areaQ:'넓이는 몇 cm²야?',layerAsk:'귤 한 개가 10 cm × 10 cm 칸을 차지하면 한 층에 몇 개 들어가요?',layerQ:'한 층에 몇 개야?',
+ whyPerim:'그건 둘레야. 넓이는 가로 × 세로야.',whyLayer:'가로에 몇 칸, 세로에 몇 칸 들어가는지 생각해 봐.',
+ dealAsk:(a,pa,b,pb)=>`사과 ${a}개에 ${won(pa)}, ${b}개에 ${won(pb)}. 어느 묶음이 사과 1개에 더 싸요? 얼마나요?`,dealQ:'1개 값을 비교해 봐.',noteDeal:(n,p)=>`사과 ${n}개 묶음 ${won(p)}`,
+ dealOpt:(n,df)=>`${n}개 묶음이 1개에 ${num(df)}원 더 싸요`,dealSame:'1개 값이 똑같아요',
+ whyDealTotal:'묶음 값끼리가 아니라 1개 값을 비교해야 해.',whyDealWhich:'1개 값을 다시 나눠 봐. 어느 쪽이 더 싸?',
+ avgAsk:(n,vals)=>`바구니 ${n}개 값이 ${vals.map(won).join(', ')}이에요. 평균은 얼마예요?`,avgQ:'평균은 얼마야?',whyAvg:'모두 더한 다음 개수로 나눠야 해.',noteBasket:(i,v)=>`바구니 ${i}: ${won(v)}`,
+ twoAsk:(p,pct,k)=>`모두 ${won(p)}인데 오늘 ${pct}% 할인이죠? ${PPL_KO[k]} 똑같이 나눠 낼게요. 한 사람은 얼마예요?`,twoQ:'한 사람은 얼마를 내?',whyNoDisc:'할인을 먼저 해야 해.',whyNoSplit:'이제 사람 수로 나눠야 해.'},
+en:{title:'Fruit Stand',sub:'Pack what the customer wants and count the money!',start:'🍎 Open shop',lvl:'Level',lvlWord:'Level',
+ band:{K:'Ages 5–7',E1:'Ages 8–9',E2:'Ages 10–11',E3:'Ages 12–13'},parentPick:' · chosen by a parent',pickBand:'How old are you? Tap your age.',ageQ:'How old are you? Tap your age!',
+ parentBtn:'Change age (parents)',parentHint:'Parents: pick an age group. If it differs from the age, it shows “chosen by a parent”.',setAge:'Save this as the child’s age group',
+ hint:{1:'one fruit, count up to 5',2:'one fruit, count from 5 to 10',3:'two fruits, how many in all (up to 10)',4:'numbers to 20: add and take away without crossing 10',5:'add and take away across 10; how many more',
+  6:'two-digit numbers with crates of 10, adding and taking away with regrouping, paying with 10 and 100 won',7:'adding and taking away two-digit numbers with regrouping; how many more',8:'equal bags: add the same number again and again, then pay for the bags',9:'prices in tens of won: pay exactly with coins',10:'give change from ₩1,000',
+  11:'times tables and sharing, unit fractions, the number pad',12:'adding 4-digit prices; what time it will be',13:'3-digit × 1-digit, sharing equally, fractions with the same denominator',14:'change from ₩10,000; a bar graph of this round',15:'two-step problems, multiplying by a 2-digit number, minutes past the hour, this week’s book',
+  16:'a fraction of a box (3/8), adding and taking away decimals (kg), percent (50%, 25%, 10%), splitting the bill',17:'selling by weight (kg), a fraction of a price, change',18:'10%, 20%, 25% or 50% off, then change',19:'ratio (3:2), area of a rectangle',20:'best deal, average, two-step problems'},
+ hello:n=>`Hi${n?' '+n:''}! Today you run the fruit stand.`,open:'The shop is open! Here comes a customer.',
+ cust:'Customer',closing:'Closing',order:list=>cap(joinEn(list.map(o=>o.label||cntEn(o.id,o.n))))+', please!',please:'please!',
+ pack:'All packed!',payBtn:'Pay!',give:'Give change',clear:'Clear',okKey:'OK',paidLbl:'Paid',chgLbl:'Change',priceGot:(p,b)=>`Price ${won(p)} · got ${won(b)}`,
+ more:f=>`Not enough ${pl(f,2)}. Add some more?`,less:f=>`Too many ${pl(f,2)}. Take one out?`,only:f=>`Only ${pl(f,2)}, please.`,packOk:'Packed just right!',
+ onlyOrder:ids=>`The customer only wants ${joinEn(ids.map(plN))}.`,regrouped:'Ten loose ones make one crate of 10!',
+ count:'How many in all?',countOk:'Correct!',countNo:'Let\'s count again, one by one.',tryAgain:'Hmm, think again?',padNo:'Hmm, work it out again?',
+ howMuch:'How much is it? Tap coins to pay.',paid:m=>`They gave ${won(m)}. What is the change?`,
+ payLow:'Not enough money. Add more coins.',payHigh:'That is too much. Clear and try again?',payOk:'Paid! Thank you~',
+ changeLow:'The change is too little.',changeHigh:'The change is too much.',changeOk:'Change is exactly right!',
+ thanks:['Thank you!','Yummy!','See you again!','The best!'],
+ done:'Closing time!',doneMsg:s=>s===3?'Every customer served with no mistakes. Perfect shopkeeper!':s===2?'Every customer served. Great job!':'Every customer served. Next time will be even better.',
+ starTip:'Stars: serve everyone · 2 mistakes or fewer · no mistakes',feel:'How was it?',hard:'Too hard',good:'Just right',easy:'Too easy',
+ nextUp:n=>`Next time, try level ${n}!`,nextDown:n=>`Next time, take it slow at level ${n}.`,nextSame:'Same level, one more time!',
+ embedEasy:'Too easy? Thanks for telling me!',embedHard:'Too hard? Thanks for telling me. Going slowly is okay.',
+ bandUp:'Level 5 complete! Choose the next age group with your parents.',topDone:'Level 5 complete! You reached the very top.',again:'Play again',toTitle:'Title',
+ gateTitle:'Change the age group',gateAsk:'Grown-ups: tap the year you were born (4 digits).',gateWrong:'Please try again.',gateClose:'Close',
+ fruit:{apple:'apple',tangerine:'tangerine',pear:'pear',banana:'banana',grape:'grape',melon:'watermelon'},
+ bundleLabel:id=>({pear:'a pear',tangerine:'a net of tangerines',banana:'a bunch of bananas',apple:'an apple'})[id],
+ crateTen:id=>`10 ${pl(fe(id),2)}`,crateOne:id=>`1 ${fe(id)}`,
+ tray:'Basket',trayStock:'Display',trayBags:'Bags',trayNote:'Notes',trayBox:'A box of tangerines',trayScale:'Scale',trayPie:'Watermelon',trayClock:'Clock',trayRect:'Box bottom',
+ trayGraph:'Fruit sold to today’s customers',trayWeek:'This week’s book (boxes)',days:['Mon','Tue','Wed','Thu','Fri'],clockStart:'start',hourLbl:':',minLbl:'',
+ tag:{E1:'Bake sale',E2:'Baker',E3:'Café owner'},
+ ex:{pack:()=>'Pack as many as the customer asks. Tap a crate to add one; tap a fruit in the basket to take it out.',
+  sum:()=>'Pack two kinds of fruit, then say how many in all.',
+  teen:()=>'The basket has two rows of ten. A full top row is 10. Count 10 and how many more.',
+  make10:()=>'Fill the top row of 10 first. The rest goes to the next row. 10 and how many?',
+  take:()=>'Tap fruit in the basket to hand over what the customer buys. Then count what is left.',
+  compare:()=>'Line up the two rows. The fruit without a partner is how many more.',
+  tens:k=>`${k.data.a} is ${Math.floor(k.data.a/10)} crates of 10 and ${k.data.a%10} loose. One tap on a crate gives 10!`,
+  take2:k=>`${k.data.stock} − ${k.data.sold}: you can't take ${k.data.sold} from ${k.data.stock%10} loose ones, so think of opening a crate of 10.`,
+  add2:k=>`${k.data.a} + ${k.data.b}: add the loose ones first. If you get 10 or more, make a crate.`,
+  sub2:k=>`${k.data.stock} − ${k.data.sold}: if you can't take ${k.data.sold%10} from ${k.data.stock%10} loose, open a crate of 10.`,
+  more2:k=>`How many more is ${k.data.big} − ${k.data.small}. Not enough loose ones? Open a crate of 10.`,
+  groups:k=>`${k.data.bags} bags of ${k.data.per} means adding ${k.data.per}, ${k.data.bags} times. One tap on a crate fills a whole bag.`,
+  pay9:k=>`Add the prices: ${k.data.parts.map(won).join(' + ')}. Start with the biggest coins.`,
+  change10:k=>`The change is ${won(k.data.bill)} minus the price. What makes the price up to ${won(k.data.bill)}?`,
+  bagsx:k=>`${k.data.bags} bags of ${k.data.per} is ${k.data.per} × ${k.data.bags}. One tap on a crate fills a whole bag.`,
+  howmany:k=>`How many times does ${won(k.data.price)} go into ${won(k.data.money)}? Think of your times tables.`,
+  unitfrac:k=>`1/${k.data.den} of ${k.data.box} is one of ${k.data.den} equal groups of ${k.data.box}.`,
+  bundle:k=>`Add 4-digit prices: ${k.data.prices.map(won).join(' + ')}. Add thousands, hundreds and tens.`,
+  time:k=>`From ${k.data.h}:${pad2(k.data.m)}, go ${k.data.H} ${k.data.H===1?'hour':'hours'} first, then ${k.data.M} minutes. 60 minutes make an hour.`,
+  unit13:k=>`${won(k.data.price)} × ${k.data.q}: the same as adding ${won(k.data.price)} ${k.data.q} times.`,
+  share:k=>`${k.data.n} shared into ${k.data.k} bags is ${k.data.n} ÷ ${k.data.k}. Share out tens first.`,
+  fracsum:k=>`Both are slices of a watermelon cut into ${k.data.den}. Keep the ${k.data.den} and add the slices.`,
+  change14:k=>{const [id,n,p]=k.data.lines[0];return `${cap(cntEn(id,n))} is ${won(p)} × ${n}. Add up each fruit, then take it from ${won(k.data.bill)}.`;},
+  graph:k=>`One step on the scale is ${k.data.scale}. Find the longest and the shortest bars.`,
+  week:k=>`One step on the scale is ${k.data.scale} boxes. Add all five days.`,
+  two15a:k=>`First find the price of ${k.data.bags} bags, then take it from ${won(k.data.bill)}. Don't multiply by the fruit in a bag.`,
+  two15b:k=>`First find the price of ${k.data.q} ${pl(fe(k.data.id),k.data.q)}. Then take it from ${won(k.data.money)}.`,
+  time15:k=>k.data.mins?`How many hours and minutes is ${k.data.mins} minutes? 60 minutes make an hour.`:`Add ${k.data.H} ${k.data.H===1?'hour':'hours'} first, then ${k.data.M} minutes. Past 60 minutes, the hour goes up.`,
+  frac16:k=>`${k.data.k}/${k.data.den} of ${k.data.box}: split ${k.data.box} into ${k.data.den} equal groups and take ${k.data.k}.`,
+  split:k=>`${won(k.data.total)} shared by ${k.data.people} people is ${won(k.data.total)} ÷ ${k.data.people}.`,
+  pct16:k=>`${k.data.pct}% is ${PFRAC[k.data.pct]}. Find ${PFRAC[k.data.pct]} of ${won(k.data.price)}.`,
+  dec16:k=>{const p=k.data.op==='+'?k.data.b:k.data.a;return `Line up the decimal points and write it in a column. ${p} is the same as ${p}0.`;},
+  weight:k=>`${k.data.kg} kg at ${won(k.data.rate)} per kg: ${won(k.data.rate)} × ${k.data.kg}.`,
+  fracprice:k=>`${k.data.num}/${k.data.den} of a watermelon: the whole price ${won(k.data.whole)} ÷ ${k.data.den} × ${k.data.num}.`,
+  percent:k=>`${k.data.pct}% is ${PFRAC[k.data.pct]}. Take that much off ${won(k.data.price)}.`,
+  ratio:k=>`${k.data.a}:${k.data.b} means ${k.data.a} of every ${k.data.a+k.data.b} parts are ${pl(fe(k.data.x),2)}.`,
+  juice:k=>`Apple : carrot = ${k.data.a}:${k.data.b}. If ${k.data.apple} g of apple is ${k.data.a} parts, how much is one part?`,
+  area:k=>`Area of a rectangle = length × width. Work out ${k.data.w} cm × ${k.data.h} cm.`,
+  deal:()=>'Pack price ÷ how many = the price of one. Compare the two.',
+  avg:k=>`Add the ${k.data.vals.length} prices, then divide by ${k.data.vals.length}.`,
+  two:k=>`First take ${k.data.pct}% off ${won(k.data.price)}, then share it between ${k.data.people}.`},
+ giveP:(id,n)=>`Hand ${cntEn(id,n)} to the customer. Tap them in the basket.`,leftQ:(id,s,t)=>id==='grape'?`There were ${s} bunches of grapes. You sold ${t}. How many are left?`:`There were ${s} ${pl(fe(id),s)}. You sold ${t}. How many are left?`,
+ cmpAsk:(x,y)=>`Are there more ${plN(x)} or more ${plN(y)}? How many more?`,cmpQ:(x,y)=>`How many more ${plN(x)} than ${plN(y)}?`,
+ whyTen:'Count the full row of 10 too.',whyAdd:'Don\'t add. Think about what is left.',whyTake10:'Take from the row of 10. Count what is left, one by one.',
+ giveTen:(id,n)=>`Hand ${cntEn(id,n)} to the customer. Tap a crate of 10 to open it into loose ones.`,
+ sellQ:(id,s,t)=>`There are ${s} ${pl(fe(id),s)}. If you sell ${t}, how many will be left?`,giveCheck:(id,n)=>`Now hand ${cntEn(id,n)} to the customer and see if that many are left. Tap a crate of 10 to open it into loose ones.`,leftSee:(id,r)=>`See? ${r} ${pl(fe(id),r)} left.`,
+ tenPrice:n=>`How much for ${n}? A crate of 10 is ₩100 and one loose fruit is ₩10.`,
+ whyCarry:'If the loose ones make 10 or more, that is one more crate of 10.',whyTens:'Count the crates of 10 again.',whyBorrow:'Not enough loose ones? Open a crate of 10 first.',
+ groupsOrder:(id,per,b)=>`${b} bags of ${per} ${pl(fe(id),per)}, please!`,bagsP:(id,per)=>`Put ${per} ${pl(fe(id),per)} in every bag. Tap a bag to choose it.`,bagsP1:'One tap on a crate fills a whole bag. Tap a bag to empty it.',
+ whyGroups:{E1:(per,b)=>`Don't add the bags and the fruit. Add ${per}, ${b} times.`,E2:(per,b)=>`It is not adding: it is ${per} × ${b}.`},
+ bagPrice:(p,b)=>`One bag is ${won(p)}. How much for ${b} bags?`,bagWrong:per=>`Every bag needs ${per}.`,bagTotalQ:'How much for all the bags? Use the number pad.',
+ whyMulNotAdd:'Multiply, don\'t add.',totalQ:'How much is it in all? Use the number pad.',
+ howManyAsk:(m,p,id)=>`I have ${won(m)}. How many ${won(p)} ${pl(fe(id),2)} can I buy?`,howManyQ:'How many can they buy? Use the number pad.',whyHowMany:'Divide by the price of one.',
+ unitFracAsk:(n,den)=>`This box has ${n} tangerines. Just 1/${den} of the box, please.`,fracQ:'How many tangerines is that?',whyFracRest:'That is what stays in the box.',
+ timeAsk:(h,m,H,M)=>`The shop opens at ${h}:${pad2(m)}. The tangerine truck comes ${H} ${H===1?'hour':'hours'} and ${M} minutes later. What time does it come?`,
+ deliveryAsk:(h,m,H,M,mins)=>`The delivery takes ${mins?mins+' minutes':H+' '+(H===1?'hour':'hours')+' and '+M+' minutes'}. It leaves at ${h}:${pad2(m)}. What time does it arrive?`,
+ timeQ:'What time will it be? Set the hour and the minutes.',whyHour:'Past 60 minutes, the hour goes up by one.',whyTime:'Add the hours first, then the minutes.',
+ unitAsk:(id,p,q)=>`One ${fe(id)} is ${won(p)}. I'd like ${q}, please.`,
+ shareAsk:(n,k)=>`Please share ${n} tangerines equally into ${k} bags.`,shareQ:'How many in each bag?',whyShare:'Share them equally among the bags.',
+ fracSumAsk:(den,a,b)=>`A watermelon was cut into ${den} equal slices. We sold ${a}/${den} in the morning and ${b}/${den} in the afternoon. How much did we sell in all?`,fracSumQ:'How much of the watermelon was sold?',
+ whyDenAdd:'Don\'t add the bottom numbers. The slices stay the same size.',whyLeft:'That is the part left over.',pieSlices:den=>`${den} equal slices`,
+ graphAsk:'Closing time! Here is a bar graph of the fruit sold to today\'s customers.',graphQ:'What is the difference between the best seller and the worst seller?',graphTotalQ:'How many fruits were sold in all?',whyScale:'Check how much one step on the scale is worth.',
+ weekAsk:'Let\'s check this week\'s book. The bar graph shows the boxes of tangerines sold each day.',weekQ:'How many boxes were sold this week in all?',
+ bagBillAsk:(id,per,b,p,bill)=>`${b} bags of ${per} ${pl(fe(id),per)}, please. One bag is ${won(p)}, right? Here is ${won(bill)}.`,whyPerBag:'Bag price × number of bags. Don\'t multiply by the fruit in a bag.',
+ noteBags:(id,per,b)=>`${b} bags of ${per} ${pl(fe(id),per)}`,noteBagPrice:p=>`${won(p)} a bag`,notePaid:b=>`Paid ${won(b)}`,
+ leftMoneyAsk:(m,p,id,q)=>`I have ${won(m)}. If I buy ${q} ${pl(fe(id),q)} at ${won(p)} each, how much is left?`,leftMoneyQ:'How much is left?',whyLeftMoney:'That is the cost of the fruit. Take it away from the money.',
+ fracAsk:(n,k,den)=>`This box has ${n} tangerines. ${k}/${den} of the box, please.`,whyUnitPart:(den,k)=>`That is 1/${den}. You need ${k} parts.`,
+ splitAsk:(t,k)=>`That's ${won(t)} in all, right? The ${PPL_EN[k]} of us will split it equally.`,splitQ:'How much does each person pay?',whySplit:'That is the whole bill. Divide it by the people.',noteTotal:t=>`Total ${won(t)}`,notePeople:k=>`${cap(PPL_EN[k])} people share equally`,
+ offAsk:(desc,p,pct)=>`${cap(desc)}, please. It's usually ${won(p)}, and it's ${pct}% off today, right? How much do I save?`,offQ:'How much is taken off?',whyOffSale:'That is the price after the discount. Find just the money taken off.',whyOffPct:p=>`${p}% is not ${p} won. Find ${PFRAC[p]} of the price.`,whyOffFull:'That is the full price. Find how much of it is taken off.',
+ decAddAsk:(x,a,y,b)=>`${a} kg of ${pl(fe(x),2)} and ${b} kg of ${pl(fe(y),2)}, please. How many kg is that in all?`,decSubAsk:(x,a,b)=>`There were ${a} kg of ${pl(fe(x),2)}. You sold ${b} kg. How many kg are left?`,
+ decAddQ:'How many kg in all?',decSubQ:'How many kg are left?',whyDecAlign:'Line up the decimal points and work it out again.',whyDecCarry:'Check the carrying again.',whyDecBorrow:'Check the borrowing again.',noteKg:(id,a)=>`${pl(fe(id),2)} ${a} kg`,noteSold:b=>`sold ${b} kg`,
+ weightAsk:(id,kg,rate)=>`${kg} kg of ${pl(fe(id),2)}, please. It's ${won(rate)} per kg, right?`,priceQ:'How much is it? Enter it on the number pad.',whyKg:'Don\'t forget the decimal part of the weight.',kgTag:rate=>`${won(rate)}/kg`,
+ fracPriceAsk:(n,den,Wp)=>`${n}/${den} of a watermelon, please. A whole one is ${won(Wp)}, right?`,whyUnitFrac:(den,n)=>`That is the price of 1/${den}. You need ${n} parts.`,pieWhole:Wp=>`whole ${won(Wp)}`,
+ pctAsk:(desc,p,pct)=>`${desc}, please. It's usually ${won(p)}, but ${pct}% off today, right?`,pctQ:'What is the price after the discount?',pctTag:p=>`${p}% off`,whyPctWon:p=>`Take off ${p}%, not ${p} won.`,whyPctPart:'That is the discount. Take it off the price.',
+ ratioAsk:(x,y,a,b,T)=>`A gift box has ${pl(fe(x),2)} and ${pl(fe(y),2)} in the ratio ${a}:${b}. There are ${T} fruits in all. How many ${pl(fe(x),2)} are there?`,ratioQ:x=>`How many ${pl(fe(x),2)}?`,
+ whyRatioOther:y=>`That is the number of ${pl(fe(y),2)}.`,whyRatioPart:a=>`That is one part. You need ${a} parts.`,noteRatio:(x,y,a,b)=>`${pl(fe(x),2)} : ${pl(fe(y),2)} = ${a} : ${b}`,noteAll:T=>`${T} fruits in all`,
+ juiceAsk:(a,b,g)=>`Our juice is apple : carrot = ${a}:${b}. With ${g} g of apple, how many grams of carrot?`,juiceQ:'How many grams of carrot?',whyJuice:'Look at the ratio again. Find one part first.',noteJuice:(a,b)=>`apple : carrot = ${a} : ${b}`,noteApple:g=>`apple ${g} g`,
+ areaAsk:(w,h)=>`The bottom of a tangerine box is ${w} cm long and ${h} cm wide. What is its area in cm²?`,areaQ:'What is the area in cm²?',layerAsk:'If each tangerine takes a 10 cm × 10 cm square, how many fit in one layer?',layerQ:'How many in one layer?',
+ whyPerim:'That is the perimeter. Area is length × width.',whyLayer:'How many squares fit along each side?',
+ dealAsk:(a,pa,b,pb)=>`${a} apples for ${won(pa)}, or ${b} for ${won(pb)}. Which pack is cheaper per apple, and by how much?`,dealQ:'Compare the price of one apple.',noteDeal:(n,p)=>`${n}-pack of apples ${won(p)}`,
+ dealOpt:(n,df)=>`The ${n}-pack, by ${won(df)} per apple`,dealSame:'One apple costs the same in both',
+ whyDealTotal:'Compare the price of one apple, not the pack prices.',whyDealWhich:'Work out the price of one again. Which is cheaper?',
+ avgAsk:(n,vals)=>`My ${n} baskets cost ${joinEn(vals.map(won))}. What is the average?`,avgQ:'What is the average?',whyAvg:'Add them all, then divide by how many.',noteBasket:(i,v)=>`Basket ${i}: ${won(v)}`,
+ twoAsk:(p,pct,k)=>`That's ${won(p)} in all, and it's ${pct}% off today, right? The ${PPL_EN[k]} of us will split it equally. How much does each person pay?`,twoQ:'How much does each person pay?',whyNoDisc:'Take off the discount first.',whyNoSplit:'Now share it between the people.'}};
+const T=()=>STR[LANG];
+const fname=id=>T().fruit[id];
+const FR3=['apple','tangerine','pear'],FR4=['apple','tangerine','pear','banana'],FR5=['apple','tangerine','pear','banana','grape'],FR6=['apple','tangerine','pear','banana','grape','melon'];
+const COINS7=[10,50,100,500,1000,5000,10000];
+// near-real price of one fruit, E2 / E3 (LEVELS.md §6.2)
+const UNIT={tangerine:[200,500],apple:[800,1500],pear:[1500,3000]};
+// d11 bags of tangerines: bag price by fruit per bag, each 200–500원 a tangerine, in 100s (600–900) or 1,000s (≤ 3,000) so every × is a table fact
+const BAG11={3:[600,700,800,900,1000],4:[800,900,1000,2000],5:[1000,2000],6:[2000,3000]};
+const OFF_ITEMS=[{id:'grape',ko:'포도 한 송이',en:'a bunch of grapes',r:[4000,7000]},{id:'banana',ko:'바나나 한 송이',en:'a bunch of bananas',r:[3000,4500]},{id:'apple',ko:'사과 한 봉지',en:'a bag of apples',r:[5000,7000]},{id:'tangerine',ko:'귤 한 망',en:'a net of tangerines',r:[3000,4000]}];
+const PCT_ITEMS=[{ko:'포도 2송이',en:'Two bunches of grapes',r:[8000,14000]},{ko:'사과 1봉지',en:'A bag of apples',r:[5000,7000]},{ko:'귤 3망',en:'Three nets of tangerines',r:[9000,12000]},{ko:'배 3개',en:'Three pears',r:[4500,9000]},{ko:'바나나 2송이',en:'Two bunches of bananas',r:[6000,9000]},{ko:'수박 1통',en:'A whole watermelon',r:[16000,24000]}];
+
+/* ── STAND[d] (LEVELS.md §6.1; d = BASE[band] + level − 1, d 1..20) ── */
+const STAND={
+ 1:{task:'pack 1 kind',customers:5,pool:FR4,coins:[],n:[1,5],ui:'tap crates'},
+ 2:{task:'pack 1 kind',customers:5,pool:FR4,coins:[],n:[5,10],ui:'tap crates'},
+ 3:{task:'pack 2 kinds → how many in all',customers:5,pool:FR4,coins:[],totalMax:10,ui:'tap crates; 4 buttons'},
+ 4:{task:'teen + a few / take away, no crossing ten',customers:6,pool:FR4,coins:[],total:[11,20],ui:'2×10 frame; 4 buttons'},
+ 5:{task:'make ten / take away across ten / how many more (objects; never money in K)',customers:6,pool:FR4,coins:[],total:[11,20],ui:'2×10 frame; 4 buttons'},
+ 6:{task:'crate of 10 + loose → sum written first → pay at bake-sale prices; or take away across a ten',customers:4,pool:FR3,tens:true,coins:[10,100],each:[11,59],sum:[30,99],crate:100,loose:10,totalMax:990,ui:'crate / loose taps; 4 buttons; coins'},
+ 7:{task:'2-digit + 2-digit / 2-digit − 2-digit with regrouping / how many more → pay',customers:4,pool:FR3,tens:true,coins:[10,50,100],each:[11,89],max:100,loose:10,ui:'4 buttons; coins'},
+ 8:{task:'equal bags as repeated addition (one tap fills a bag) → pay for the bags',customers:5,pool:['tangerine','apple','pear'],coins:[100,500],bags:[3,5],per:[3,6],maxItems:30,bagPrice:[100,200],totalMax:1000,ui:'bags (one tap = one full bag); 4 buttons; coins'},
+ 9:{task:'pack 2 kinds with price tags in 10s → pay exactly',customers:5,pool:FR5,coins:[10,50,100,500],price:[120,480],q:[1,2],totalMax:1000,tags:true,ui:'coins'},
+ 10:{task:'pack → price → the customer pays 1,000 → give change',customers:6,pool:FR5,coins:[10,50,100,500],price:[120,480],q:[1,3],total:[150,950],bill:1000,tags:true,ui:'coins'},
+ 11:{task:'whole bags of tangerines in one tap → × on the pad → pay with bills; how many can you buy; unit fraction of a box',customers:4,pool:FR3,coins:[100,500,1000,5000],pad:true,bags:[3,5],per:[3,6],dens:[2,8],box:[12,64],max:10000,ui:'bag taps; number pad; bills / coins'},
+ 12:{task:'2–3 bundles at near-real prices → total on the pad; elapsed time',customers:4,pool:['pear','tangerine','banana','apple'],bundles:true,tags:true,coins:[],pad:true,max:9990,ui:'number pad; clock'},
+ 13:{task:'unit price × quantity; sharing a box; same-denominator fractions',customers:5,pool:['apple','tangerine','pear','melon'],coins:[],pad:true,max:10000,quot:[11,19],dens:[4,10],ui:'number pad; 4 fraction buttons'},
+ 14:{task:'2–3 items → total → change from 10,000; closing bar graph of this round',customers:5,pool:FR3,tags:true,coins:[10,50,100,500,1000,5000],pad:true,total:[3000,9990],bill:10000,graph:'sales',scales:[2,5],ui:'number pad; coins; 4 buttons (graph)'},
+ 15:{task:'two steps (bag price × bags → change; 2-digit × → money left); time over hours; closing “this week’s book” graph',customers:5,pool:FR3,coins:[10,50,100,500,1000,5000],pad:true,max:10000,graph:'week',scales:[5,10],ui:'number pad; coins; clock; 4 buttons (graph)'},
+ 16:{task:'fraction of a box; decimal + / − in kg; 50 / 25 / 10% of a 4-digit price; split the bill among 3–6',customers:4,pool:FR5,coins:[],pad:true,dens:[3,8],box:[48,96],people:[3,6],pcts:[10,25,50],ui:'number pad; 4 buttons (decimals)'},
+ 17:{task:'by weight; fraction of a whole watermelon → change from 10,000 / 20,000',customers:4,pool:['grape','tangerine','apple','melon'],tags:true,kgTags:true,coins:[100,500,1000,5000,10000],pad:true,ui:'number pad; bills / coins'},
+ 18:{task:'10 / 20 / 25 / 50% off → change',customers:5,pool:FR6,coins:COINS7,pad:true,pcts:[10,20,25,50],ui:'number pad; coins'},
+ 19:{task:'ratio; area of a rectangle',customers:5,pool:FR3,coins:[],pad:true,ui:'number pad'},
+ 20:{task:'best deal; average; two steps',customers:5,pool:FR3,coins:[],pad:true,avgN:[3,5],ui:'4 buttons (deal); number pad'}};
+
+function planFor(d){const n=STAND[d].customers,rep=a=>Array.from({length:n},(_,i)=>a[i%a.length]),mix=(first,rest)=>[first].concat(shuffle(Array.from({length:n-1},(_,i)=>rest[i%rest.length])));
+ switch(d){case 1:case 2:return rep(['pack']);case 3:return rep(['sum']);case 4:return rep(['teen','take']);case 5:return rep(['make10','take10','compare']);
+  case 6:return ['tens','take2','tens','take2'];case 7:return mix('add2',['sub2','more2','add2']);case 8:return rep(['groups']);case 9:return rep(['pay9']);case 10:return rep(['change10']);
+  case 11:return mix('bagsx',['howmany','unitfrac','bagsx']);case 12:return ['bundle','time','bundle','time'];case 13:return mix('unit13',['share','fracsum','unit13','share']);
+  case 14:return rep(['change14']);case 15:return mix('two15a',['two15b','time15','two15a','time15']);
+  case 16:return mix('frac16',['dec16','pct16','split']);case 17:return ['weight','fracprice','weight','fracprice'];case 18:return rep(['percent']);
+  case 19:return mix('ratio',['juice','area','ratio','area']);default:return mix('deal',['avg','two','deal','avg']);}}
+
+// prices for one round (LEVELS.md §6.2). K: none. E1: bake-sale prices. E2/E3: one near-real table.
+function makePrices(d){const P={},r=(a,b,s)=>ri(Math.ceil(a/s),Math.floor(b/s))*s,nz=(a,b,s)=>{let v;do v=r(a,b,s);while(v%100===0);return v;};
+ if(d===9||d===10)FR5.forEach(id=>P[id]=nz(120,480,10));
+ else if(d===12){P.pear=nz(1500,3000,10);P.tangerine=nz(3000,3900,10);P.banana=nz(3000,3900,10);P.apple=nz(1250,1500,10);}
+ else if(d===14){P.tangerine=nz(200,500,10);P.apple=r(800,1500,100);P.pear=r(1500,3000,100);}
+ else if(d===17){P.grape=r(6000,9000,1000);P.tangerine=r(4000,6000,1000);P.apple=r(5000,8000,1000);}
+ return P;}
+
+// four answer buttons: the answer + common-mistake distractors, then neighbours; shuffled when drawn
+function opts4(ans,cands,o){o=o||{};const step=o.step||1,max=o.max||Infinity,s=[ans];
+ for(const c of cands)if(Number.isFinite(c)&&c>0&&c<=max&&c===Math.round(c)&&!s.includes(c)&&s.length<4)s.push(c);
+ for(let k=1;s.length<4&&k<50;k++)for(const c of [ans+k*step,ans-k*step])if(c>0&&c<=max&&!s.includes(c)&&s.length<4)s.push(c);
+ return shuffle(s);}
+const wantOf=items=>{const w={};items.forEach(o=>w[o.id]=(w[o.id]||0)+o.n);return w;};
+const tensOf=(id,n,g)=>Array.from({length:Math.floor(n/10)},()=>({id,g,ten:true})).concat(Array.from({length:n%10},()=>({id,g,ten:false})));
+const addTime=(h,m,H,M)=>{const tm=((h%12)*60+m+H*60+M)%720,hh=Math.floor(tm/60);return{h:hh===0?12:hh,m:tm%60};};
+// best deal (LEVELS.md §6.4): how many options are true for these unit prices
+const dealTrue=(opts,a,ua,b,ub)=>opts.filter(o=>o.same?ua===ub:(ua!==ub&&o.pack===(ua<ub?a:b)&&o.diff===Math.abs(ua-ub))).length;
+const QTY14={2:[2,4,6,8],5:[5,10,15,20]};
+const itemSig=items=>items.map(o=>o.id+':'+o.n).sort().join(',');
+function orders14(P,sc,sold){const ids=STAND[14].pool,S14=STAND[14],qs=QTY14[sc],out=[];
+ for(let mask=1;mask<1<<ids.length;mask++){const sel=ids.filter((_,i)=>(mask>>i)&1);if(sel.length<2)continue;
+  const rec=(i,acc)=>{if(i===sel.length){const tot=acc.reduce((a,o)=>a+P[o.id]*o.n,0);if(tot>=S14.total[0]&&tot<=S14.total[1]&&(!sold||acc.every(o=>(sold[o.id]||0)+o.n<=sc*10)))out.push(acc);return;}for(const q of qs)rec(i+1,acc.concat([{id:sel[i],n:q}]));};rec(0,[]);}
+ return out;}
+// d14 plans its five orders when the round starts: all different, and each fruit's total fits the graph (≤ 10 steps of the scale)
+function plan14(P,sc){const all=orders14(P,sc),n=STAND[14].customers;
+ let ok=null;for(let t=0;t<300;t++){const used=new Set(),sold={},out=[];for(const o of shuffle(all.slice())){const sg=itemSig(o);if(used.has(sg)||!o.every(x=>(sold[x.id]||0)+x.n<=sc*10))continue;used.add(sg);o.forEach(x=>sold[x.id]=(sold[x.id]||0)+x.n);out.push(o);if(out.length===n)break;}
+  if(out.length===n){if(STAND[14].pool.every(id=>sold[id]))return out;ok=ok||out;}} // prefer a plan in which every fruit sells
+ return ok;}
+function newCtx(d,P){const c={d,scale:0,sold:{},used:new Set(),n14:0,plan14:null};if(d!==14||!P)return c;
+ for(const sc of shuffle(STAND[14].scales.slice()).concat([2])){const pl=plan14(P,sc);if(pl){c.scale=sc;c.plan14=pl;return c;}}
+ c.scale=2;return c;}
+
+/* ── task generators: one customer = {kind, steps[], …}; data = the numbers used ── */
+function gen(d,band,kind,P,ctx){const t=T(),S=STAND[d],fn=fname,two=()=>shuffle(S.pool.slice()).slice(0,2);ctx=ctx||newCtx(d);
+ const k={kind,ex:kind,items:[],lines:[],tray:'rows6',prefill:[],steps:[],data:{}};
+ switch(kind){
+ /* K · d1–5 */
+ case 'pack':{const id=pick(S.pool),n=ri(S.n[0],S.n[1]);Object.assign(k,{items:[{id,n}],tray:'rows5',steps:[{type:'pack',want:{[id]:n}}],data:{n}});break;}
+ case 'sum':{const [x,y]=two(),a=ri(1,5),b=ri(1,5),s=a+b;Object.assign(k,{items:[{id:x,n:a},{id:y,n:b}],tray:'rows5',steps:[{type:'pack',want:{[x]:a,[y]:b}},{type:'choice',q:t.count,ans:s,opts:opts4(s,[s+1,s-1,s+2],{max:20})}],data:{a,b,total:s}});break;}
+ case 'teen':case 'make10':{const [x,y]=two();let a,b;if(kind==='teen'){a=ri(11,17);b=ri(2,19-a);}else{a=ri(6,9);b=ri(11-a,9);}const s=a+b;
+  Object.assign(k,{items:[{id:x,n:a},{id:y,n:b}],tray:'frame',eq:`${a} + ${b} = ?`,steps:[{type:'pack',want:{[x]:a,[y]:b}},{type:'choice',q:t.count,ans:s,opts:opts4(s,[s-10,s+1,s-1],{max:20}),why:{[s-10]:t.whyTen}}],data:{a,b,total:s,cross:(a%10)+b>9}});break;}
+ case 'take':case 'take10':{const id=pick(S.pool);let s,n;if(kind==='take'){s=ri(13,19);n=ri(2,s-10);}else{s=ri(11,18);n=ri(s%10+1,9);}const r=s-n,wrong=kind==='take'?s+n:10+(n-s%10);
+  Object.assign(k,{ex:'take',items:[{id,n}],tray:'frame',prefill:Array.from({length:s},()=>({id,g:0})),eq:`${s} − ${n} = ?`,steps:[{type:'give',id,n},{type:'choice',q:t.leftQ(id,s,n),ans:r,opts:opts4(r,[wrong,r+1,r-1],{max:20}),why:{[wrong]:kind==='take'?t.whyAdd:t.whyTake10}}],data:{stock:s,sold:n,left:r,cross:n>s%10}});break;}
+ case 'compare':{const [x,y]=two(),big=ri(11,18),small=ri(Math.max(5,big-9),big-2),df=big-small;
+  Object.assign(k,{tray:'frame2',lines:[t.cmpAsk(x,y)],items:[{id:x,n:big},{id:y,n:small}],prefill:Array.from({length:big},()=>({id:x,g:0})).concat(Array.from({length:small},()=>({id:y,g:1}))),eq:`${big} − ${small} = ?`,steps:[{type:'choice',q:t.cmpQ(x,y),ans:df,opts:opts4(df,[df+1,df-1,small],{max:20})}],data:{big,small,diff:df}});break;}
+ /* E1 · d6–10 */
+ case 'tens':{const [x,y]=two();let a,b;do{a=ri(S.each[0],S.each[1]);b=ri(S.each[0],S.each[1]);}while(a===b||(a%10)+(b%10)<10||a+b<S.sum[0]||a+b>S.sum[1]);const s=a+b,nc=s-10;
+  Object.assign(k,{items:[{id:x,n:a},{id:y,n:b}],tray:'tens',rows:[x,y],eq:`${a} + ${b} = ?`,
+   steps:[{type:'pack',want:{[x]:a,[y]:b}},{type:'choice',q:t.count,ans:s,opts:opts4(s,[nc,s+10,s+1],{max:99}),why:{[nc]:t.whyCarry,[s+10]:t.whyTens}},{type:'pay',amount:s*S.loose,line:t.tenPrice(s)}],
+   data:{a,b,total:s,pay:s*S.loose}});break;}
+ case 'take2':{const id=pick(S.pool);let s,n;do{s=ri(21,59);n=ri(2,9);}while(n<=s%10);const r=s-n,flip=Math.floor(s/10)*10+(n-s%10);
+  // the question comes first, while the shelf still shows all s; handing over n afterwards is the check (LEVELS.md §1.4: no picture that shows the answer)
+  Object.assign(k,{items:[{id,n}],tray:'tens1',rows:[id],label:'stock',prefill:tensOf(id,s,0),eq:`${s} − ${n} = ?`,
+   steps:[{type:'choice',q:t.sellQ(id,s,n),ans:r,opts:opts4(r,[flip,s+n,r+1],{max:99}),why:{[flip]:t.whyBorrow,[s+n]:t.whyAdd}},{type:'give',id,n,check:r,line0:t.giveCheck(id,n)}],data:{stock:s,sold:n,left:r}});break;}
+ case 'add2':{const [x,y]=two();let a,b;do{a=ri(S.each[0],S.each[1]);b=ri(S.each[0],S.each[1]);}while(a===b||(a%10)+(b%10)<10||a+b>S.max);const s=a+b,nc=s-10;
+  Object.assign(k,{items:[{id:x,n:a},{id:y,n:b}],tray:'tens',rows:[x,y],prefill:tensOf(x,a,0).concat(tensOf(y,b,1)),eq:`${a} + ${b} = ?`,
+   steps:[{type:'choice',q:t.count,ans:s,opts:opts4(s,[nc,s+1,s-1],{max:100}),why:{[nc]:t.whyCarry}},{type:'pay',amount:s*S.loose,line:t.tenPrice(s)}],data:{a,b,total:s,pay:s*S.loose}});break;}
+ case 'sub2':{const id=pick(S.pool);let a,b;do{a=ri(31,89);b=ri(11,a-11);}while(a%10>=b%10);const r=a-b,flip=(Math.floor(a/10)-Math.floor(b/10))*10+(b%10-a%10);
+  Object.assign(k,{items:[{id,n:b}],tray:'tens1',rows:[id],label:'stock',prefill:tensOf(id,a,0),eq:`${a} − ${b} = ?`,
+   steps:[{type:'choice',q:t.leftQ(id,a,b),ans:r,opts:opts4(r,[flip,r+10,r+1],{max:100}),why:{[flip]:t.whyBorrow}},{type:'pay',amount:b*S.loose,line:t.tenPrice(b)}],data:{stock:a,sold:b,left:r,pay:b*S.loose}});break;}
+ case 'more2':{const [x,y]=two();let a,b;do{a=ri(30,89);b=ri(11,a-5);}while(a%10>=b%10);const df=a-b,flip=(Math.floor(a/10)-Math.floor(b/10))*10+(b%10-a%10);
+  Object.assign(k,{tray:'tens',rows:[x,y],label:'stock',lines:[t.cmpAsk(x,y)],items:[{id:x,n:a},{id:y,n:b}],prefill:tensOf(x,a,0).concat(tensOf(y,b,1)),eq:`${a} − ${b} = ?`,
+   steps:[{type:'choice',q:t.cmpQ(x,y),ans:df,opts:opts4(df,[flip,a+b<=100?a+b:df+10,df+1],{max:100}),why:{[flip]:t.whyBorrow,[a+b]:t.whyAdd}}],data:{big:a,small:b,diff:df}});break;}
+ case 'groups':{const id=pick(S.pool),nb=ri(S.bags[0],S.bags[1]),per=ri(S.per[0],S.per[1]);let bp;do bp=ri(S.bagPrice[0]/100,S.bagPrice[1]/100)*100;while(nb*bp>S.totalMax);const s=nb*per,why={};if(nb+per!==s)why[nb+per]=t.whyGroups.E1(per,nb);
+  Object.assign(k,{tray:'bags',lines:[t.groupsOrder(id,per,nb)],items:[{id,n:s}],eq:Array(nb).fill(per).join(' + ')+' = ?',
+   steps:[{type:'bags',id,per,bags:nb,oneTap:true},{type:'choice',q:t.count,ans:s,opts:opts4(s,[nb+per,s+per,s-per],{max:50}),why},{type:'pay',amount:nb*bp,line:t.bagPrice(bp,nb)}],data:{bags:nb,per,total:s,bagPrice:bp,pay:nb*bp}});break;}
+ case 'pay9':{let x,y,qa,qb,s;do{[x,y]=two();qa=ri(S.q[0],S.q[1]);qb=ri(S.q[0],S.q[1]);s=P[x]*qa+P[y]*qb;}while(s>S.totalMax);
+  Object.assign(k,{items:[{id:x,n:qa},{id:y,n:qb}],steps:[{type:'pack',want:{[x]:qa,[y]:qb}},{type:'pay',amount:s}],data:{prices:[P[x],P[y]],qty:[qa,qb],parts:Array(qa).fill(P[x]).concat(Array(qb).fill(P[y])),total:s}});break;}
+ case 'change10':{let items,s;do{items=shuffle(S.pool.slice()).slice(0,2).map(id=>({id,n:ri(S.q[0],S.q[1])}));s=items.reduce((a,o)=>a+P[o.id]*o.n,0);}while(s<S.total[0]||s>S.total[1]||s%10);
+  Object.assign(k,{items,steps:[{type:'pack',want:wantOf(items)},{type:'pay',amount:s},{type:'change',bill:S.bill,amount:S.bill-s}],data:{total:s,bill:S.bill,change:S.bill-s}});break;}
+ /* E2 · d11–15 */
+ // bags of tangerines at the near-real 200–500원 a tangerine (LEVELS.md §6.2); every × is a table fact times 100 or 1,000
+ case 'bagsx':{const id='tangerine';let nb,per,bp;do{nb=ri(S.bags[0],S.bags[1]);per=ri(S.per[0],S.per[1]);bp=pick(BAG11[per]);}while(nb*bp>S.max);const s=nb*per,tot=nb*bp;
+  Object.assign(k,{tray:'bags',lines:[t.groupsOrder(id,per,nb)],items:[{id,n:s}],
+   steps:[{type:'bags',id,per,bags:nb,oneTap:true},{type:'pad',q:t.count,ans:s,unit:'count',eq:`${per} × ${nb} = ?`,why:{[nb+per]:t.whyGroups.E2(per,nb)}},{type:'pad',q:t.bagTotalQ,line:t.bagPrice(bp,nb),eq:`${num(bp)} × ${nb} = ?`,ans:tot,unit:'won',why:{[bp+nb]:t.whyMulNotAdd}},{type:'pay',amount:tot}],
+   data:{bags:nb,per,total:s,bagPrice:bp,pay:tot}});break;}
+ case 'howmany':{const tbl=[['tangerine',[200,300,400,500]],['apple',[800,900,1000]],['pear',[2000,3000]]];let id,p,q,m;do{const e=pick(tbl);id=e[0];p=pick(e[1]);q=ri(3,9);m=p*q;}while(m>S.max);
+  Object.assign(k,{lines:[t.howManyAsk(m,p,id)],steps:[{type:'pad',q:t.howManyQ,ans:q,unit:'count',fill:{id,n:q},why:{}}],data:{money:m,price:p,ans:q,id}});break;}
+ case 'unitfrac':{let den,q,n;do{den=ri(S.dens[0],S.dens[1]);q=ri(2,9);n=den*q;}while(n<S.box[0]||n>S.box[1]);
+  Object.assign(k,{tray:'box',boxN:n,lines:[t.unitFracAsk(n,den)],steps:[{type:'pad',q:t.fracQ,ans:q,unit:'count',fill:{id:'tangerine',n:q},why:{[n-q]:t.whyFracRest}}],data:{box:n,den,ans:q}});break;}
+ case 'bundle':{let ids,s;do{ids=shuffle(S.pool.slice()).slice(0,ri(2,3));s=ids.reduce((a,id)=>a+P[id],0);}while(s>S.max);
+  const items=ids.map(id=>({id,n:1,label:t.bundleLabel(id)}));
+  Object.assign(k,{items,lines:[t.order(items)],steps:[{type:'pack',want:wantOf(items)},{type:'pad',q:t.totalQ,ans:s,unit:'won'}],data:{prices:ids.map(id=>P[id]),total:s}});break;}
+ case 'time':{let h,m,H,M;do{h=ri(8,11);m=ri(1,11)*5;H=ri(1,2);M=ri(1,11)*5;}while(m+M<60);const e=addTime(h,m,H,M);
+  Object.assign(k,{tray:'clock',clock:{h,m},lines:[t.timeAsk(h,m,H,M)],steps:[{type:'clock',q:t.timeQ,start:{h,m},ans:e}],data:{h,m,H,M,end:e}});break;}
+ case 'unit13':{let id,p,q;do{id=pick(['apple','tangerine']);p=id==='apple'?ri(80,99)*10:ri(20,50)*10;q=ri(3,9);}while(p%100===0||p*q>S.max);
+  Object.assign(k,{lines:[t.unitAsk(id,p,q)],steps:[{type:'pad',q:t.totalQ,ans:p*q,unit:'won',fill:{id,n:q},why:{[p+q]:t.whyMulNotAdd}}],data:{price:p,q,total:p*q,id}});break;}
+ case 'share':{let dv,q,n;do{dv=ri(2,9);q=ri(S.quot[0],S.quot[1]);n=dv*q;}while(n>99);
+  Object.assign(k,{tray:'box',boxN:n,lines:[t.shareAsk(n,dv)],steps:[{type:'pad',q:t.shareQ,ans:q,unit:'count',fill:{id:'tangerine',n:q},why:{[n-dv]:t.whyShare}}],data:{n,k:dv,ans:q}});break;}
+ case 'fracsum':{const den=ri(S.dens[0],S.dens[1]);let a,b;do{a=ri(1,den-2);b=ri(1,den-2);}while(a+b>=den);const s=a+b,F=(x,y)=>`${x}/${y}`,ans=F(s,den);
+  const o=[ans];for(const c of [F(s,2*den),F(den-s,den),F(s+1,den),F(s-1,den),F(a*b,den)])if(!o.includes(c)&&o.length<4&&!/^0\//.test(c)&&+c.split('/')[0]<=+c.split('/')[1])o.push(c);
+  Object.assign(k,{tray:'pie',pie:{nu:0,den,W:0,plain:true},lines:[t.fracSumAsk(den,a,b)],steps:[{type:'choice',q:t.fracSumQ,ans,opts:shuffle(o),fmt:'frac',why:{[F(s,2*den)]:t.whyDenAdd,[F(den-s,den)]:t.whyLeft}}],data:{den,a,b,sum:s,ans}});break;}
+ case 'change14':{const sc=ctx.scale||2,qs=QTY14[sc],ids=S.pool,cands=orders14(P,sc,ctx.sold);
+  const fresh=cands.filter(c=>!ctx.used.has(itemSig(c))),items=ctx.plan14&&ctx.plan14[ctx.n14]?ctx.plan14[ctx.n14].map(o=>({id:o.id,n:o.n})):cands.length?pick(fresh.length?fresh:cands).map(o=>({id:o.id,n:o.n})):[{id:ids.slice().sort((a,b)=>(ctx.sold[a]||0)-(ctx.sold[b]||0))[0],n:qs[0]}],tot=items.reduce((a,o)=>a+P[o.id]*o.n,0);
+  Object.assign(k,{items,tray:'note',note:items.map(o=>`${cnt(o.id,o.n)} × ${won(P[o.id])}`),steps:[{type:'pad',q:t.totalQ,ans:tot,unit:'won'},{type:'change',bill:S.bill,amount:S.bill-tot}],data:{lines:items.map(o=>[o.id,o.n,P[o.id]]),total:tot,bill:S.bill,change:S.bill-tot,scale:sc}});break;}
+ // bag prices follow the near-real table (LEVELS.md §6.2): a tangerine 200–500원, an apple 800–1,500원
+ case 'two15a':{let id,per,b,p,tot,bill;do{id=pick(['tangerine','apple']);const [lo,hi]=UNIT[id];per=id==='tangerine'?ri(3,6):ri(2,3);p=ri(Math.ceil(per*lo/100),Math.floor(per*hi/100))*100;b=ri(2,4);tot=b*p;bill=tot<5000?pick([5000,10000]):10000;}while(tot>=10000||p%1000===0);
+  Object.assign(k,{tray:'note',note:[t.noteBags(id,per,b),t.noteBagPrice(p),t.notePaid(bill)],lines:[t.bagBillAsk(id,per,b,p,bill)],steps:[{type:'pad',q:t.totalQ,ans:tot,unit:'won',why:{[tot*per]:t.whyPerBag,[p*per]:t.whyPerBag}},{type:'change',bill,amount:bill-tot}],data:{id,per,bags:b,price:p,total:tot,bill,change:bill-tot}});break;}
+ // the top of E2: a 2-digit multiplier (귤 11–25개 × 200–500원, 사과 11–12개 × 800–900원), then take it from the money
+ case 'two15b':{const tbl=[['tangerine',[200,300,400,500],[11,25]],['apple',[800,900],[11,12]]];let id,p,q,m;do{const e=pick(tbl);id=e[0];p=pick(e[1]);q=ri(e[2][0],e[2][1]);}while(p*q>=10000||q%10===0);m=p*q<5000?pick([5000,10000]):10000;
+  Object.assign(k,{lines:[t.leftMoneyAsk(m,p,id,q)],steps:[{type:'pad',q:t.leftMoneyQ,ans:m-p*q,unit:'won',why:{[p*q]:t.whyLeftMoney}}],data:{id,money:m,price:p,q,cost:p*q,left:m-p*q}});break;}
+ case 'time15':{let h,m,H,M,mins;do{h=ri(8,12);m=ri(1,11)*5;mins=0;if(Math.random()<.5){H=ri(1,3);M=ri(1,11)*5;}else{mins=ri(7,19)*10;H=Math.floor(mins/60);M=mins%60;}}while(mins?mins<70:m+M<60);const e=addTime(h,m,H,M);
+  Object.assign(k,{tray:'clock',clock:{h,m},lines:[t.deliveryAsk(h,m,H,M,mins)],steps:[{type:'clock',q:t.timeQ,start:{h,m},ans:e}],data:{h,m,H,M,mins,end:e}});break;}
+ /* E3 · d16–20 */
+ case 'frac16':{let den,kk,n;do{den=ri(S.dens[0],S.dens[1]);kk=ri(2,den-1);n=den*ri(Math.ceil(S.box[0]/den),Math.floor(S.box[1]/den));}while(gcd(kk,den)!==1);const part=n/den,ans=part*kk;
+  Object.assign(k,{tray:'box',boxN:n,lines:[t.fracAsk(n,kk,den)],steps:[{type:'pad',q:t.fracQ,ans,unit:'count',fill:{id:'tangerine',n:ans},why:{[part]:t.whyUnitPart(den,kk),[n-ans]:t.whyFracRest}}],data:{box:n,k:kk,den,ans}});break;}
+ case 'split':{let p,sh,T0;do{p=ri(S.people[0],S.people[1]);sh=ri(Math.ceil(300/p),Math.floor(990/p))*10;T0=sh*p;}while(T0%100!==0||T0<3000||T0>9900);
+  Object.assign(k,{tray:'note',note:[t.noteTotal(T0),t.notePeople(p)],lines:[t.splitAsk(T0,p)],steps:[{type:'pad',q:t.splitQ,ans:sh,unit:'won',why:{[T0]:t.whySplit}}],data:{total:T0,people:p,share:sh}});break;}
+ // percent basics (LEVELS.md §1.3 d16): 50% = 1/2, 25% = 1/4, 10% = 1/10 of a 4-digit price; one step, whole won (d18 adds 20%, the sale price and change)
+ case 'pct16':{const it=pick(OFF_ITEMS);let p,pct,off;do{pct=pick(S.pcts);p=ri(Math.ceil(it.r[0]/100),Math.floor(it.r[1]/100))*100;off=p*pct/100;}while(off%10!==0||p%1000===0);
+  Object.assign(k,{tray:'note',note:[`${it[LANG]} ${won(p)}`,t.pctTag(pct)],lines:[t.offAsk(it[LANG],p,pct)],steps:[{type:'pad',q:t.offQ,ans:off,unit:'won',why:{[p]:t.whyOffFull,[pct]:t.whyOffPct(pct),[p-off]:t.whyOffSale}}],data:{pct,price:p,off,item:it.id}});break;}
+ // decimals to hundredths, + or − in kg (LEVELS.md §1.3 d16). The pad has no decimal point, so 4 buttons; distractors are the usual slips
+ case 'dec16':{const [x,y]=shuffle(FR3.slice()),f=c=>String(c/100);let a,b,op,ans,cand;
+  if(Math.random()<.5){op='+';do{a=ri(105,295);b=ri(3,19)*10;}while(a%10===0||(a%100)+(b%100)<100||a+b>500);ans=a+b;cand=[[a+b/10,'whyDecAlign'],[ans-100,'whyDecCarry'],[ans+10,''],[ans-10,'']];}
+  else{op='−';do{a=ri(21,49)*10;b=ri(105,195);}while(b%10===0||a%100===0||a-b<50||(a%100)>=(b%100));ans=a-b;
+   const dg=v=>[Math.floor(v/100),Math.floor(v/10)%10,v%10],da=dg(a),db=dg(b),flip=da.reduce((s0,dv,i)=>s0*10+Math.abs(dv-db[i]),0);
+   cand=[[flip,'whyDecBorrow'],[ans+100,'whyDecBorrow'],[ans+10,''],[ans-10,'']];}
+  const opts=[f(ans)],why={};for(const [c,w] of cand)if(c>0&&opts.length<4&&!opts.includes(f(c))){opts.push(f(c));if(w)why[f(c)]=t[w];}
+  for(let j=2;opts.length<4;j++)for(const c of [ans+10*j,ans-10*j])if(c>0&&opts.length<4&&!opts.includes(f(c)))opts.push(f(c));
+  Object.assign(k,{tray:'note',note:op==='+'?[t.noteKg(x,f(a)),t.noteKg(y,f(b))]:[t.noteKg(x,f(a)),t.noteSold(f(b))],lines:[op==='+'?t.decAddAsk(x,f(a),y,f(b)):t.decSubAsk(x,f(a),f(b))],eq:`${f(a)} ${op} ${f(b)} = ?`,
+   steps:[{type:'choice',q:op==='+'?t.decAddQ:t.decSubQ,ans:f(ans),opts:shuffle(opts),fmt:'kg',why}],data:{op,a:f(a),b:f(b),ans:f(ans),x,y:op==='+'?y:null}});break;}
+ case 'weight':{let id,c,rate,pr;do{id=pick(['grape','tangerine','apple']);rate=P[id];c=pick([50,75,125,150,175,225,250]);pr=rate*c/100;}while(pr%100!==0||pr>=20000);const bill=pr<10000?10000:20000;
+  Object.assign(k,{tray:'scale',scale:{id,c,rate},lines:[t.weightAsk(id,kgStr(c),rate)],steps:[{type:'pad',q:t.priceQ,ans:pr,unit:'won',why:{[rate*Math.floor(c/100)]:t.whyKg}},{type:'change',bill,amount:bill-pr}],data:{id,kg:c/100,rate,price:pr,bill,change:bill-pr}});break;}
+ case 'fracprice':{let den,nu,Wp,pr;do{den=pick([2,3,4,5,6,8]);nu=ri(1,den-1);Wp=ri(16,24)*1000;pr=Wp/den*nu;}while(gcd(nu,den)!==1||!Number.isInteger(pr)||pr%100!==0||pr>=20000);const bill=pr<10000?10000:20000;
+  Object.assign(k,{tray:'pie',pie:{nu,den,W:Wp},lines:[t.fracPriceAsk(nu,den,Wp)],steps:[{type:'pad',q:t.priceQ,ans:pr,unit:'won',why:nu>1?{[Wp/den]:t.whyUnitFrac(den,nu)}:{}},{type:'change',bill,amount:bill-pr}],data:{num:nu,den,whole:Wp,price:pr,bill,change:bill-pr}});break;}
+ case 'percent':{let it,pct,p0,a;do{it=pick(PCT_ITEMS);pct=pick(S.pcts);const st=pct===25?200:100;p0=ri(Math.ceil(it.r[0]/st),Math.floor(it.r[1]/st))*st;a=p0*(100-pct)/100;}while(a%10!==0||a>=20000);const bill=a<10000?10000:20000;
+  Object.assign(k,{tray:'note',note:[`${it[LANG]} ${won(p0)}`,t.pctTag(pct)],lines:[t.pctAsk(it[LANG],p0,pct)],steps:[{type:'pad',q:t.pctQ,ans:a,unit:'won',why:{[p0-pct]:t.whyPctWon(pct),[p0*pct/100]:t.whyPctPart}},{type:'change',bill,amount:bill-a}],data:{pct,price:p0,sale:a,bill,change:bill-a}});break;}
+ case 'ratio':{let a,b,m,T0;do{a=ri(2,5);b=ri(1,5);m=ri(2,12);T0=(a+b)*m;}while(a===b||gcd(a,b)!==1||T0>60||T0<10);const [x,y]=pick([['apple','pear'],['tangerine','apple'],['pear','tangerine']]);
+  Object.assign(k,{tray:'note',note:[t.noteRatio(x,y,a,b),t.noteAll(T0)],lines:[t.ratioAsk(x,y,a,b,T0)],steps:[{type:'pad',q:t.ratioQ(x),ans:a*m,unit:'count',why:{[b*m]:t.whyRatioOther(y),[m]:t.whyRatioPart(a)}}],data:{a,b,total:T0,ans:a*m,x,y}});break;}
+ case 'juice':{let a,b,u;do{a=ri(1,5);b=ri(1,5);u=pick([50,100,150,200]);}while(a===b||gcd(a,b)!==1||a*u>1000||b*u>1000);const g=a*u,ans=b*u;
+  Object.assign(k,{tray:'note',note:[t.noteJuice(a,b),t.noteApple(g)],lines:[t.juiceAsk(a,b,g)],steps:[{type:'pad',q:t.juiceQ,ans,unit:'g',why:Object.assign({[g*b]:t.whyJuice},a>1?{[g/a]:t.whyRatioPart(b)}:{})}],data:{a,b,apple:g,ans}});break;}
+ case 'area':{let w,h;do{w=ri(2,6)*10;h=ri(2,6)*10;}while(w===h);const A=w*h,n=(w/10)*(h/10);
+  Object.assign(k,{tray:'rect',rect:{w,h},lines:[t.areaAsk(w,h)],steps:[{type:'pad',q:t.areaQ,ans:A,unit:'cm2',why:{[2*(w+h)]:t.whyPerim,[w+h]:t.whyPerim}},{type:'pad',q:t.layerQ,line:t.layerAsk,ans:n,unit:'count',why:{[A]:t.whyLayer,[w/10+h/10]:t.whyLayer}}],data:{w,h,area:A,perLayer:n}});break;}
+ case 'deal':{let a,b,ua,ub,pa,pb,df,cheap,opts;
+  for(;;){a=ri(2,5);b=ri(a+1,8);ua=ri(16,30)*50;ub=ua+pick([-150,-100,-50,50,100,150]);if(ub<800||ub>1500)continue;pa=a*ua;pb=b*ub;df=Math.abs(ua-ub);cheap=ua<ub?a:b;const dear=cheap===a?b:a,dt=Math.abs(pa-pb);
+   opts=[{pack:cheap,diff:df},{pack:dear,diff:df},{pack:cheap,diff:dt},{same:true}];if(dealTrue(opts,a,ua,b,ub)===1&&new Set(opts.map(o=>JSON.stringify(o))).size===4)break;}
+  const txt=o=>o.same?t.dealSame:t.dealOpt(o.pack,o.diff),c1=txt(opts[0]);
+  Object.assign(k,{tray:'note',note:[t.noteDeal(a,pa),t.noteDeal(b,pb)],lines:[t.dealAsk(a,pa,b,pb)],steps:[{type:'choice',q:t.dealQ,ans:c1,opts:shuffle(opts.map(txt)),fmt:'text',why:{[txt(opts[2])]:t.whyDealTotal,[txt(opts[1])]:t.whyDealWhich,[txt(opts[3])]:t.whyDealWhich}}],data:{a,pa,b,pb,unitA:ua,unitB:ub,cheaper:cheap,diff:df,opts}});break;}
+ case 'avg':{const n=ri(S.avgN[0],S.avgN[1]);let vals,m;do{m=ri(40,70)*100;const offs=[];for(let j=0;j<n-1;j++)offs.push(ri(-9,9)*100);offs.push(-offs.reduce((x,y)=>x+y,0));vals=shuffle(offs.map(o=>m+o));}while(new Set(vals).size<n||vals.some(v=>v<3000||v>9000||Math.abs(v-m)>1800));const sum=vals.reduce((x,y)=>x+y,0);
+  Object.assign(k,{tray:'note',note:vals.map((v,j)=>t.noteBasket(j+1,v)),lines:[t.avgAsk(n,vals)],steps:[{type:'pad',q:t.avgQ,ans:m,unit:'won',why:{[sum]:t.whyAvg}}],data:{vals,avg:m}});break;}
+ case 'two':{let p0,pct,n,D;do{pct=pick([10,20,25,50]);n=pick([2,3,4]);p0=ri(20,100)*100;D=p0*(100-pct)/100;}while(D%10||(D/n)%10);const sh=D/n;
+  Object.assign(k,{tray:'note',note:[t.noteTotal(p0),t.pctTag(pct),t.notePeople(n)],lines:[t.twoAsk(p0,pct,n)],steps:[{type:'pad',q:t.twoQ,ans:sh,unit:'won',why:Object.assign(Number.isInteger(p0/n)?{[p0/n]:t.whyNoDisc}:{},{[D]:t.whyNoSplit})}],data:{price:p0,pct,people:n,sale:D,share:sh}});break;}
+ }
+ k.items.forEach(o=>{if(!o.name)o.name=fn(o.id);});
+ k.say=k.lines.length?k.lines.join(' '):t.order(k.items);
+ return k;}
+// closing graph: d14 = this round's real sales by count; d15 = a clearly labelled "this week's book" (LEVELS.md §6.1, §6.2)
+function genGraph(d,ctx){const t=T();
+ if(d===15){const sc=pick(STAND[15].scales);let ks;do{ks=Array.from({length:5},()=>ri(2,10));}while(new Set(ks).size<4);const vals=ks.map(x=>x*sc),ans=vals.reduce((a,b)=>a+b,0),kt=ks.reduce((a,b)=>a+b,0);
+  return {kind:'week',ex:'week',closing:true,tray:'graph',graph:{labels:t.days,vals,scale:sc,title:t.trayWeek},items:[],prefill:[],lines:[t.weekAsk],say:t.weekAsk,
+   steps:[{type:'choice',q:t.weekQ,ans,opts:opts4(ans,[kt,ans+sc,ans-sc],{step:sc}),why:{[kt]:t.whyScale}}],data:{scale:sc,vals,ans,q:'total'}};}
+ const ids=FR3,sc=ctx.scale||2,vals=ids.map(id=>ctx.sold[id]||0),mx=Math.max(...vals),mn=Math.min(...vals),useTotal=mx===mn,ans=useTotal?vals.reduce((a,b)=>a+b,0):mx-mn,tick=ans/sc;
+ return {kind:'graph',ex:'graph',closing:true,tray:'graph',graph:{ids,vals,scale:sc,title:t.trayGraph},items:[],prefill:[],lines:[t.graphAsk],say:t.graphAsk,
+  steps:[{type:'choice',q:useTotal?t.graphTotalQ:t.graphQ,ans,opts:opts4(ans,[tick,mx,mx+mn,ans+sc],{step:sc}),why:{[tick]:t.whyScale}}],data:{scale:sc,vals,ans,sold:Object.assign({},ctx.sold),q:useTotal?'total':'diff'}};}
+function exFor(k){const f=T().ex[k.ex];return f?f(k):null;}
+const sigOf=k=>k.kind+'|'+k.items.map(o=>o.id+':'+o.n).sort().join(',')+'|'+JSON.stringify(k.data,(key,v)=>Array.isArray(v)?v.map(String).sort():v);
+function commit(tk,c){if(tk.kind==='change14'){tk.items.forEach(o=>c.sold[o.id]=(c.sold[o.id]||0)+o.n);c.used.add(itemSig(tk.items));c.n14++;}}
+// a whole round exactly as the game builds it (used by the checks)
+function simRound(dd,b){const PP=makePrices(dd),pl0=planFor(dd),c=newCtx(dd,PP),seen0=new Set(),out=[];
+ for(const kind of pl0){let tk,sig;for(let i=0;i<30;i++){tk=gen(dd,b,kind,PP,c);sig=sigOf(tk);if(!seen0.has(sig))break;}seen0.add(sig);commit(tk,c);out.push(tk);}
+ if(STAND[dd].graph)out.push(genGraph(dd,c));return {P:PP,plan:pl0,tasks:out,sold:c.sold,scale:c.scale};}
+
+/* ── audio / tts ─────────────────────────── */
+const AU={ctx:null,on:true,init(){if(this.ctx)return;try{this.ctx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}},resume(){if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume();},
+ tone(f,d,type,vol,slide,t0){if(!this.on||!this.ctx)return;const c=this.ctx,o=c.createOscillator(),g=c.createGain(),t=c.currentTime+(t0||0);o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(slide)o.frequency.exponentialRampToValueAtTime(slide,t+d);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol||0.2,t+0.01);g.gain.exponentialRampToValueAtTime(0.0001,t+d);o.connect(g).connect(c.destination);o.start(t);o.stop(t+d+0.02);},
+ tap(){this.tone(600,0.06,'square',0.05)},pop(){this.tone(400,0.08,'sine',0.2,800)},unpop(){this.tone(700,0.08,'sine',0.15,300)},
+ coin(){this.tone(1800,0.12,'triangle',0.15);this.tone(2400,0.18,'sine',0.12,0,0.05)},
+ ok(){[523,659,784].forEach((f,i)=>this.tone(f,0.2,'triangle',0.18,0,i*0.08))},wrong(){this.tone(300,0.18,'triangle',0.15,220)},
+ bell(){this.tone(1568,0.5,'sine',0.15);this.tone(2093,0.6,'sine',0.1,0,0.02)},
+ fanfare(){[523,659,784,1047,1319].forEach((f,i)=>this.tone(f,0.35,'triangle',0.2,0,i*0.11))},star(i){this.tone(880+i*220,0.3,'triangle',0.18)}};
+let voiceOn=true;
+// read aloud (LEVELS.md §4): fractions, %, units, ×, ÷ and ratios are rewritten so a voice never reads "1/4" as a date
+const EN_NUM=['zero','one','two','three','four','five','six','seven','eight','nine','ten'],EN_DEN={2:['half','halves'],3:['third','thirds'],4:['quarter','quarters'],5:['fifth','fifths'],6:['sixth','sixths'],7:['seventh','sevenths'],8:['eighth','eighths'],9:['ninth','ninths'],10:['tenth','tenths']};
+function sayText(t){let s=String(t).replace(/[🍎~]/g,'');
+ if(LANG==='ko')return s.replace(/(\d+)\s*\/\s*(\d+)/g,'$2분의 $1').replace(/(\d)\s*:\s*(\d)(?!\d)/g,'$1 대 $2').replace(/%/g,' 퍼센트').replace(/cm²/g,' 제곱센티미터').replace(/m²/g,' 제곱미터').replace(/\s*kg/g,' 킬로그램').replace(/(\d)\s*cm/g,'$1 센티미터').replace(/(\d)\s*g(?![a-zA-Z])/g,'$1 그램').replace(/몇\s*g(?![a-zA-Z])/g,'몇 그램').replace(/\s*×\s*/g,' 곱하기 ').replace(/\s*÷\s*/g,' 나누기 ').replace(/\s*−\s*/g,' 빼기 ').replace(/ {2,}/g,' ');
+ return s.replace(/(\d+)\s*\/\s*(\d+)/g,(m,a,b)=>{a=+a;b=+b;const w=EN_DEN[b];return w&&a<=10?`${EN_NUM[a]} ${a===1?w[0]:w[1]}`:`${a} over ${b}`;})
+  .replace(/₩([\d,]+)/g,'$1 won').replace(/(\d)\s*:\s*(\d)(?!\d)/g,'$1 to $2').replace(/%/g,' percent').replace(/cm²/g,' square centimeters').replace(/m²/g,' square meters')
+  .replace(/per kg\b/g,'per kilogram').replace(/\b1 kg\b/g,'1 kilogram').replace(/\s*kg\b/g,' kilograms').replace(/(\d)\s*cm\b/g,'$1 centimeters').replace(/(\d)\s*g\b/g,'$1 grams').replace(/\s*×\s*/g,' times ').replace(/\s*÷\s*/g,' divided by ').replace(/\s*−\s*/g,' minus ').replace(/ {2,}/g,' ');}
+// queue=true adds to what is already being read (a question after the order)
+function speak(t,queue){if(!voiceOn||!t||!('speechSynthesis' in window))return;try{if(!queue)speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(sayText(t));u.lang=LANG==='ko'?'ko-KR':'en-US';u.rate=LANG==='ko'?1:0.95;speechSynthesis.speak(u);}catch(e){}}
+
+/* ── stage / tween / particles ──────────── */
+const stage=$('stage'),cv=$('game'),ctx=cv.getContext('2d');let scale=1,dpr=Math.min(window.devicePixelRatio||1,2);
+function fit(){scale=Math.min(innerWidth/W,innerHeight/H);stage.style.transform=`scale(${scale})`;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
+addEventListener('resize',fit);fit();
+const toStage=e=>{const r=stage.getBoundingClientRect();return{x:(e.clientX-r.left)/scale,y:(e.clientY-r.top)/scale}};
+const EASE={linear:t=>t,outCubic:t=>1-Math.pow(1-t,3),outBack:t=>{const c=1.70158;return 1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2)},inOutQuad:t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2};
+const tweens=[];function tween(obj,to,dur,ease,onDone,delay){const from={};for(const k in to)from[k]=obj[k];tweens.push({obj,from,to,dur,ease:EASE[ease||'outCubic'],t:-(delay||0),onDone});}
+const particles=[];function burst(x,y,n,colors,opt){opt=opt||{};for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,sp=(opt.speed||280)*(0.4+Math.random()*0.8);particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-(opt.up||160),g:600,life:opt.life||0.7,t:0,r:(opt.r||6)*(0.6+Math.random()*0.8),color:colors[i%colors.length],rot:Math.random()*6,vr:(Math.random()-0.5)*10,kind:opt.kind||'star'});}}
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+function ink(c,w){c.strokeStyle=INK;c.lineWidth=w;c.lineJoin='round';c.lineCap='round';}
+function fillInk(c,fill,w){c.fillStyle=fill;c.fill();ink(c,w||3);c.stroke();}
+function ell(c,x,y,rx,ry,fill){c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fillStyle=fill;c.fill();}
+function text(c,t,x,y,size,color,align,stroke){c.font=`900 ${size}px ${FONT}`;c.textAlign=align||'center';c.textBaseline='middle';if(stroke){c.strokeStyle=stroke;c.lineWidth=size/6;c.lineJoin='round';c.strokeText(t,x,y);}c.fillStyle=color||INK;c.fillText(t,x,y);}
+function fitText(c,t,x,y,size,maxW,color,align){c.font=`900 ${size}px ${FONT}`;while(size>11&&c.measureText(t).width>maxW){size--;c.font=`900 ${size}px ${FONT}`;}text(c,t,x,y,size,color,align);}
+function wrap(c,str,maxW){const words=String(str).split(' '),out=[];let cur='';for(const w of words){const tt=cur?cur+' '+w:w;if(c.measureText(tt).width<=maxW){cur=tt;continue;}if(cur)out.push(cur);if(c.measureText(w).width<=maxW){cur=w;continue;}let piece='';for(const ch of w){if(c.measureText(piece+ch).width>maxW){out.push(piece);piece=ch;}else piece+=ch;}cur=piece;}if(cur)out.push(cur);return out;}
+
+/* ── fruit drawing (centered, ~60px) ─────── */
+const FRUIT_COLOR={apple:'#DB5F52',tangerine:'#F29B3B',pear:'#CFD35A',banana:'#F2C14E',grape:'#8A4FBE',melon:'#3F7D5B'};
+function drawFruit(c,id,s){c.save();c.scale(s/60,s/60);
+ if(id==='apple'){c.beginPath();c.moveTo(0,-14);c.bezierCurveTo(14,-34,36,-20,30,6);c.bezierCurveTo(26,22,12,32,0,26);c.bezierCurveTo(-12,32,-26,22,-30,6);c.bezierCurveTo(-36,-20,-14,-34,0,-14);c.closePath();fillInk(c,'#DB5F52',3);ell(c,-12,-6,7,10,'rgba(255,255,255,.35)');c.beginPath();c.moveTo(0,-16);c.lineTo(2,-30);ink(c,4);c.stroke();c.beginPath();c.moveTo(2,-26);c.bezierCurveTo(10,-38,22,-34,22,-26);c.bezierCurveTo(14,-20,6,-22,2,-26);c.closePath();fillInk(c,'#3F7D5B',2.5);}
+ else if(id==='tangerine'){c.beginPath();c.arc(0,4,28,0,Math.PI*2);fillInk(c,'#F29B3B',3);[[-10,-4],[8,-8],[12,12],[-12,14],[0,4]].forEach(p=>ell(c,p[0],p[1],2.2,2.2,'#D97E1F'));ell(c,-10,-6,6,8,'rgba(255,255,255,.3)');c.beginPath();c.moveTo(0,-24);c.bezierCurveTo(8,-34,20,-32,18,-24);c.bezierCurveTo(10,-20,4,-22,0,-24);c.closePath();fillInk(c,'#3F7D5B',2.5);}
+ else if(id==='pear'){c.beginPath();c.moveTo(0,-30);c.bezierCurveTo(12,-30,14,-12,20,0);c.bezierCurveTo(32,16,22,34,0,34);c.bezierCurveTo(-22,34,-32,16,-20,0);c.bezierCurveTo(-14,-12,-12,-30,0,-30);c.closePath();fillInk(c,'#CFD35A',3);ell(c,-8,8,7,10,'rgba(255,255,255,.35)');c.beginPath();c.moveTo(0,-30);c.lineTo(3,-40);ink(c,4);c.stroke();}
+ else if(id==='banana'){c.beginPath();c.moveTo(-30,-10);c.bezierCurveTo(-24,18,4,32,28,18);c.lineTo(32,10);c.bezierCurveTo(8,20,-14,8,-22,-14);c.closePath();fillInk(c,'#F2C14E',3);c.beginPath();c.moveTo(-30,-10);c.lineTo(-34,-18);ink(c,4);c.stroke();ell(c,30,14,3,3,'#8B5533');}
+ else if(id==='grape'){[[0,-22],[-12,-10],[12,-10],[-22,4],[0,4],[22,4],[-12,18],[12,18],[0,32]].forEach(p=>{c.beginPath();c.arc(p[0],p[1],11,0,Math.PI*2);fillInk(c,'#8A4FBE',2.5);ell(c,p[0]-3,p[1]-3,3,3,'rgba(255,255,255,.35)');});c.beginPath();c.moveTo(0,-32);c.lineTo(2,-42);ink(c,4);c.stroke();}
+ else{c.beginPath();c.moveTo(-34,-8);c.arc(0,-8,34,0,Math.PI,false);c.closePath();fillInk(c,'#3F7D5B',3);c.beginPath();c.moveTo(-26,-8);c.arc(0,-8,26,0,Math.PI,false);c.closePath();fillInk(c,'#DB5F52',2);c.beginPath();c.moveTo(-30,-8);c.lineTo(30,-8);c.strokeStyle='#F6EEDC';c.lineWidth=4;c.stroke();[[-10,4],[6,10],[0,18],[14,2]].forEach(p=>ell(c,p[0],p[1],2.4,3.4,INK));}
+ c.restore();}
+
+/* ── Haru / customers ────────────────────── */
+function blobSVG(f,B,D,L){const eyes={dot:`<circle cx="84" cy="92" r="6" fill="#fff"/><circle cx="116" cy="92" r="6" fill="#fff"/>`,happy:`<path d="M75 95 Q84 85 93 95" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M107 95 Q116 85 125 95" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`,wow:`<circle cx="84" cy="92" r="8" fill="#fff"/><circle cx="116" cy="92" r="8" fill="#fff"/>`,think:`<circle cx="84" cy="92" r="6" fill="#fff"/><path d="M107 92 H125" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`},mouth={smile:`<path d="M90 110 Q100 121 110 110" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`,open:`<ellipse cx="100" cy="114" rx="8" ry="9" fill="#fff"/>`,grin:`<path d="M85 108 Q100 128 115 108 Z" fill="#fff"/>`,o:`<circle cx="100" cy="114" r="6" fill="#fff"/>`},arms={down:`<ellipse cx="46" cy="126" rx="13" ry="10" fill="${B}"/><ellipse cx="154" cy="126" rx="13" ry="10" fill="${B}"/>`,wave:`<ellipse cx="46" cy="126" rx="13" ry="10" fill="${B}"/><ellipse cx="160" cy="90" rx="11" ry="14" fill="${B}" transform="rotate(30 160 90)"/>`,up:`<ellipse cx="44" cy="84" rx="11" ry="14" fill="${B}" transform="rotate(-30 44 84)"/><ellipse cx="156" cy="84" rx="11" ry="14" fill="${B}" transform="rotate(30 156 84)"/>`,chin:`<ellipse cx="46" cy="126" rx="13" ry="10" fill="${B}"/><ellipse cx="128" cy="118" rx="12" ry="9" fill="${B}"/>`},props={none:'',star:`<path d="M164 34 L168 46 L180 48 L170 56 L173 68 L164 61 L155 68 L158 56 L148 48 L160 46 Z" fill="#F2C14E"/>`,q:`<text x="148" y="60" font-family="Arial" font-size="32" font-weight="700" fill="#F2C14E">?</text>`,check:`<circle cx="160" cy="48" r="15" fill="#8FC08A"/><path d="M152 48 L158 54 L169 42" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`,apple:`<circle cx="160" cy="50" r="13" fill="#DB5F52" stroke="#1C2333" stroke-width="2"/><path d="M160 38 L162 30" stroke="#1C2333" stroke-width="3" stroke-linecap="round"/>`,coin:`<circle cx="160" cy="48" r="14" fill="#F2C14E" stroke="#1C2333" stroke-width="2"/><text x="160" y="54" text-anchor="middle" font-family="Arial" font-size="15" font-weight="700" fill="#1C2333">₩</text>`};
+ const F={hello:['dot','smile','wave','star'],talk:['dot','open','down','none'],think:['think','o','chin','q'],cheer:['happy','grin','up','check'],wow:['wow','open','up','star'],shop:['dot','smile','down','apple'],money:['happy','smile','down','coin']}[f]||['dot','smile','down','none'];
+ return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><ellipse cx="100" cy="182" rx="44" ry="7" fill="#1C2333" opacity=".1"/>${arms[F[2]]}<path d="M100 26 C138 26 156 62 156 100 C156 142 136 172 100 172 C64 172 44 142 44 100 C44 62 62 26 100 26 Z" fill="${B}"/><path d="M60 150 C75 175 125 175 140 150 C130 165 70 165 60 150 Z" fill="${D}"/><ellipse cx="84" cy="58" rx="20" ry="10" fill="${L}" transform="rotate(-25 84 58)"/>${eyes[F[0]]}${mouth[F[1]]}${props[F[3]]}</svg>`;}
+// say: true = read aloud now
+function haru(id,face,t,say){$(id).innerHTML=blobSVG(face,'#3E7BFF','#2B5BD6','#7FA6FF');const b=$(id).nextElementSibling;if(t!=null){b.textContent=t;b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');if(say)speak(t);}}
+// K reads everything aloud. E1–E3: questions are read aloud (how='q', queued after the order); Haru's tips are read on a tap.
+function haruSay(face,t,how){haru('haruP',face,t,false);if(how==='q')speak(t,true);else if(band==='K')speak(t);}
+const CUST_COLORS=[['#F2C14E','#D9A53A','#F8D97F'],['#8FC08A','#6FA56B','#B4D8B0'],['#E88F4D','#C9712F','#F2B48B'],['#B08AD6','#8A4FBE','#CBB0E6'],['#EA9A91','#DB5F52','#F4C0BA'],['#7FC8D8','#4FA3B8','#B3E0EA']];
+const custImgs={};
+function customerImage(i,face){const key=i+face;if(custImgs[key])return custImgs[key];const [B,D,L]=CUST_COLORS[i%CUST_COLORS.length];const img=new Image();img.src='data:image/svg+xml;utf8,'+encodeURIComponent(blobSVG(face,B,D,L));custImgs[key]=img;return img;}
+
+/* ── state + save (per band) ─────────────── */
+let scene='title',band=null,level=1,d=1,S=STAND[1],crates=[],P={},plan=[],ctxR=newCtx(1),task=null,stepIdx=0,cust=0,bag=[],flying=[],phase='idle',mistakes=0,entered=[],padVal='',stars=0,feel=null,custX=-220,custFace='talk',said={},thanksT=0,played=null,suggestBandUp=false,activeBag=0,given=0,graphDone=false,roundId=0,lastPost=null,seen=new Set(),parentOpen=false,clockH=12,clockM=0;
+const custObj={get x(){return custX},set x(v){custX=v}};
+let save={};try{save=JSON.parse(localStorage.getItem('sia-fruit-v1')||'{}')||{};}catch(e){}
+if(!save||typeof save!=='object')save={};
+const clampL=n=>Math.min(5,Math.max(1,parseInt(n,10)||1));
+if(!save.levels||typeof save.levels!=='object'){save.levels={};if(save.level)save.levels.K=clampL(save.level);} // old standalone save → levels.K
+delete save.level;
+if(!save.reached||typeof save.reached!=='object'){save.reached={};BANDS.forEach(b=>{if(save.levels[b])save.reached[b]=save.levels[b];});}
+if(!save.best||typeof save.best!=='object'){save.best={};for(let n=1;n<=5;n++)if(save['l'+n]){(save.best.K=save.best.K||{})[n]=save['l'+n];delete save['l'+n];}}
+if(!BANDS.includes(save.ageBand))delete save.ageBand;
+if(!save.ageBand&&BANDS.includes(save.band))save.ageBand=save.band; // a v1 standalone pick counts as the child's age
+band=URL_BAND||(BANDS.includes(save.band)?save.band:null);
+level=band?(EMBED?clampL(Q.get('level')||1):clampL(save.levels[band]||1)):1;
+if(band&&!EMBED)level=Math.min(level,Math.max(1,save.reached[band]||1));
+function persist(){try{localStorage.setItem('sia-fruit-v1',JSON.stringify(save));}catch(e){}}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));if(id)$(id).classList.add('on');}
+const dOf=(b,l)=>BASE[b]+l-1;
+const isOverride=()=>EMBED?URL_OVERRIDE:!!(band&&save.ageBand&&band!==save.ageBand);
+function badgeText(){const t=T();return `${t.band[band]} · ${t.lvlWord} ${level}${isOverride()?t.parentPick:''}`;}
+function hintFor(b,l){return T().hint[dOf(b,l)];}
+function reachedOf(b){return Math.max(1,save.reached[b]||1);}
+function refreshTitle(){const t=T(),ask=!EMBED&&!save.ageBand,showBands=!EMBED&&(ask||parentOpen);
+ $('bands').style.display=showBands?'flex':'none';
+ document.querySelectorAll('#bands button').forEach(b=>{b.textContent=t.band[b.dataset.b];b.classList.toggle('on',b.dataset.b===band&&!ask);});
+ $('btnParent').style.display=!EMBED&&!ask&&!parentOpen?'':'none';$('btnParent').querySelector('span').textContent=t.parentBtn;
+ $('btnSetAge').style.display=!EMBED&&parentOpen&&band&&band!==save.ageBand?'':'none';$('btnSetAge').textContent=t.setAge;
+ $('levels').style.display=EMBED||!band||ask?'none':'flex';
+ const top=band?Math.max(reachedOf(band),level):1;
+ document.querySelectorAll('#levels button').forEach((b,i)=>{b.style.display=i<top?'':'none';b.classList.toggle('on',i===level-1);});
+ $('lvlHint').textContent=ask||!band?t.pickBand:`${badgeText()} — ${hintFor(band,level)}`;
+ $('btnStart').disabled=!band||ask;}
+function setBand(b){band=b;save.band=b;level=Math.min(clampL(save.levels[b]||1),reachedOf(b));persist();refreshTitle();}
+function setLevel(n){level=clampL(n);if(band&&!EMBED){save.levels[band]=level;save.reached[band]=Math.max(reachedOf(band),level);persist();}refreshTitle();}
+document.querySelectorAll('#bands button').forEach(b=>b.addEventListener('click',()=>{AU.init();AU.resume();AU.tap();if(EMBED)return;const first=!save.ageBand;if(first)save.ageBand=b.dataset.b;setBand(b.dataset.b);if(first)haru('haruT','cheer',T().hello(CHILD),true);}));
+document.querySelectorAll('#levels button').forEach((b,i)=>b.addEventListener('click',()=>{AU.init();AU.resume();AU.tap();if(band&&!EMBED&&i+1<=reachedOf(band))setLevel(i+1);}));
+// standalone parent gate (LEVELS.md §4): press and hold 2 s, then the grown-up taps the year they were born
+// (4 digits, 1930 … this year − 18) before the band buttons appear. Nothing is stored; every opening asks again.
+let holdT=null,gateDigits='',gateBad=false;const pb=$('btnParent');
+pb.addEventListener('pointerdown',e=>{e.preventDefault();if(holdT||EMBED)return;AU.init();AU.resume();pb.classList.add('holding');holdT=setTimeout(()=>{holdT=null;pb.classList.remove('holding');openGate();},2000);});
+['pointerup','pointerleave','pointercancel'].forEach(ev=>pb.addEventListener(ev,()=>{if(holdT){clearTimeout(holdT);holdT=null;pb.classList.remove('holding');}}));
+function openGate(){if(EMBED)return;gateDigits='';gateBad=false;renderGate();$('gateWrap').classList.add('on');AU.tap();}
+function closeGate(){$('gateWrap').classList.remove('on');gateDigits='';gateBad=false;}
+function renderGate(){const t=T();$('gateTitle').textContent=t.gateTitle;$('btnGateClose').textContent=t.gateClose;$('gateAsk').textContent=(gateBad?t.gateWrong+' ':'')+t.gateAsk;
+ const y=$('gateYear');y.innerHTML='';for(let i=0;i<4;i++){const s=document.createElement('span');s.textContent=gateDigits[i]||'';y.appendChild(s);}}
+function gateKey(k){AU.tap();gateBad=false;if(k==='←')gateDigits=gateDigits.slice(0,-1);else if(gateDigits.length<4)gateDigits+=k;
+ if(gateDigits.length===4){const yr=+gateDigits,now=new Date().getFullYear();if(yr>=1930&&yr<=now-18){closeGate();parentOpen=true;AU.ok();haru('haruT','think',T().parentHint,false);refreshTitle();return;}gateBad=true;gateDigits='';AU.wrong();}
+ renderGate();}
+['1','2','3','4','5','6','7','8','9','0','←'].forEach(k=>{const b=document.createElement('button');b.textContent=k;b.dataset.k=k;b.addEventListener('click',()=>gateKey(k));$('gatePad').appendChild(b);});
+$('btnGateClose').addEventListener('click',()=>{AU.tap();closeGate();});
+$('btnSetAge').addEventListener('click',()=>{AU.tap();if(parentOpen&&band){save.ageBand=band;persist();refreshTitle();}});
+function applyLang(){const t=T();document.documentElement.lang=LANG;$('logo').firstChild.textContent=t.title;$('logo').querySelector('small').textContent=t.sub;$('btnStart').textContent=t.start;$('lvlLabel').textContent=t.lvl;$('doneTitle').textContent=t.done;$('btnAgain').textContent=t.again;$('btnTitle').textContent=t.toTitle;$('feelQ').textContent=t.feel;document.querySelectorAll('#feel .faces button').forEach(b=>b.querySelector('span').textContent=t[b.dataset.f]);$('btnLang').textContent=LANG==='ko'?'EN':'한글';$('clHl').textContent=t.hourLbl;$('clMl').textContent=t.minLbl;$('clOk').textContent=t.okKey;buildPad();renderGate();refreshTitle();}
+function titleHello(){const t=T();return t.hello(CHILD)+(!EMBED&&!save.ageBand?' '+t.ageQ:'');}
+function gotoTitle(){roundId++;scene='title';task=null;parentOpen=false;closeGate();show('s-title');haru('haruT','hello',titleHello(),true);refreshTitle();}
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1000);}
+
+/* ── layout ──────────────────────────────── */
+const CRATE_Y=150,CRATE_H=150,CRATE_L=330,CRATE_R=1010;
+const crateW=()=>Math.min(118,Math.floor((CRATE_R-CRATE_L-8*(crates.length-1))/crates.length));
+function crateXY(i){const n=crates.length,w=crateW(),tot=n*w+(n-1)*8;return{x:CRATE_L+(CRATE_R-CRATE_L-tot)/2+w/2+i*(w+8),y:CRATE_Y+CRATE_H/2};}
+const cratesFor=dd=>STAND[dd].tens?STAND[dd].pool.flatMap(id=>[{id,ten:true},{id,ten:false}]):STAND[dd].pool.map(id=>({id,ten:false}));
+const BAG={x:340,y:380,w:290,h:220},GRAPH={x:40,y:300,w:590,h:300},TENS={x:282,y:316,w:352,h:300};
+const trayRect=()=>!task?BAG:task.tray==='graph'?GRAPH:task.tray==='tens'||task.tray==='tens1'?TENS:BAG;
+const REG={x:650,y:380,w:330,h:250};
+const CAP={rows5:15,rows6:18,frame:20,frame2:40,bags:30,box:0,note:18,scale:0,pie:0,graph:0,tens:0,tens1:0,clock:0,rect:0};
+const sizeFor=(m,ten)=>ten?22:m==='tens'||m==='tens1'?20:m==='frame'||m==='frame2'||m==='bags'?22:37;
+function frameXY(j,f,two){const x0=BAG.x+12,y0=BAG.y+(two?62+f*80:86),r=Math.floor(j/10),c=j%10;return{x:x0+c*26+(c>=5?6:0)+13,y:y0+r*28+14};}
+function bagRect(k,nb){const two=nb>=4,perRow=two?Math.ceil(nb/2):nb,row=two&&k>=perRow?1:0,idx=row?k-perRow:k,cnt=row?nb-perRow:perRow,w=84,h=two?74:96,gap=10,tot=cnt*w+(cnt-1)*gap;return{x:BAG.x+(BAG.w-tot)/2+idx*(w+gap),y:BAG.y+(two?56+row*82:76),w,h};}
+// E1 crates of 10 (rods) and loose fruit: two rows (one per kind) or one row with more room for opened crates
+function slotXY(m,j,g,ten){const st=task&&task.steps[stepIdx],R=TENS;
+ if(m==='tens'){const y0=R.y+62+g*116;return ten?{x:R.x+26+j*28,y:y0+50}:{x:R.x+264+(j%4)*24,y:y0+14+Math.floor(j/4)*30};}
+ if(m==='tens1')return ten?{x:R.x+28+j*26,y:R.y+150}:{x:R.x+236+(j%4)*26,y:R.y+80+Math.floor(j/4)*30};
+ if(m==='rows5')return{x:BAG.x+45+(j%5)*50,y:BAG.y+78+Math.floor(j/5)*48};
+ if(m==='frame')return frameXY(j,0,false);
+ if(m==='frame2')return frameXY(j,g,true);
+ if(m==='bags'){const nb=(task.steps.find(s=>s.type==='bags')||{bags:1}).bags,r=bagRect(g,nb);return{x:r.x+18+(j%3)*24,y:r.y+r.h-16-Math.floor(j/3)*24};}
+ return{x:BAG.x+40+(j%6)*42,y:BAG.y+70+Math.floor(j/6)*48};}
+const slotKey=b=>b.g+(b.ten?'t':'l');
+const bagXY=i=>{const b=bag[i];if(!b)return slotXY(task?task.tray:'rows6',i,0,false);return{x:b.x,y:b.y};};
+function relayout(){const m=task?task.tray:'rows6',cnt={};bag.forEach(b=>{const key=slotKey(b),j=cnt[key]=(cnt[key]||0);cnt[key]++;const q=slotXY(m,j,b.g,b.ten);tween(b,{x:q.x,y:q.y},0.25);});}
+function coinSlots(){const n=S.coins.length,sl=[];
+ if(n<=4){const step=Math.min(80,(REG.w-80)/Math.max(1,n-1)),w=step*(n-1),x0=REG.x+REG.w/2-w/2;for(let i=0;i<n;i++)sl.push({x:x0+i*step,y:REG.y+142});sl.push({x:REG.x+REG.w/2,y:REG.y+208,clr:true});}
+ else{const cols=Math.ceil((n+1)/2),step=(REG.w-40)/cols;for(let i=0;i<=n;i++){const r=Math.floor(i/cols),c=i%cols;sl.push({x:REG.x+20+step/2+c*step,y:REG.y+136+r*68,clr:i===n});}}
+ return sl;}
+const coinXY=i=>coinSlots()[i];
+const clrXY=()=>coinSlots()[S.coins.length];
+const hitItem=(b,p)=>b.ten?Math.abs(p.x-b.x)<13&&Math.abs(p.y-b.y)<46:Math.hypot(p.x-b.x,p.y-b.y)<Math.max(13,b.size*0.45);
+
+/* ── round ───────────────────────────────── */
+function startPlay(){if(!band)return;scene='play';const rid=++roundId;d=dOf(band,level);S=STAND[d];crates=cratesFor(d);P=makePrices(d);plan=planFor(d);ctxR=newCtx(d,P);
+ played={band,level,d,next:level,sug:false,round:Date.now()};
+ if(!EMBED){save.band=band;save.levels[band]=level;save.reached[band]=Math.max(reachedOf(band),level);persist();}
+ cust=0;mistakes=0;feel=null;said={};seen=new Set();particles.length=0;flying=[];bag=[];task=null;graphDone=false;phase='idle';suggestBandUp=false;custX=-220;
+ $('lvlBadge').textContent=badgeText();show('s-play');hideChoices();hidePad();hideClock();act(null);haruSay('shop',T().open);updProg();
+ setTimeout(()=>{if(rid===roundId&&scene==='play')nextCustomer();},900);}
+function updProg(){$('progText').textContent=task&&task.closing?T().closing:`${T().cust} ${Math.min(cust+1,S.customers)}/${S.customers}`;$('progHearts').textContent='❤️'.repeat(Math.max(0,3-mistakes))+'🤍'.repeat(Math.min(3,mistakes));}
+function act(label){const b=$('btnAct');if(label){b.style.display='';b.textContent=label;b.disabled=false;}else b.style.display='none';}
+function nextCustomer(){if(scene!=='play')return;
+ if(cust>=S.customers){if(S.graph&&!graphDone){graphDone=true;return beginTask(genGraph(d,ctxR));}return finish();}
+ let tk,sig;for(let i=0;i<30;i++){tk=gen(d,band,plan[cust],P,ctxR);sig=sigOf(tk);if(!seen.has(sig))break;}seen.add(sig);commit(tk,ctxR);beginTask(tk);}
+function beginTask(tk){task=tk;stepIdx=0;phase='arrive';entered=[];padVal='';given=0;activeBag=0;hideChoices();hidePad();hideClock();act(null);flying=[];
+ bag=(tk.prefill||[]).map(p=>({id:p.id,g:p.g||0,ten:!!p.ten,x:0,y:0,size:0}));const cnt={};bag.forEach((b,i)=>{const key=slotKey(b),j=cnt[key]=(cnt[key]||0);cnt[key]++;const q=slotXY(tk.tray,j,b.g,b.ten);b.x=q.x;b.y=q.y;tween(b,{size:sizeFor(tk.tray,b.ten)},0.3,'outBack',null,i*0.015);});
+ if(tk.closing)custX=-300;else{custFace='talk';custX=-220;tween(custObj,{x:150},0.7,'outBack');}
+ updProg();
+ const first=!said[tk.ex];said[tk.ex]=true;const exText=exFor(tk);
+ if(first&&exText)haruSay('shop',exText);
+ const rid=roundId;
+ setTimeout(()=>{if(rid!==roundId||task!==tk)return;if(!tk.closing)AU.bell();speak(tk.say,band==='K'&&first&&!!exText);beginStep(first&&!!exText);},500);}
+function beginStep(keepHaru){const st=task.steps[stepIdx],t=T();entered=[];padVal='';hideChoices();hidePad();hideClock();
+ if(st.line&&!st.shown){st.shown=true;task.lines.push(st.line);speak(st.line,true);}
+ const say=(face,line,q)=>{if(!keepHaru)haruSay(face,line,q?'q':undefined);else if(q&&band!=='K'&&!st.line)speak(line,true);};
+ switch(st.type){
+  case 'pack':phase='pack';act(t.pack);break;
+  case 'bags':phase='pack';activeBag=0;act(t.pack);say('shop',st.oneTap?t.bagsP1:t.bagsP(st.id,st.per));break;
+  case 'give':phase='give';given=0;act(null);say('think',st.line0||(task.tray==='tens1'?t.giveTen(st.id,st.n):t.giveP(st.id,st.n)));break;
+  case 'choice':phase='choice';act(null);say('think',st.q,true);showChoices(st);break;
+  case 'pay':phase='pay';act(t.payBtn);say('money',t.howMuch);break;
+  case 'change':phase='change';act(t.give);say('money',t.paid(st.bill));break;
+  case 'pad':phase='pad';act(null);say('think',st.q,true);showPad(st);break;
+  case 'clock':phase='clock';act(null);say('think',st.q,true);showClock(st);break;}}
+function nextStep(){stepIdx++;if(stepIdx<task.steps.length)beginStep(false);else done();}
+function counts(){const c={};for(const b of bag)c[b.id]=(c[b.id]||0)+(b.ten?10:1);return c;}
+function pushItem(o,i){const c=crateXY(i),m=task.tray,item=Object.assign({x:c.x,y:c.y-10,size:44},o);bag.push(item);const j=bag.filter(b=>slotKey(b)===slotKey(item)).length-1,q=slotXY(m,j,item.g,item.ten);
+ tween(item,{x:q.x,y:q.y,size:sizeFor(m,item.ten)},0.45,'outBack');return item;}
+function addFruit(i){const st=task.steps[stepIdx],cr=crates[i],id=cr.id,m=task.tray;let g=0;
+ if(m==='tens'){g=task.rows.indexOf(id);if(g<0){haruSay('think',T().onlyOrder(task.rows));return;}
+  const tensN=bag.filter(b=>b.g===g&&b.ten).length,loose=bag.filter(b=>b.g===g&&!b.ten).length;
+  if(cr.ten){if(tensN>=8)return;pushItem({id,g,ten:true},i);}
+  else{if(loose>=9&&tensN>=8)return;pushItem({id,g,ten:false},i);
+   if(loose+1>=10){const ls=bag.filter(b=>b.g===g&&!b.ten).slice(0,10),x0=ls[0].x,y0=ls[0].y;ls.forEach(b=>bag.splice(bag.indexOf(b),1));bag.push({id,g,ten:true,x:x0,y:y0,size:22});relayout();AU.bell();if(!said.regroup){said.regroup=true;haruSay('wow',T().regrouped);}}}
+  AU.pop();const c=crateXY(i);burst(c.x,c.y-10,6,['#fff','#F2C14E'],{r:4,speed:160,up:80,life:0.4});return;}
+ if(st.type==='bags'&&st.oneTap){let gg=-1;if(!bag.some(b=>b.g===activeBag))gg=activeBag;else for(let s=0;s<st.bags;s++)if(!bag.some(b=>b.g===s)){gg=s;break;}
+  if(gg<0)return;const c=crateXY(i);for(let j=0;j<st.per;j++){const it={id,g:gg,x:c.x,y:c.y-10,size:44};bag.push(it);const q=slotXY('bags',j,gg);tween(it,{x:q.x,y:q.y,size:22},0.4,'outBack',null,j*0.04);}
+  AU.pop();burst(c.x,c.y-10,8,['#fff','#F2C14E'],{r:4,speed:160,up:80,life:0.4});for(let s=1;s<=st.bags;s++){const k2=(gg+s)%st.bags;if(!bag.some(b=>b.g===k2)){activeBag=k2;break;}}return;}
+ if(st.type==='bags'){if(bag.length>=CAP.bags||bag.filter(b=>b.g===activeBag).length>=6)return;g=activeBag;}else if(bag.length>=CAP[m])return;
+ const c=crateXY(i),item={id,g,x:c.x,y:c.y-10,size:44};bag.push(item);const j=bag.filter(b=>b.g===g).length-1,q=slotXY(m,j,g);
+ tween(item,{x:q.x,y:q.y,size:sizeFor(m)},0.45,'outBack');AU.pop();burst(c.x,c.y-10,6,['#fff','#F2C14E'],{r:4,speed:160,up:80,life:0.4});
+ if(st.type==='bags'&&j+1>=st.per){for(let s=1;s<st.bags;s++){const k=(activeBag+s)%st.bags;if(bag.filter(b=>b.g===k).length<st.per){activeBag=k;break;}}}}
+function removeFruit(k){const st=task.steps[stepIdx],item=bag[k];
+ if(st&&st.type==='bags'&&st.oneTap){bag=bag.filter(b=>b.g!==item.g);activeBag=item.g;}else bag.splice(k,1);
+ AU.unpop();relayout();burst(item.x,item.y,4,['#CBD2DE'],{r:3,speed:120,up:60,life:0.3});}
+function openTen(k){const it=bag[k];if(bag.filter(b=>!b.ten).length+10>24)return;bag.splice(k,1);for(let j=0;j<10;j++)bag.push({id:it.id,g:it.g,ten:false,x:it.x,y:it.y-40+j*8,size:20});relayout();AU.pop();burst(it.x,it.y,8,['#fff','#F2C14E'],{r:4,speed:160,up:60,life:0.4});}
+function giveFruit(k){const st=task.steps[stepIdx];if(given>=st.n)return;const it=bag.splice(k,1)[0];flying.push(it);tween(it,{x:custX+30,y:420,size:12},0.45,'inOutQuad',()=>{const i=flying.indexOf(it);if(i>=0)flying.splice(i,1);});relayout();AU.pop();given++;
+ if(given>=st.n){phase='wait';if(st.check!=null)haruSay('cheer',T().leftSee(st.id,st.check));const rid=roundId;setTimeout(()=>{if(rid===roundId)nextStep();},st.check!=null?1300:650);}}
+function checkPack(){const st=task.steps[stepIdx];
+ if(st.type==='bags'){for(let k=0;k<st.bags;k++){const items=bag.filter(b=>b.g===k);if(items.some(b=>b.id!==st.id))return miss(T().only(fname(st.id)));if(items.length!==st.per){activeBag=k;return miss(T().bagWrong(st.per));}}}
+ else{const c=counts();for(const id in st.want){const have=c[id]||0,n=st.want[id];if(have<n)return miss(T().more(fname(id)));if(have>n)return miss(T().less(fname(id)));}for(const id in c)if(!(id in st.want))return miss(T().less(fname(id)));}
+ AU.ok();const R=trayRect();burst(R.x+R.w/2,R.y+60,16,['#F2C14E','#fff','#8FC08A'],{});
+ if(stepIdx===task.steps.length-1)haruSay('cheer',T().packOk);
+ nextStep();}
+function miss(msg){mistakes++;updProg();AU.wrong();haruSay('think',msg);}
+function hideChoices(){const b=$('choices');b.className='';b.innerHTML='';}
+function showChoices(st){const box=$('choices');box.innerHTML='';box.className='on'+(st.fmt==='text'?' wide':st.unit==='won'||st.fmt==='kg'?' won':'');
+ st.opts.forEach(v=>{const b=document.createElement('button');b.textContent=st.fmt==='text'||st.fmt==='frac'?v:st.fmt==='kg'?v+' kg':st.unit==='won'?won(v):String(v);b.dataset.v=v;
+  b.addEventListener('click',()=>{if(b.disabled||phase!=='choice')return;AU.tap();
+   if(v===st.ans){b.classList.add('ok');box.querySelectorAll('button').forEach(x=>x.disabled=true);AU.ok();phase='wait';haruSay('cheer',T().countOk);const rid=roundId;setTimeout(()=>{if(rid!==roundId)return;hideChoices();nextStep();},700);}
+   else{b.classList.add('no');b.disabled=true;miss((st.why&&st.why[v])||(band==='K'?T().countNo:T().tryAgain));}});box.appendChild(b);});}
+/* number pad (E2, E3): 0–9, ⌫, OK */
+function buildPad(){const k=$('pad').querySelector('.keys');k.innerHTML='';['1','2','3','4','5','6','7','8','9','⌫','0','OK'].forEach(v=>{const b=document.createElement('button');b.textContent=v==='OK'?T().okKey:v;b.dataset.k=v;if(v==='OK')b.className='okk';if(v==='⌫')b.className='bs';b.addEventListener('click',()=>padKey(v));k.appendChild(b);});}
+function showPad(){padVal='';$('pad').classList.add('on');updPad();}
+function hidePad(){$('pad').classList.remove('on');}
+function updPad(){const st=task&&task.steps[stepIdx],e=$('padDisp'),u=st&&st.unit;e.classList.toggle('empty',padVal==='');const v=padVal===''?0:Number(padVal);
+ e.textContent=u==='won'?won(v):u==='g'?num(v)+' g':u==='cm2'?num(v)+' cm²':num(v)+(LANG==='ko'?'개':'');}
+function padKey(v){if(phase!=='pad')return;AU.tap();if(v==='⌫')padVal=padVal.slice(0,-1);else if(v==='OK')return submitPad();else if(padVal.length<6)padVal=(padVal==='0'?'':padVal)+v;updPad();}
+function submitPad(){if(phase!=='pad'||padVal==='')return;const st=task.steps[stepIdx],v=Number(padVal);
+ if(v===st.ans){AU.ok();phase='wait';haruSay('cheer',T().countOk);if(st.fill)autofill(st.fill);const rid=roundId;setTimeout(()=>{if(rid!==roundId)return;hidePad();nextStep();},800);}
+ else{padVal='';updPad();miss((st.why&&st.why[v])||T().padNo);}}
+function autofill(f){task.tray='rows6';bag=[];const i=crates.findIndex(c=>c.id===f.id&&!c.ten),c=i>=0?crateXY(i):{x:660,y:225};for(let j=0;j<Math.min(f.n,CAP.rows6);j++){const it={id:f.id,g:0,x:c.x,y:c.y-10,size:44},q=slotXY('rows6',j,0);bag.push(it);tween(it,{x:q.x,y:q.y,size:37},0.4,'outBack',null,j*0.05);}}
+/* clock (elapsed time, d12 and d15): hour and minute dials */
+function showClock(st){clockH=st.start.h;clockM=st.start.m;$('clockIn').classList.add('on');updClock();}
+function hideClock(){$('clockIn').classList.remove('on');}
+function updClock(){$('clH').textContent=clockH;$('clM').textContent=pad2(clockM);}
+function clockKey(c){if(phase!=='clock')return;AU.tap();if(c==='h+')clockH=clockH%12+1;else if(c==='h-')clockH=(clockH+10)%12+1;else if(c==='m+')clockM=(clockM+5)%60;else if(c==='m-')clockM=(clockM+55)%60;updClock();}
+function submitClock(){if(phase!=='clock')return;const st=task.steps[stepIdx],a=st.ans;
+ if(clockH===a.h&&clockM===a.m){AU.ok();phase='wait';haruSay('cheer',T().countOk);const rid=roundId;setTimeout(()=>{if(rid!==roundId)return;hideClock();nextStep();},800);}
+ else miss(clockM===a.m&&clockH===(a.h+10)%12+1?T().whyHour:T().whyTime);}
+document.querySelectorAll('#clockIn [data-c]').forEach(b=>b.addEventListener('click',()=>clockKey(b.dataset.c)));
+$('clOk').addEventListener('click',submitClock);
+function addCoin(v){if(phase!=='pay'&&phase!=='change')return;entered.push(v);AU.coin();}
+function sum(){return entered.reduce((a,b)=>a+b,0)}
+function checkPay(){const st=task.steps[stepIdx],s=sum(),need=st.amount,pay=st.type==='pay';
+ if(s<need){miss(pay?T().payLow:T().changeLow);return;}if(s>need){miss(pay?T().payHigh:T().changeHigh);return;}
+ AU.ok();burst(REG.x+REG.w/2,REG.y+60,16,['#F2C14E','#fff'],{});
+ if(stepIdx===task.steps.length-1)haruSay('cheer',pay?T().payOk:T().changeOk);
+ nextStep();}
+function done(){phase='thanks';act(null);hideChoices();hidePad();hideClock();custFace='cheer';const rid=roundId;
+ if(task.closing){setTimeout(()=>{if(rid===roundId)finish();},1200);return;}
+ const th=pick(T().thanks);setTimeout(()=>{if(rid===roundId)speak(th,true);},400);thanksT=performance.now();
+ setTimeout(()=>{if(rid!==roundId)return;tween(custObj,{x:-260},0.5,'inOutQuad',()=>{if(rid!==roundId)return;cust++;nextCustomer();});},1500);}
+$('btnAct').addEventListener('click',()=>{AU.init();AU.resume();AU.tap();if(phase==='pack')checkPack();else if(phase==='pay'||phase==='change')checkPay();});
+// stars: everyone served · ≤ 2 mistakes · no mistakes. Every wrong tap or number is a mistake (LEVELS.md §3.1: a good result must be honest)
+function finish(){scene='done';phase='idle';task=null;show('s-done');stars=mistakes===0?3:mistakes<=2?2:1;
+ const B=save.best[band]=save.best[band]||{},prev=B[level]||{};B[level]={stars:Math.max(prev.stars||0,stars),plays:(prev.plays||0)+1};persist();
+ $('feelMsg').textContent='';document.querySelectorAll('#feel .faces button').forEach(b=>b.classList.remove('on'));
+ const is=$('bigStars').querySelectorAll('i');is.forEach((el,i)=>{el.className='';setTimeout(()=>{if(i<stars){el.className='on';AU.star(i);}else el.className='off';},300+i*350);});
+ $('doneMsg').innerHTML='';$('doneMsg').append(T().doneMsg(stars));const tip=document.createElement('small');tip.textContent=T().starTip;$('doneMsg').appendChild(tip);AU.fanfare();speak(T().doneMsg(stars));
+ played.next=played.level;played.sug=false;suggestBandUp=false;post();}
+function post(){const m={type:'mysia-game',game:'fruit-stand',band:played.band,level:played.level,d:played.d,stars,feel,nextLevel:played.next,suggestBandUp:!!played.sug,lang:LANG,mistakes};lastPost=m;try{parent.postMessage(m,'*');}catch(e){}}
+// "어땠어?" (LEVELS.md §3.1): ±1 inside the band, never a skip and never a band change; L5 + easy + ≥2★ → stay 5 and suggest the next band.
+// Embedded: the message is advisory; the app decides, and "다시 하기" keeps the URL level.
+function setFeel(f){if(scene!=='done'||!played)return;feel=f;document.querySelectorAll('#feel .faces button').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+ const L0=played.level;let next=L0,sug=false,msg=null;
+ if(f==='easy'&&stars>=2){if(L0<5)next=L0+1;else{sug=played.band!=='E3';msg=sug?T().bandUp:T().topDone;}}
+ else if(f==='hard')next=Math.max(1,L0-1);
+ // embedded: the replay keeps the URL level, so the line names no level (LEVELS.md §4); standalone names the level it will play
+ if(!msg)msg=EMBED?(f==='hard'?T().embedHard:next>L0?T().embedEasy:T().nextSame):next>L0?T().nextUp(next):next<L0?T().nextDown(next):T().nextSame;
+ played.next=next;played.sug=sug;suggestBandUp=sug;
+ if(!EMBED){if(sug)save.suggestBandUp={from:played.band,to:nextBand(played.band),at:Date.now(),round:played.round};else if(save.suggestBandUp&&save.suggestBandUp.round===played.round)delete save.suggestBandUp;
+  band=played.band;setLevel(next);}
+ $('feelMsg').textContent=msg;speak(msg);post();}
+document.querySelectorAll('#feel .faces button').forEach(b=>b.addEventListener('click',()=>{AU.tap();setFeel(b.dataset.f);}));
+$('btnAgain').addEventListener('click',()=>{AU.tap();startPlay();});
+$('btnTitle').addEventListener('click',()=>{AU.tap();gotoTitle();});
+$('btnStart').addEventListener('click',()=>{if($('btnStart').disabled)return;AU.init();AU.resume();AU.tap();startPlay();});
+$('btnClose').addEventListener('click',()=>{AU.tap();gotoTitle();});
+$('btnSound').addEventListener('click',()=>{AU.init();AU.on=!AU.on;voiceOn=AU.on;$('btnSound').textContent=AU.on?'🔊':'🔇';if(!AU.on&&'speechSynthesis' in window)speechSynthesis.cancel();});
+$('btnLang').addEventListener('click',()=>{LANG=LANG==='ko'?'en':'ko';applyLang();haru('haruT','hello',titleHello(),true);});
+document.querySelectorAll('.haru').forEach(h=>h.addEventListener('click',()=>{const b=h.querySelector('.bubble');if(b&&b.textContent)speak(b.textContent);}));
+
+/* ── input ───────────────────────────────── */
+stage.addEventListener('pointerdown',e=>{if(e.target.closest('button,.card,#pad,#clockIn,.haru'))return;AU.init();AU.resume();if(scene!=='play'||!task)return;const p=toStage(e);
+ if(p.x<330&&p.y>96&&p.y<300){speak(task.say);return;} // the customer's bubble: hear the order again
+ if(phase==='pack'){
+  for(let i=0;i<crates.length;i++){const c=crateXY(i);if(Math.abs(p.x-c.x)<crateW()/2&&Math.abs(p.y-c.y)<CRATE_H/2){addFruit(i);return;}}
+  for(let k=bag.length-1;k>=0;k--){const b=bag[k];if(hitItem(b,p)){removeFruit(k);return;}}
+  if(task.tray==='bags'){const st=task.steps[stepIdx];for(let k=0;k<st.bags;k++){const r=bagRect(k,st.bags);if(p.x>r.x&&p.x<r.x+r.w&&p.y>r.y&&p.y<r.y+r.h){if(st.oneTap&&bag.some(b=>b.g===k)){bag=bag.filter(b=>b.g!==k);AU.unpop();}activeBag=k;AU.tap();return;}}}}
+ if(phase==='give'){for(let k=bag.length-1;k>=0;k--){const b=bag[k];if(b.ten?hitItem(b,p):Math.hypot(p.x-b.x,p.y-b.y)<14){if(b.ten)openTen(k);else giveFruit(k);return;}}}
+ if(phase==='pay'||phase==='change'){const sl=coinSlots();for(let i=0;i<S.coins.length;i++){const c=sl[i];if(Math.abs(p.x-c.x)<31&&Math.abs(p.y-c.y)<28){addCoin(S.coins[i]);return;}}
+  const c=sl[S.coins.length];if(Math.abs(p.x-c.x)<34&&Math.abs(p.y-c.y)<21){entered=[];AU.unpop();return;}}
+});
+
+/* ── render ──────────────────────────────── */
+function drawBg(){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#BDE7FF');g.addColorStop(0.5,'#EAF6FF');g.addColorStop(0.51,'#E9C07C');g.addColorStop(1,'#D9A85A');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ ctx.fillStyle='#DB5F52';ctx.fillRect(280,0,744,70);for(let x=280;x<1024;x+=80){ctx.fillStyle='#fff';ctx.fillRect(x+40,0,40,70);}
+ ctx.beginPath();for(let x=280;x<1024;x+=40){ctx.moveTo(x,70);ctx.arc(x+20,70,20,Math.PI,0,true);}ctx.fillStyle='#DB5F52';ctx.fill();for(let x=320;x<1024;x+=80){ctx.beginPath();ctx.arc(x+20,70,20,Math.PI,0,true);ctx.fillStyle='#fff';ctx.fill();}
+ ctx.beginPath();ctx.moveTo(280,92);ctx.lineTo(1024,92);ink(ctx,3);ctx.stroke();
+ rr(ctx,300,CRATE_Y+CRATE_H-6,720,26,8);fillInk(ctx,'#B98B5E',3);
+ [[120,620],[900,700],[620,740]].forEach(p=>ell(ctx,p[0],p[1],10,6,'#C98F4A'));
+ if(scene==='title'){ctx.save();ctx.translate(512,330);FR6.forEach((f,i)=>{ctx.save();ctx.translate(-300+i*120,0);drawFruit(ctx,f,90);ctx.restore();});ctx.restore();}}
+function drawCrate(i){const cr=crates[i],id=cr.id,c=crateXY(i),w=crateW(),k=w/118;ctx.save();ctx.translate(c.x,c.y);
+ rr(ctx,-w/2,-CRATE_H/2,w,CRATE_H,12);fillInk(ctx,'#D8B27E',3);rr(ctx,-w/2+8,-CRATE_H/2+8,w-16,CRATE_H-58,8);fillInk(ctx,'#8B5533',2);
+ if(cr.ten){for(let q=0;q<10;q++){ctx.save();ctx.translate((-34+(q%5)*17)*k,-46+Math.floor(q/5)*24);drawFruit(ctx,id,20);ctx.restore();}ctx.beginPath();ctx.arc(w/2-16,-CRATE_H/2+16,15,0,Math.PI*2);fillInk(ctx,'#F2C14E',2.5);text(ctx,'10',w/2-16,-CRATE_H/2+17,15,INK);}
+ else [[-28,-30],[0,-38],[28,-30],[-16,-6],[14,-6]].forEach(p=>{ctx.save();ctx.translate(p[0]*k,p[1]);drawFruit(ctx,id,44*Math.min(1,k));ctx.restore();});
+ const lbl=S.tens?(cr.ten?T().crateTen(id):T().crateOne(id)):S.bundles?T().bundleLabel(id):fname(id);
+ fitText(ctx,lbl,0,CRATE_H/2-36,20,w-8,INK);
+ if(S.tags&&P[id]!=null){const tag=S.kgTags?T().kgTag(P[id]):won(P[id]);rr(ctx,-(w-12)/2,CRATE_H/2-24,w-12,22,8);fillInk(ctx,'#F2C14E',2);fitText(ctx,tag,0,CRATE_H/2-13,16,w-18,INK);}
+ ctx.restore();}
+function drawTen(c,id,s){const k=s/22;rr(c,-11*k,-44*k,22*k,88*k,5*k);fillInk(c,'#D8B27E',2);for(let q=0;q<10;q++){c.beginPath();c.arc((q%2?5:-5)*k,(-34+Math.floor(q/2)*17)*k,4.6*k,0,Math.PI*2);c.fillStyle=FRUIT_COLOR[id];c.fill();c.strokeStyle=INK;c.lineWidth=1;c.stroke();}}
+function drawBubble(){if(!task)return;const bx=20,by=104,bw=300;ctx.font=`800 19px ${FONT}`;const lines=[];task.lines.forEach(l=>lines.push(...wrap(ctx,l,bw-36)));
+ const showItems=!task.lines.length&&task.items.length,big=task.items.some(o=>o.n>10),rowH=big?64:56;
+ const bh=26+(showItems?task.items.length*rowH+24:0)+lines.length*26;
+ rr(ctx,bx,by,bw,bh,20);fillInk(ctx,'#fff',4);
+ if(!task.closing){ctx.beginPath();ctx.moveTo(110,by+bh);ctx.lineTo(120,by+bh+22);ctx.lineTo(140,by+bh);ctx.closePath();fillInk(ctx,'#fff',4);ctx.fillStyle='#fff';ctx.fillRect(112,by+bh-4,26,8);}
+ let y=by+16;
+ // the order as pictures + a number (no × sign: K and E1 never see it)
+ if(showItems){task.items.forEach(o=>{const cy=y+rowH/2;ctx.save();ctx.translate(bx+38,cy);drawFruit(ctx,o.id,44);ctx.restore();text(ctx,LANG==='ko'?o.n+(o.id==='grape'?'송이':'개'):String(o.n),bx+70,cy,30,INK,'left');
+   if(band==='K'){const per=10,rows=Math.ceil(o.n/per),sp=o.n>5?13:22,r=o.n>5?5.5:8;for(let q=0;q<o.n;q++){const rx=q%per,ry=Math.floor(q/per);ctx.beginPath();ctx.arc(bx+150+rx*sp+(rx>=5&&o.n>5?4:0),cy+(rows>1?(ry-0.5)*14:0),r,0,Math.PI*2);ctx.fillStyle='#F2C14E';ctx.fill();ink(ctx,2);ctx.stroke();}}
+   y+=rowH;});text(ctx,T().please,bx+bw/2,y+8,18,'#5A6377');y+=24;}
+ lines.forEach(l=>{ctx.font=`800 19px ${FONT}`;ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillStyle=INK;ctx.fillText(l,bx+18,y+12);y+=26;});}
+function drawCustomer(){if(!task||task.closing)return;const img=customerImage(cust,custFace);ctx.save();ctx.translate(custX,300);if(img.complete&&img.naturalWidth)ctx.drawImage(img,-110,0,220,220);ctx.restore();
+ if(band&&band!=='K'){const tg=T().tag[band];ctx.font=`900 15px ${FONT}`;const tw=ctx.measureText(tg).width+20;rr(ctx,custX-tw/2,514,tw,24,12);fillInk(ctx,'#fff',2);text(ctx,tg,custX,526,15,'#5A6377');}
+ const st=task.steps[stepIdx];if(phase==='change'&&st){rr(ctx,custX-80,546,160,58,12);fillInk(ctx,'#8FC08A',3);text(ctx,won(st.bill),custX,575,24,INK);}
+ if(phase==='thanks'){const t=(performance.now()-thanksT)/1000;if(t<1.4){text(ctx,'♥',custX+70,250-t*40,40,'#DB5F52');}}}
+function trayTitle(){const t=T(),m=task.tray,st=task.steps[stepIdx];
+ if(band!=='K'&&st&&st.type==='pad'&&st.eq&&(phase==='pad'||phase==='wait'))return st.eq;
+ if(band!=='K'&&task.eq&&(phase==='choice'||phase==='wait')&&st&&st.type==='choice')return task.eq;
+ if(m==='graph')return task.graph.title;
+ if((m==='tens'||m==='tens1')&&task.label==='stock')return t.trayStock;
+ return {frame:task.prefill.length?t.trayStock:t.tray,frame2:t.trayStock,bags:t.trayBags,note:t.trayNote,box:t.trayBox,scale:t.trayScale,pie:t.trayPie,clock:t.trayClock,rect:t.trayRect}[m]||t.tray;}
+function drawClockFace(cx,cy,r,h,m){ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);fillInk(ctx,'#fff',4);
+ for(let i=1;i<=12;i++){const a=i*Math.PI/6-Math.PI/2;text(ctx,String(i),cx+Math.cos(a)*(r-16),cy+Math.sin(a)*(r-16),15,INK);}
+ for(let i=0;i<60;i++){const a=i*Math.PI/30;ctx.beginPath();ctx.moveTo(cx+Math.cos(a)*(r-4),cy+Math.sin(a)*(r-4));ctx.lineTo(cx+Math.cos(a)*(r-(i%5?6:9)),cy+Math.sin(a)*(r-(i%5?6:9)));ctx.strokeStyle='#9AA3B5';ctx.lineWidth=i%5?1:2;ctx.stroke();}
+ const ah=((h%12)+m/60)*Math.PI/6-Math.PI/2,am=m*Math.PI/30-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(ah)*r*0.5,cy+Math.sin(ah)*r*0.5);ink(ctx,6);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(am)*r*0.78,cy+Math.sin(am)*r*0.78);ctx.strokeStyle='#DB5F52';ctx.lineWidth=4;ctx.lineCap='round';ctx.stroke();ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fillStyle=INK;ctx.fill();}
+function drawTray(){if(!task)return;const R=trayRect(),m=task.tray;rr(ctx,R.x,R.y,R.w,R.h,20);fillInk(ctx,'#F6EEDC',4);rr(ctx,R.x+16,R.y+16,R.w-32,34,10);fillInk(ctx,'#E9C07C',2);fitText(ctx,trayTitle(),R.x+R.w/2,R.y+33,20,R.w-48,INK);
+ if(m==='frame'||m==='frame2'){const fr=m==='frame2'?[0,1]:[0];fr.forEach(f=>{for(let j=0;j<20;j++){const q=frameXY(j,f,m==='frame2');rr(ctx,q.x-12,q.y-13,24,26,5);ctx.fillStyle='#fff';ctx.fill();ctx.strokeStyle='#CDBB94';ctx.lineWidth=1.5;ctx.stroke();}const a=frameXY(0,f,m==='frame2'),b=frameXY(19,f,m==='frame2');rr(ctx,a.x-15,a.y-16,b.x-a.x+30,b.y-a.y+32,7);ink(ctx,2.5);ctx.stroke();ctx.beginPath();ctx.moveTo(a.x+4*26+16,a.y-16);ctx.lineTo(a.x+4*26+16,b.y+16);ctx.stroke();});}
+ if(m==='tens'){ctx.strokeStyle='#CDBB94';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(R.x+20,R.y+172);ctx.lineTo(R.x+R.w-20,R.y+172);ctx.stroke();}
+ if(m==='bags'){const st=task.steps.find(s=>s.type==='bags');for(let k=0;k<st.bags;k++){const r=bagRect(k,st.bags);rr(ctx,r.x,r.y+14,r.w,r.h-14,10);fillInk(ctx,'#E9C07C',3);rr(ctx,r.x+10,r.y,r.w-20,20,6);fillInk(ctx,'#D8B27E',2);
+  if(phase==='pack'&&k===activeBag){rr(ctx,r.x-4,r.y-4,r.w+8,r.h+8,12);ctx.strokeStyle='#E88F4D';ctx.lineWidth=5;ctx.stroke();}}}
+ if(m==='note'){rr(ctx,R.x+24,R.y+60,R.w-48,R.h-72,10);fillInk(ctx,'#fff',2);(task.note||[]).forEach((l,i)=>{ctx.strokeStyle='#E3E7EE';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(R.x+36,R.y+92+i*28);ctx.lineTo(R.x+R.w-36,R.y+92+i*28);ctx.stroke();fitText(ctx,l,R.x+40,R.y+78+i*28,19,R.w-80,INK,'left');});}
+ if(m==='box'){const n=task.boxN,cols=n<=36?6:n<=64?8:12,sz=n<=36?22:n<=64?17:13,sp=sz+3,rows=Math.ceil(n/cols),cx=R.x+R.w/2,bw=cols*sp+16;rr(ctx,cx-bw/2,R.y+56,bw,rows*sp+12,8);fillInk(ctx,'#D8B27E',2);for(let j=0;j<n;j++){ctx.save();ctx.translate(cx-bw/2+8+sp/2+(j%cols)*sp,R.y+62+sp/2+Math.floor(j/cols)*sp);drawFruit(ctx,'tangerine',sz);ctx.restore();}}
+ if(m==='scale'){const s=task.scale,cx=R.x+R.w/2;ctx.beginPath();ctx.ellipse(cx,R.y+114,92,16,0,0,Math.PI*2);fillInk(ctx,'#E3E7EE',3);[-40,0,40].forEach((dx,i)=>{ctx.save();ctx.translate(cx+dx,R.y+92-(i===1?8:0));drawFruit(ctx,s.id,40);ctx.restore();});rr(ctx,cx-8,R.y+128,16,18,3);fillInk(ctx,'#9AA3B5',2);rr(ctx,cx-104,R.y+144,208,64,14);fillInk(ctx,'#9AA3B5',3);rr(ctx,cx-84,R.y+154,168,42,8);fillInk(ctx,INK,2);text(ctx,kgStr(s.c)+' kg',cx,R.y+176,28,'#8FC08A');}
+ if(m==='pie'){const p=task.pie,cx=R.x+92,cy=R.y+132,r=62;ctx.beginPath();ctx.arc(cx,cy,r+8,0,Math.PI*2);fillInk(ctx,'#3F7D5B',3);for(let j=0;j<p.den;j++){const a0=-Math.PI/2+j*2*Math.PI/p.den,a1=a0+2*Math.PI/p.den;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a0,a1);ctx.closePath();ctx.fillStyle=!p.plain&&j<p.nu?'#DB5F52':'#F6E3C7';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=3;ctx.stroke();}
+  if(p.plain)fitText(ctx,T().pieSlices(p.den),R.x+228,R.y+132,22,110,INK);else{text(ctx,`${p.nu}/${p.den}`,R.x+228,R.y+112,40,INK);fitText(ctx,T().pieWhole(p.W),R.x+228,R.y+164,17,106,'#5A6377');}}
+ if(m==='clock'){drawClockFace(R.x+R.w/2,R.y+128,66,task.clock.h,task.clock.m);fitText(ctx,T().clockStart,R.x+R.w/2,R.y+R.h-13,15,R.w-40,'#5A6377');}
+ if(m==='rect'){const rc=task.rect,sc=Math.min(200/rc.w,120/rc.h),w=rc.w*sc,h=rc.h*sc,x=R.x+(R.w-w)/2-14,y=R.y+66+(124-h)/2;rr(ctx,x,y,w,h,4);fillInk(ctx,'#E9C07C',3);
+  fitText(ctx,`${rc.w} cm`,x+w/2,y+h+14,17,w+40,INK);ctx.save();ctx.translate(x+w+16,y+h/2);ctx.rotate(Math.PI/2);text(ctx,`${rc.h} cm`,0,0,17,INK);ctx.restore();}
+ if(m==='graph')drawGraph(R);
+ for(const b of bag){ctx.save();ctx.translate(b.x,b.y);if(b.ten)drawTen(ctx,b.id,b.size);else drawFruit(ctx,b.id,b.size);ctx.restore();}
+ if(m==='rows6'&&bag.length&&S.tags&&(d===9||d===10)&&task.steps.some(s=>s.type==='pay')){const c=counts(),ids=Object.keys(c);ids.forEach((id,i)=>{const n=c[id],p=P[id],line=LANG==='ko'?`${fname(id)} ${won(p)} ${n}${id==='grape'?'송이':'개'}`:`${cntEn(id,n)} at ${won(p)}`;fitText(ctx,line,BAG.x+16,BAG.y+BAG.h-14-(ids.length-1-i)*20,15,BAG.w-30,'#5A6377','left');});}}
+function drawGraph(R){const g=task.graph,px=R.x+80,py=R.y+66,pw=R.w-120,ph=R.h-130,steps=10,labels=g.labels||g.ids;
+ for(let k=0;k<=steps;k++){const y=py+ph-k*ph/steps;ctx.strokeStyle=k%2?'#E5D9BE':'#CDBB94';ctx.lineWidth=k?1:2.5;ctx.beginPath();ctx.moveTo(px,y);ctx.lineTo(px+pw,y);ctx.stroke();if(k%2===0)text(ctx,String(k*g.scale),px-12,y,15,'#3A4358','right');}
+ ctx.beginPath();ctx.moveTo(px,py-6);ctx.lineTo(px,py+ph);ink(ctx,2.5);ctx.stroke();
+ const n=labels.length,bw=52,gap=(pw-n*bw)/(n+1);labels.forEach((lb,i)=>{const x=px+gap+i*(bw+gap),h=g.vals[i]/g.scale*ph/steps;if(h>=2){rr(ctx,x,py+ph-h,bw,h,Math.min(6,h/2));fillInk(ctx,g.ids?FRUIT_COLOR[lb]:'#F29B3B',2);}
+  if(g.ids){ctx.save();ctx.translate(x+bw/2,py+ph+26);drawFruit(ctx,lb,32);ctx.restore();}else text(ctx,lb,x+bw/2,py+ph+22,18,INK);});}
+function drawRegister(){if(!task||!S.coins.length||!task.steps.some(s=>s.type==='pay'||s.type==='change')||phase==='pad'||phase==='choice'||phase==='clock'||(phase==='wait'&&($('choices').className||$('pad').classList.contains('on'))))return;
+ const st=task.steps[stepIdx];rr(ctx,REG.x,REG.y,REG.w,REG.h,20);fillInk(ctx,'#CBD2DE',4);rr(ctx,REG.x+16,REG.y+16,REG.w-32,60,10);fillInk(ctx,INK,2);
+ text(ctx,phase==='change'?T().chgLbl:T().paidLbl,REG.x+30,REG.y+46,16,'#8FC08A','left');text(ctx,won(sum()),REG.x+REG.w-30,REG.y+46,30,'#F2C14E','right');
+ if(phase==='change'&&st&&st.type==='change')fitText(ctx,T().priceGot(st.bill-st.amount,st.bill),REG.x+REG.w/2,REG.y+94,15,REG.w-30,'#3A4358');
+ const active=phase==='pay'||phase==='change',sl=coinSlots();
+ S.coins.forEach((v,i)=>{const c=sl[i];ctx.save();ctx.globalAlpha=active?1:0.4;
+  if(v>=1000){rr(ctx,c.x-29,c.y-17,58,34,5);fillInk(ctx,v===1000?'#9CC3E6':v===5000?'#F2B48B':'#8FC08A',3);fitText(ctx,num(v),c.x,c.y,15,52,INK);}
+  else{ctx.beginPath();ctx.arc(c.x,c.y,26,0,Math.PI*2);fillInk(ctx,v>=100?'#F2C14E':v===50?'#E3E7EE':'#E0A872',3);text(ctx,String(v),c.x,c.y,v>=100?16:17,INK);}
+  ctx.restore();});
+ const c=sl[S.coins.length];rr(ctx,c.x-32,c.y-19,64,38,12);fillInk(ctx,active?'#fff':'#EEE',3);fitText(ctx,T().clear,c.x,c.y,16,58,INK);}
+function drawParticles(){for(const p of particles){ctx.save();ctx.translate(p.x,p.y);ctx.globalAlpha=Math.max(0,1-p.t/p.life);ctx.fillStyle=p.color;ctx.rotate(p.rot);ctx.beginPath();for(let i=0;i<5;i++){const A=i*Math.PI*2/5-Math.PI/2;ctx.lineTo(Math.cos(A)*p.r*1.6,Math.sin(A)*p.r*1.6);const B=A+Math.PI/5;ctx.lineTo(Math.cos(B)*p.r*0.7,Math.sin(B)*p.r*0.7);}ctx.closePath();ctx.fill();ctx.restore();}}
+let last=performance.now();
+function frame(now){const dt=Math.min(0.05,(now-last)/1000);last=now;
+ for(let i=tweens.length-1;i>=0;i--){const t=tweens[i];t.t+=dt;if(t.t<0)continue;const k=Math.min(1,t.t/t.dur),e=t.ease(k);for(const p in t.to)t.obj[p]=t.from[p]+(t.to[p]-t.from[p])*e;if(k>=1){tweens.splice(i,1);t.onDone&&t.onDone();}}
+ for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.t+=dt;if(p.t>=p.life){particles.splice(i,1);continue;}p.vy+=p.g*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.rot+=p.vr*dt;}
+ drawBg();
+ if(scene==='play'||scene==='done'){if(!(task&&task.closing))for(let i=0;i<crates.length;i++)drawCrate(i);drawTray();drawRegister();drawCustomer();drawBubble();for(const b of flying){ctx.save();ctx.translate(b.x,b.y);drawFruit(ctx,b.id,b.size);ctx.restore();}}
+ drawParticles();requestAnimationFrame(frame);}
+applyLang();gotoTitle();requestAnimationFrame(frame);
+window.__fruit={get scene(){return scene},get band(){return band},get level(){return level},get d(){return d},get L(){return Object.assign({customers:S.customers,coins:S.coins,fruits:S.pool,money:S.coins.length>0},S)},get S(){return S},get crates(){return crates},get prices(){return P},get plan(){return plan},
+ get task(){return task},get stepIdx(){return stepIdx},get step(){return task?task.steps[stepIdx]:null},get phase(){return phase},get order(){return task?task.items:[]},get bag(){return bag.map(b=>b.id)},get bagItems(){return bag.map(b=>({id:b.id,g:b.g,ten:!!b.ten,x:b.x,y:b.y}))},
+ get total(){const s=task&&task.steps.find(x=>x.type==='pay');return s?s.amount:0},get changeNeed(){const s=task&&task.steps.find(x=>x.type==='change');return s?s.amount:0},get entered(){return entered},get padValue(){return padVal},get activeBag(){return activeBag},get clock(){return {h:clockH,m:clockM}},
+ get mistakes(){return mistakes},get cust(){return cust},get stars(){return stars},get save(){return save},get suggestBandUp(){return suggestBandUp},get played(){return played},get lastPost(){return lastPost},get embedded(){return EMBED},get override(){return isOverride()},get sold(){return ctxR.sold},get parentOpen(){return parentOpen},get gateShown(){return $('gateWrap').classList.contains('on')},
+ crateXY,bagXY,coinXY,clrXY,bagRect,setLevel,setBand,startPlay,STAND,LEVELS:STAND,BASE,ageBand,planFor,makePrices,simRound,exFor,dealTrue,hintFor,speechText:s=>sayText(s),
+ gen:(dd,b,kind,PP,c)=>gen(dd,b,kind,PP||makePrices(dd),c),genGraph:(dd,c)=>genGraph(dd,c||newCtx(dd)),bubble:()=>$('bubbleP').textContent};
+})();
+</script>
+</body>
+</html>

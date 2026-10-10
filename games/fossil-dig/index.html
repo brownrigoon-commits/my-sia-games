@@ -1,0 +1,1089 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#7E4E2B">
+<title>공룡 화석 발굴</title>
+<style>
+:root{--ink:#1C2333;--bone:#F6EEDC;--blue:#2F6BFF;--yellow:#F2C14E;--orange:#E88F4D;--green:#3F7D5B;--red:#DB5F52;--sand:#E9C07C;--wood:#B98B5E;--dirt:#7E4E2B;--sky:#BDE7FF}
+html,body{margin:0;height:100%;background:#5B3A20;overflow:hidden;word-break:keep-all;overflow-wrap:break-word;-webkit-text-size-adjust:100%;text-size-adjust:100%;font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",Roboto,sans-serif;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;color:var(--ink)}
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+#stage{position:relative;flex:none;width:1024px;height:768px;transform-origin:center center;overflow:hidden;background:var(--sky);touch-action:none}
+canvas#game{position:absolute;left:0;top:0;width:1024px;height:768px}
+#ui{position:absolute;inset:0;pointer-events:none}
+.screen{position:absolute;inset:0;pointer-events:none;display:none}
+.screen.on{display:block}
+.screen > *{pointer-events:auto}
+button{font:inherit;color:var(--ink);cursor:pointer;border:0;background:none;padding:0}
+.big{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-width:220px;height:74px;padding:0 34px;border-radius:40px;font-size:30px;font-weight:900;color:#fff;background:linear-gradient(#8FC08A,#3F7D5B);box-shadow:0 6px 0 #2C5A40,0 12px 22px rgba(0,0,0,.25);border:4px solid #fff;transition:transform .08s}
+.big:active{transform:translateY(4px);box-shadow:0 2px 0 #2C5A40,0 6px 12px rgba(0,0,0,.25)}
+.big[disabled]{opacity:.45;filter:grayscale(.7);cursor:default}
+.big.blue{background:linear-gradient(#6B9BFF,#2F6BFF);box-shadow:0 6px 0 #1E48B0,0 12px 22px rgba(0,0,0,.25)}
+.big.blue:active{box-shadow:0 2px 0 #1E48B0,0 6px 12px rgba(0,0,0,.25)}
+.big.orange{background:linear-gradient(#F2B48B,#E88F4D);box-shadow:0 6px 0 #B5652A,0 12px 22px rgba(0,0,0,.25)}
+.big.orange:active{box-shadow:0 2px 0 #B5652A,0 6px 12px rgba(0,0,0,.25)}
+.rbtn{position:absolute;width:64px;height:64px;border-radius:50%;background:#fff;border:4px solid var(--ink);font-size:30px;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.rbtn:active{transform:translateY(3px);box-shadow:none}
+#btnClose,#btnClose2{left:18px;top:18px}
+#btnSound{right:18px;top:18px;font-size:26px}
+#btnLang{right:96px;top:18px;font-size:20px;letter-spacing:1px}
+/* title */
+#logo{position:absolute;left:0;right:0;top:10px;text-align:center;font-size:60px;font-weight:900;color:#fff;letter-spacing:-1px;-webkit-text-stroke:2px var(--ink);text-shadow:0 6px 0 var(--ink),0 10px 24px rgba(0,0,0,.25);animation:bob 3s ease-in-out infinite}
+#logo small{display:block;font-size:22px;-webkit-text-stroke:0;text-shadow:none;color:var(--ink);font-weight:700;margin-top:4px;letter-spacing:0}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+#bandRow{position:absolute;left:0;right:0;top:126px;display:flex;justify-content:center;align-items:center;gap:12px}
+#bandRow span{font-size:22px;font-weight:900;margin-right:2px}
+#bandRow button{height:54px;min-width:112px;padding:0 18px;border-radius:28px;background:#fff;border:4px solid var(--ink);font-size:23px;font-weight:900;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+#bandRow button.on{background:var(--blue);color:#fff;transform:scale(1.08)}
+#bandChip{position:absolute;left:50%;top:130px;transform:translateX(-50%);height:46px;padding:0 22px;border-radius:24px;background:var(--yellow);border:4px solid var(--ink);font-size:22px;font-weight:900;display:flex;align-items:center;white-space:nowrap;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+#bandNote{position:absolute;left:0;right:0;top:182px;text-align:center;font-size:15px;font-weight:800;color:#1E48B0;word-break:keep-all}
+#pick{position:absolute;left:0;right:0;top:200px;text-align:center;font-size:24px;font-weight:800}
+#dinos{position:absolute;left:0;right:0;top:244px;display:flex;justify-content:center;gap:28px}
+.dino{width:230px;height:222px;box-sizing:border-box;border-radius:28px;background:#fff;border:5px solid var(--ink);box-shadow:0 8px 0 rgba(0,0,0,.18);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:9px;transition:transform .15s;position:relative}
+.dino canvas{width:200px;height:130px}
+.dino b{font-size:24px;margin-top:4px}
+.dino .stars{margin-top:4px;font-size:26px;letter-spacing:2px;color:#D9C9A6}
+.dino .stars i{font-style:normal;color:var(--yellow);text-shadow:0 0 0 var(--ink)}
+.dino.sel{transform:scale(1.06) translateY(-6px);border-color:var(--blue);box-shadow:0 0 0 6px rgba(47,107,255,.25),0 10px 0 rgba(0,0,0,.18)}
+.dino.sel::after{content:"✓";position:absolute;right:-14px;top:-14px;width:44px;height:44px;border-radius:50%;background:var(--blue);color:#fff;border:4px solid #fff;font-size:24px;font-weight:900;display:flex;align-items:center;justify-content:center}
+#btnStart{position:absolute;right:44px;top:650px}
+#levels{position:absolute;left:0;right:0;top:480px;display:flex;justify-content:center;align-items:center;gap:10px;font-size:22px;font-weight:800}
+#levels span{margin-right:6px}
+#levels button{width:56px;height:56px;border-radius:50%;background:#fff;border:4px solid var(--ink);font-size:26px;font-weight:900;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+#levels button.on{background:var(--yellow);transform:scale(1.12)}
+#lvlHint{position:absolute;left:50%;top:548px;transform:translateX(-50%);width:max-content;max-width:820px;box-sizing:border-box;line-height:1.35;padding:5px 16px;border-radius:18px;background:rgba(255,255,255,.82);text-align:center;font-size:17px;font-weight:800;color:#3A4358}
+#lvlHint:empty{display:none}
+#lvlHint.solo{top:482px}
+#lvlBadge{position:absolute;left:96px;top:14px;min-height:56px;box-sizing:border-box;padding:3px 16px;border-radius:22px;background:var(--yellow);border:4px solid var(--ink);display:flex;flex-direction:column;justify-content:center;line-height:1.12;white-space:nowrap}
+#lvlBadge small{font-size:15px;font-weight:800}
+#lvlBadge b{font-size:22px;font-weight:900}
+#lvlBadge i{font-style:normal;font-size:12px;font-weight:800;color:#7A4B00}
+#feel{margin:4px 0 14px;display:flex;flex-direction:column;align-items:center;gap:8px}
+#feel b{font-size:24px}
+#feel .faces{display:flex;gap:12px}
+#feel .faces button{width:150px;height:66px;border-radius:20px;background:#F6F8FC;border:4px solid var(--ink);font-size:21px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px}
+#feel .faces button i{font-style:normal;font-size:30px}
+#feel .faces button.on{background:#FFF3C4;border-color:var(--orange);transform:scale(1.06)}
+#feelMsg{font-size:20px;font-weight:800;color:var(--blue);min-height:26px;max-width:540px;line-height:1.35}
+#s-title .bubble{max-width:360px}
+#s-assemble .haru{top:10px;bottom:auto;left:92px;align-items:center}
+#s-assemble .face{width:78px;height:78px}
+#s-assemble .bubble{margin-bottom:0;max-width:720px;font-size:21px;padding:8px 16px}
+/* haru */
+.haru{position:absolute;left:22px;bottom:14px;display:flex;align-items:flex-end;gap:10px}
+.haru .face{width:118px;height:118px;flex:none;filter:drop-shadow(0 4px 0 rgba(0,0,0,.15))}
+.haru .face svg{width:100%;height:100%}
+.bubble{position:relative;max-width:520px;background:#fff;border:4px solid var(--ink);border-radius:22px;padding:12px 18px;font-size:22px;font-weight:700;line-height:1.35;margin-bottom:26px;box-shadow:0 4px 0 rgba(0,0,0,.15)}
+.bubble::before{content:"";position:absolute;left:-18px;bottom:16px;border:10px solid transparent;border-right-color:var(--ink);border-left:0}
+.bubble::after{content:"";position:absolute;left:-12px;bottom:18px;border:8px solid transparent;border-right-color:#fff;border-left:0}
+.bubble.pop{animation:pop .25s}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+/* hud */
+#slots{position:absolute;left:50%;top:16px;transform:translateX(-50%);display:flex;gap:8px;background:rgba(255,255,255,.85);border:4px solid var(--ink);border-radius:40px;padding:6px 14px}
+.slot{width:72px;height:56px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:#EEE6D3}
+.slot canvas{width:64px;height:48px}
+.slot.got{background:#FFF3C4;animation:slotpop .4s}
+.slot.box{background:#FFF1EE;border:3px dashed var(--red);box-sizing:border-box;flex-direction:column;font-size:12px;font-weight:900;color:#A33A2F;line-height:1.05;text-align:center}
+.slot.box b{font-size:18px}
+@keyframes slotpop{0%{transform:scale(1)}40%{transform:scale(1.25)}100%{transform:scale(1)}}
+#shovel{position:absolute;right:112px;top:20px;height:56px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.9);border:4px solid var(--ink);border-radius:32px;padding:0 18px 0 10px;font-size:28px;font-weight:900}
+#shovel svg{width:34px;height:34px}
+#shovel.low b{color:var(--red)}
+#btnDetect{position:absolute;right:22px;bottom:22px;height:66px;display:flex;align-items:center;gap:8px;background:linear-gradient(#fff,#E8EEFF);border:4px solid var(--ink);border-radius:36px;padding:0 20px 0 12px;font-size:24px;font-weight:900;box-shadow:0 5px 0 rgba(0,0,0,.2)}
+#btnDetect:active{transform:translateY(3px);box-shadow:none}
+#btnDetect svg{width:36px;height:36px}
+#btnDetect[disabled]{opacity:.45}
+/* popups */
+.dim{position:absolute;inset:0;background:rgba(28,35,51,.45)}
+.card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;border:5px solid var(--ink);border-radius:30px;box-shadow:0 12px 0 rgba(0,0,0,.2);text-align:center;animation:cardin .35s cubic-bezier(.2,1.4,.4,1)}
+@keyframes cardin{0%{transform:translate(-50%,-50%) scale(.6);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+#foundCard{width:560px;padding:22px 28px 26px}
+#foundCard canvas{display:block;margin:0 auto;width:380px;height:220px}
+#foundCard h2{margin:6px 0 4px;font-size:40px}
+#foundCard p{margin:0 0 16px;font-size:22px;font-weight:700;color:#5A6377;line-height:1.4}
+#foundCard.wide{width:640px}
+#foundCard.wide h2{font-size:34px}
+#foundCard.wide p{font-size:20px}
+.tag{display:inline-block;background:var(--blue);color:#fff;border-radius:20px;padding:4px 16px;font-size:20px;font-weight:800}
+.tag.red{background:var(--red)}
+#resultCard{width:720px;padding:22px 30px 28px}
+#resultCard h2{margin:0 0 8px;font-size:38px}
+#resultRow{display:flex;justify-content:center;gap:10px;margin:10px 0 18px;flex-wrap:wrap}
+#resultRow div{width:104px;height:84px;background:#FFF3C4;border:3px solid var(--ink);border-radius:16px;display:flex;align-items:center;justify-content:center;animation:cardin .4s backwards}
+#resultRow div.decoy{background:#FFF1EE;border:3px dashed var(--red)}
+#resultRow canvas{width:92px;height:68px}
+#dinoCard{width:760px;padding:22px 30px 26px;text-align:left;box-sizing:border-box}
+#dinoCard .top{display:flex;gap:20px;align-items:center}
+#cardCv{width:300px;height:180px;flex:none}
+#dinoCard h2{margin:0 0 6px;font-size:40px}
+#dinoCard ul{margin:0;padding-left:22px;font-size:21px;font-weight:700;line-height:1.5;color:#3A4358}
+#quiz{margin-top:14px;border-top:3px dashed #DDE3EC;padding-top:12px}
+#quizQ{font-size:26px;font-weight:900;margin:0 0 12px;display:flex;align-items:center;gap:10px;line-height:1.3}
+#quizTip{display:flex;align-items:center;gap:8px;margin:-4px 0 10px;font-size:18px;font-weight:800;color:#1E48B0}
+#quizTip .mini{width:40px;height:40px;flex:none}
+#quizTip .mini svg{width:100%;height:100%}
+.spk{width:40px;height:40px;border-radius:50%;background:#EEF1F6;border:3px solid var(--ink);font-size:20px;display:inline-flex;align-items:center;justify-content:center;flex:none}
+#quizBody{display:flex;gap:14px;align-items:center}
+#choices{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#quizPic{width:280px;height:150px;flex:none;border-radius:16px;background:#F6F8FC;border:3px solid #DDE3EC}
+#quizPic.graph{width:320px;height:190px}
+#quizTip{cursor:pointer}
+#btnSpeakF{position:absolute;right:18px;top:18px}
+#btnGate{position:absolute;left:18px;top:18px;height:46px;padding:0 18px;border-radius:24px;background:#fff;border:3px solid var(--ink);font-size:17px;font-weight:800;overflow:hidden;box-shadow:0 3px 0 rgba(0,0,0,.15);touch-action:none}
+#btnGate b{position:relative}
+#gateFill{position:absolute;left:0;top:0;bottom:0;width:0;background:#FFE08A}
+#btnGate.holding #gateFill{width:100%;transition:width 2s linear}
+#gateCard{width:780px;padding:22px 30px 26px;box-sizing:border-box}
+#gateCard h2{margin:0 0 6px;font-size:34px}
+#gateCard .grow{display:flex;align-items:center;justify-content:center;gap:12px;margin:12px 0}
+#gateCard .grow > b{font-size:21px;min-width:110px;text-align:right}
+#gateCard .grow > div{display:flex;gap:8px;flex-wrap:wrap}
+#gateCard .grow button{height:52px;padding:0 14px;border-radius:26px;background:#fff;border:4px solid var(--ink);font-size:19px;font-weight:900}
+#gateCard .grow button.on{background:var(--blue);color:#fff}
+#gateCard p{font-size:17px;font-weight:700;color:#5A6377;margin:6px 0 14px;line-height:1.4;word-break:keep-all}
+#gateCard p#gateAsk{font-size:21px;color:var(--ink);margin:8px 0 10px}
+#gateYear{display:flex;justify-content:center;gap:8px;margin:0 0 14px}
+#gateYear span{width:50px;height:58px;box-sizing:border-box;border-radius:12px;border:3px solid var(--ink);background:#F6F8FC;font-size:30px;font-weight:900;display:flex;align-items:center;justify-content:center}
+#gatePad{display:grid;grid-template-columns:repeat(6,66px);gap:8px;justify-content:center;margin:0 0 16px}
+#gatePad button{height:54px;border-radius:14px;background:#fff;border:3px solid var(--ink);font-size:24px;font-weight:900;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+#gatePad button:active{transform:translateY(2px);box-shadow:none}
+#choices button{min-height:64px;border-radius:18px;background:#F6F8FC;border:4px solid var(--ink);font-size:23px;font-weight:800;text-align:left;padding:6px 18px;display:flex;align-items:center;gap:12px;line-height:1.2}
+#choices button i{font-style:normal;width:36px;height:36px;border-radius:50%;background:var(--ink);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:20px;flex:none}
+#choices button.ok{background:#DDF3DE;border-color:var(--green)}
+#choices button.ok i{background:var(--green)}
+#choices button.no{background:#FDE7E4;border-color:var(--red);opacity:.7}
+#choices button[disabled]{cursor:default}
+#quizE{margin:12px 0 0;font-size:21px;font-weight:700;color:#3F7D5B;min-height:30px;line-height:1.35}
+#dinoCard .act{text-align:center;margin-top:10px}
+#dinoCard.wide{width:920px;padding:20px 28px 22px}
+#dinoCard.wide #cardCv{width:250px;height:150px}
+#dinoCard.wide h2{font-size:34px;margin-bottom:4px}
+#dinoCard.wide ul{font-size:18px;line-height:1.42}
+#dinoCard.wide #quizQ{font-size:22px}
+#dinoCard.wide #choices button{font-size:19px;min-height:56px;padding:5px 14px}
+#dinoCard.wide #quizE{font-size:18px;min-height:50px}
+#dinoCard.dense{padding:14px 24px 16px}
+#dinoCard.dense ul{font-size:16px;line-height:1.35}
+#dinoCard.dense #quiz{margin-top:8px;padding-top:8px}
+#dinoCard.dense #quizQ{font-size:20px;margin-bottom:8px}
+#dinoCard.dense #choices{gap:8px}
+#dinoCard.dense #choices button{font-size:17px;min-height:48px}
+#dinoCard.dense #quizE{font-size:16px;margin-top:8px;min-height:44px}
+#dinoCard.dense .big{height:62px;font-size:26px}
+#doneCard{width:640px;padding:26px 30px 30px}
+#doneCard h2{margin:0;font-size:44px}
+#bigStars{font-size:84px;letter-spacing:6px;margin:6px 0 10px;color:#D9C9A6}
+#bigStars i{font-style:normal;display:inline-block;color:#D9C9A6;transform:scale(0)}
+#bigStars i.on{color:var(--yellow);-webkit-text-stroke:2px var(--ink);animation:star .5s cubic-bezier(.2,1.6,.4,1) forwards}
+#bigStars i.off{animation:star .4s forwards}
+@keyframes star{to{transform:scale(1)}}
+#doneCard p{font-size:24px;font-weight:800;color:#3A4358;margin:0 0 6px}
+#doneCard p small{display:block;font-size:17px;font-weight:700;color:#8A93A6;margin:6px 0 14px}
+#doneCard .row{display:flex;gap:16px;justify-content:center}
+.hidden{display:none!important}
+.invis{visibility:hidden}
+#toast{position:absolute;left:50%;top:120px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:26px;font-weight:900;padding:10px 26px;border-radius:30px;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage">
+<canvas id="game"></canvas>
+<div id="ui">
+  <div id="s-title" class="screen">
+    <button class="rbtn" id="btnSound" title="소리">🔊</button>
+    <button class="rbtn" id="btnLang">EN</button>
+    <div id="logo">공룡 화석 발굴<small>삽으로 파서 뼈를 찾고, 공룡을 맞춰 봐!</small></div>
+    <div id="bandRow"><span id="bandLabel">나이</span><button data-b="K">5–7살</button><button data-b="E1">8–9살</button><button data-b="E2">10–11살</button><button data-b="E3">12–13살</button></div>
+    <div id="bandChip" class="hidden"></div>
+    <div id="bandNote"></div>
+    <div id="pick">어떤 공룡을 찾을까?</div>
+    <div id="dinos"></div>
+    <div id="levels"><span id="lvlLabel">레벨</span><button>1</button><button>2</button><button>3</button><button>4</button><button>5</button></div>
+    <div id="lvlHint"></div>
+    <button class="big" id="btnStart">⛏ 발굴 시작</button>
+    <div class="haru"><div class="face" id="haruT"></div><div class="bubble" id="bubbleT"></div></div>
+    <button id="btnGate" class="hidden"><span id="gateFill"></span><b id="gateText">나이 바꾸기 (부모님)</b></button>
+    <div id="gateWrap" class="hidden"><div class="dim"></div>
+      <div class="card" id="gateCard"><h2 id="gateTitle">부모님 설정</h2>
+        <div id="gateCheck"><p id="gateAsk"></p><div id="gateYear"></div><div id="gatePad"></div></div>
+        <div id="gateRows" class="hidden">
+        <div class="grow"><b id="gateAgeL">아이 나이</b><div id="gateAge"></div></div>
+        <div class="grow"><b id="gateBandL">놀이 묶음</b><div id="gateBand"></div></div>
+        <p id="gateHelp"></p></div><button class="big blue" id="btnGateClose">닫기</button></div></div>
+  </div>
+  <div id="s-dig" class="screen">
+    <button class="rbtn" id="btnClose">✕</button>
+    <div id="lvlBadge"></div>
+    <div id="slots"></div>
+    <div id="shovel"><svg viewBox="0 0 40 40"><path d="M11 29 L27 13" stroke="#1C2333" stroke-width="7" stroke-linecap="round"/><path d="M11 29 L27 13" stroke="#B98B5E" stroke-width="4" stroke-linecap="round"/><path d="M6 34 C2 30 6 22 12 24 L16 28 C18 34 10 38 6 34Z" fill="#9AA3AE" stroke="#1C2333" stroke-width="2.5"/><path d="M27 13 L31 9" stroke="#1C2333" stroke-width="7" stroke-linecap="round"/><path d="M27 13 L31 9" stroke="#B98B5E" stroke-width="4" stroke-linecap="round"/></svg><b id="shovelN">28</b></div>
+    <button id="btnDetect"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="#E8EEFF" stroke="#1C2333" stroke-width="3"/><circle cx="20" cy="20" r="8" fill="none" stroke="#2F6BFF" stroke-width="3"/><circle cx="20" cy="20" r="2.5" fill="#2F6BFF"/><path d="M20 20 L30 10" stroke="#2F6BFF" stroke-width="3" stroke-linecap="round"/></svg><span id="detectLabel">탐지기</span> <b id="detectN">3</b></button>
+    <div class="haru"><div class="face" id="haruD"></div><div class="bubble" id="bubbleD"></div></div>
+    <div id="toast"></div>
+  </div>
+  <div id="s-found" class="screen"><div class="dim"></div>
+    <div class="card" id="foundCard"><button class="spk" id="btnSpeakF">🔊</button><span class="tag" id="foundTag">뼈 발견!</span><canvas id="foundCv" width="760" height="440"></canvas><h2 id="foundName"></h2><p id="foundFact"></p><button class="big blue" id="btnFoundOk">다음 ➜</button></div>
+  </div>
+  <div id="s-result" class="screen"><div class="dim"></div>
+    <div class="card" id="resultCard"><h2 id="resultTitle">탐험 결과</h2><div id="resultSub" style="font-size:22px;font-weight:700;color:#5A6377">발견한 뼈</div><div id="resultRow"></div><button class="big orange" id="btnAssemble">🦴 뼈 맞추기 ➜</button></div>
+  </div>
+  <div id="s-assemble" class="screen">
+    <button class="rbtn" id="btnClose2">✕</button>
+    <div class="haru"><div class="face" id="haruA"></div><div class="bubble" id="bubbleA"></div></div>
+  </div>
+  <div id="s-card" class="screen"><div class="dim"></div>
+    <div class="card" id="dinoCard">
+      <div class="top"><canvas id="cardCv" width="600" height="360"></canvas><div><h2 id="cardName"></h2><ul id="cardFacts"></ul></div></div>
+      <div id="quiz"><p id="quizQ"><button class="spk" id="btnSpeakQ">🔊</button><span id="quizText"></span></p><div id="quizTip" class="hidden"><span class="mini" id="quizHaru"></span><span id="quizTipText"></span></div><div id="quizBody"><div id="choices"></div><canvas id="quizPic" width="560" height="300" class="hidden"></canvas></div><p id="quizE"></p></div>
+      <div class="act"><button class="big blue invis" id="btnCardNext">다음 ➜</button></div>
+    </div>
+  </div>
+  <div id="s-done" class="screen"><div class="dim"></div>
+    <div class="card" id="doneCard"><h2 id="doneTitle">발굴 완료!</h2><div id="bigStars"><i>★</i><i>★</i><i>★</i></div><p id="doneMsg"></p><div id="feel"><b id="feelQ">어땠어?</b><div class="faces"><button data-f="hard"><i>😅</i><span>어려웠어</span></button><button data-f="good"><i>🙂</i><span>딱 좋아</span></button><button data-f="easy"><i>😎</i><span>쉬웠어</span></button></div><div id="feelMsg"></div></div><div class="row"><button class="big" id="btnAgain">다시 하기</button><button class="big blue" id="btnOther">다른 공룡</button></div></div>
+  </div>
+</div>
+</div></div>
+<script>
+(function(){
+'use strict';
+const W=1024,H=768,INK='#1C2333',BONE='#F6EEDC',BONE2='#D9C9A6';
+const Q=new URLSearchParams(location.search);
+let LANG=(Q.get('lang')||navigator.language||'ko').slice(0,2)==='en'?'en':'ko';
+const CHILD=Q.get('name')||'';
+const $=id=>document.getElementById(id);
+const josa=(w,a,b)=>{const c=w.charCodeAt(w.length-1);return w+(c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28?a:b);};
+const ro=n=>n===3||n===6?'으로':'로';
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* ── age band × level (LEVELS.md RULE v2, §1, §4) ─────
+   band = the child's age band (content pool); level 1–5 = difficulty inside the band;
+   d = BASE[band] + level − 1 (1..20) drives FIELD and the quiz tier. No two bands share a d. */
+const BANDS=['K','E1','E2','E3'],BASE={K:1,E1:6,E2:11,E3:16},NEXT_BAND={K:'E1',E1:'E2',E2:'E3'};
+const ageBand=a=>a<=7?'K':a<=9?'E1':a<=11?'E2':'E3';
+const BAND_LABEL={ko:{K:'5–7살',E1:'8–9살',E2:'10–11살',E3:'12–13살'},en:{K:'Ages 5–7',E1:'Ages 8–9',E2:'Ages 10–11',E3:'Ages 12–13'}};
+const clampLevel=v=>{const n=parseInt(v,10);return n>=1&&n<=5?n:0;};
+const qBandRaw=(Q.get('band')||'').toUpperCase(),qBand=BANDS.includes(qBandRaw)?qBandRaw:null; // lower case accepted; junk falls back to the age
+const qAgeN=parseInt(Q.get('age'),10),qAge=qAgeN>=1&&qAgeN<=99?qAgeN:null;
+const EMBED=!!(qBand||qAge);                         // the app owns band and level: no in-game band or level picker, replays keep the URL level
+
+/* ── strings ─────────────────────────────── */
+const STR={
+ko:{title:'공룡 화석 발굴',sub:'삽으로 파서 뼈를 찾고, 공룡을 맞춰 봐!',pick:'어떤 공룡을 찾을까?',start:'⛏ 발굴 시작',detect:'탐지기',found:'뼈 발견!',next:'다음 ➜',result:'탐험 결과',foundBones:'발견한 뼈',assemble:'🦴 뼈 맞추기 ➜',done:'발굴 완료!',again:'다시 하기',other:'다른 공룡',
+ hello:n=>`안녕${n?' '+josa(n,'아','야'):''}! 오늘은 땅속에 숨은 공룡 뼈를 찾아보자.`,
+ age:'몇 살이야?',bandBtn:{K:'5–7살',E1:'8–9살',E2:'10–11살',E3:'12–13살'},pickBand:'먼저 나이를 골라 줘!',parentBand:'부모님이 고른 묶음',
+ bandNote:(f,t)=>`부모님께: ${f} 레벨 5를 쉽게 해냈어요. 왼쪽 위 ‘나이 바꾸기’를 2초 누르면 ${t} 묶음으로 올릴 수 있어요.`,
+ gate:'나이 바꾸기 (부모님)',gateTitle:'부모님 설정',gateAge:'아이 나이',gateBand:'놀이 묶음',gateMatch:'나이에 맞춤',gateClose:'닫기',
+ gateHelp:'놀이 묶음을 바꾸면 아이 화면에 ‘부모님이 고른 묶음’이 표시돼요. 레벨은 묶음마다 따로 저장돼요.',
+ digIntro:'칸을 톡 누르면 삽으로 파. 숫자는 옆 여덟 칸에 뼈 조각이 몇 개 숨었는지 알려 줘!',
+ decoyIntro:'조심! 다른 공룡 뼈도 섞여 묻혀 있어. 숫자는 다른 공룡 뼈도 함께 세.',
+ decoyIntroHidden:'조심! 다른 공룡 뼈가 섞여 있을 수 있어. 숫자는 그 뼈도 함께 세. 맞출 때 모양을 잘 봐.',
+ noScanIntro:'이번엔 탐지기가 없어. 숫자만 보고 뼈를 찾아보자!',
+ zero:'0이면 옆에 뼈가 없어. 숫자가 크면 뼈가 가까워!',num:n=>`${n}! 옆 여덟 칸 중에 뼈 조각이 ${n}개 숨어 있어.`,
+ rock:'돌은 단단해서 두 번 파야 해.',partial:'뼈가 보인다! 옆 칸도 파 보자.',
+ foundLine:n=>`${josa(n,'을','를')} 찾았어!`,low:'삽이 얼마 안 남았어. 숫자를 잘 보고 파 보자.',
+ refill:'삽이 다 떨어졌구나. 내가 8개 더 줄게!',more:'삽 4개 더 줄게. 숫자를 잘 보고 파 보자.',
+ detected:'탐지기가 뼈 있는 칸을 알려 줬어. 반짝이는 칸을 파 봐!',noDetect:'탐지기는 다 썼어.',
+ decoyTag:'다른 공룡 뼈!',decoyName:(d,b)=>`${d} ${b}`,decoyFact:'우리 공룡 뼈가 아니야. 모양이 달라! 뼈 맞추기 때 ‘다른 공룡 뼈’ 상자에 넣어 줘.',decoyLine:'어? 이건 다른 공룡 뼈야!',boxSlot:'다른 뼈',
+ allFound:'뼈를 다 찾았어! 이제 공룡을 맞춰 보자.',
+ asmIntro:g=>g?'뼈를 끌어서 흐린 자리에 딱 맞게 놓아 봐.':'뼈를 끌어서 제자리에 놓아 봐. 공룡 모양을 떠올려 봐!',
+ ghostHint:n=>n===1?'틀리면 흐린 뼈대를 보여 줄게.':n===2?'두 번 틀리면 흐린 뼈대를 보여 줄게.':'세 번 틀리면 흐린 뼈대를 보여 줄게.',
+ ghostOn:'흐린 뼈대를 보여 줄게. 모양을 맞춰 봐!',
+ exactIntro:'이번엔 자리를 정확히 맞춰야 딱 붙어.',
+ boxIntro:'우리 공룡 뼈가 아닌 건 ‘다른 공룡 뼈’ 상자에 넣어 줘.',box:'다른 공룡 뼈',boxOk:'맞아, 다른 공룡 뼈야!',boxWrong:'이건 우리 공룡 뼈야. 자리를 찾아 줘.',decoyOnSlot:'이 뼈는 모양이 달라. 우리 공룡 뼈가 아니야!',boxLeft:'남은 뼈는 우리 공룡 뼈가 아니야. 상자에 넣어 줘!',
+ turnIntro:'이번엔 뼈가 돌아가 있어. 뼈를 톡 누르면 돌아가. 방향을 맞춰서 놓아 봐!',turnWrong:'자리는 맞는데 방향이 달라. 톡 눌러서 돌려 봐!',
+ wrongSlot:'거긴 아니야. 모양을 보고 다른 자리를 찾아볼까?',snap:'딱 맞았어!',
+ complete:d=>`${d} 완성! 크앙!`,quiz:d=>`이제 ${d}에 대해 하나만 물어볼게.`,right:'맞았어! 대단한걸.',rightLate:'이번엔 찾았어! 왜 그런지 같이 보자.',wrong:'여기 한 번 더 보자.',
+ quizTip:{E1:'이번 문제는 셈 문제야. 종이에 적어서 풀어도 좋아.',E2:'이번 문제는 종이에 적으며 풀어도 좋아.',E3:'이번 문제는 식을 적어 보면 쉬워져.'},
+ doneMsg:s=>s===3?'별 세 개! 완벽한 발굴이야.':s===2?'별 두 개! 아주 잘했어.':'별 하나! 다음엔 더 잘할 수 있어.',
+ starTip:'별: 뼈 다 찾기 · 삽 아껴 쓰기 · 문제 한 번에 맞히기',roar:'크앙!',
+ lvl:'레벨',lvlName:n=>`레벨 ${n}`,
+ hint:L=>{const p=[`땅 ${L.cols*L.rows}칸`,`뼈 ${L.bones.length}개`+(L.decoys?` + 다른 공룡 뼈 ${L.decoys}개`:'')];p.push(L.rocks?`돌 ${L.rocks}개`:'돌 없음');p.push(L.detects?`탐지기 ${L.detects}번`:'탐지기 없음');p.push(L.ghost?'흐린 뼈대':L.help===1?'틀리면 흐린 뼈대':`${L.help}번 틀리면 흐린 뼈대`);if(L.turn)p.push('돌아간 뼈');return p.join(' · ');},
+ feel:'어땠어?',hard:'어려웠어',good:'딱 좋아',easy:'쉬웠어',nextUp:n=>`다음엔 레벨 ${n}${ro(n)} 해 보자!`,nextDown:n=>`다음엔 레벨 ${n}${ro(n)} 천천히 가자.`,nextSame:'이 레벨 그대로 한 번 더!',
+ embedEasy:'쉬웠구나! 알려 줘서 고마워.',embedHard:'어려웠구나! 알려 줘서 고마워. 천천히 해도 괜찮아.',
+ bandUp:'레벨 5 완성! 다음 묶음은 부모님과 정해 보자.',maxLevel:'레벨 5 완성! 가장 높은 단계까지 해냈어.',
+ gateAsk:'부모님 확인: 태어난 해를 네 자리로 눌러 주세요.',gateWrong:'다시 눌러 주세요.'},
+en:{title:'Fossil Dig',sub:'Dig up the bones and build the dinosaur!',pick:'Which dinosaur will you find?',start:'⛏ Dig!',detect:'Scanner',found:'Bone found!',next:'Next ➜',result:'Dig results',foundBones:'Bones you found',assemble:'🦴 Build the skeleton ➜',done:'Dig complete!',again:'Play again',other:'Another dino',
+ hello:n=>`Hi${n?' '+n:''}! Today we will find dinosaur bones hidden in the ground.`,
+ age:'How old are you?',bandBtn:{K:'Ages 5–7',E1:'Ages 8–9',E2:'Ages 10–11',E3:'Ages 12–13'},pickBand:'Pick your age first!',parentBand:'chosen by a parent',
+ bandNote:(f,t)=>`For parents: ${f}, level 5 was easy. Hold “Change age” (top left) for 2 seconds to move up to ${t}.`,
+ gate:'Change age (parents)',gateTitle:'Parent settings',gateAge:'Child’s age',gateBand:'Play group',gateMatch:'Match the age',gateClose:'Close',
+ gateHelp:'If you change the play group, the child’s screens say “chosen by a parent”. Levels are saved for each group.',
+ digIntro:'Tap a square to dig. A number tells how many bone pieces hide in the eight squares around it.',
+ decoyIntro:'Careful! Bones from another dinosaur are buried here too. The numbers count those bones as well.',
+ decoyIntroHidden:'Careful! There may be bones from another dinosaur. The numbers count them too. Check the shapes when you build.',
+ noScanIntro:'No scanner this time. Use the numbers to find the bones!',
+ zero:'A 0 means no bones next to it. A bigger number means bones are close!',num:n=>`${n}! ${n} bone piece${n>1?'s are':' is'} hiding in the eight squares around it.`,
+ rock:'Rocks are hard. Dig them twice.',partial:'A bone! Dig the squares next to it.',
+ foundLine:n=>`You found the ${n}!`,low:'Only a few shovels left. Read the numbers carefully.',
+ refill:'Out of shovels? Here, take 8 more!',more:'Here are 4 more shovels. Read the numbers carefully.',
+ detected:'The scanner found a bone square. Dig the glowing one!',noDetect:'The scanner is used up.',
+ decoyTag:'Not our dinosaur!',decoyName:(d,b)=>`${d} ${b}`,decoyFact:'This bone is not from our dinosaur. The shape is different! When you build, put it in the “Not ours” box.',decoyLine:'Hey, this bone is from another dinosaur!',boxSlot:'Not ours',
+ allFound:'All bones found! Now let\'s build the dinosaur.',
+ asmIntro:g=>g?'Drag each bone onto its faded spot.':'Drag each bone to its place. Think of the dinosaur\'s shape!',
+ ghostHint:n=>n===1?'If you miss, I will show the faded skeleton.':n===2?'If you miss twice, I will show the faded skeleton.':'If you miss three times, I will show the faded skeleton.',
+ ghostOn:'Here is the faded skeleton. Match the shapes!',
+ exactIntro:'This time each bone has to go exactly on its spot.',
+ boxIntro:'Put the bones that are not ours in the “Not ours” box.',box:'Not ours',boxOk:'Right, that one is not ours!',boxWrong:'That one is ours. Find its spot!',decoyOnSlot:'That shape does not match. It is not from our dinosaur!',boxLeft:'The bones left over are not ours. Put them in the box!',
+ turnIntro:'The bones are turned this time. Tap a bone to turn it, then drop it the right way round.',turnWrong:'Right spot, wrong way round. Tap it to turn it!',
+ wrongSlot:'Not there. Look at the shape and try another spot.',snap:'Perfect fit!',
+ complete:d=>`${d} complete! ROAR!`,quiz:d=>`Now one question about ${d}.`,right:'Correct! Amazing.',rightLate:'You found it this time! Let\'s see why.',wrong:'Let\'s look again.',
+ quizTip:{E1:'This is a number puzzle. You can work it out on paper.',E2:'You can write this one down if it helps.',E3:'Writing the steps makes this one easier.'},
+ doneMsg:s=>s===3?'Three stars! A perfect dig.':s===2?'Two stars! Great work.':'One star! You will do even better next time.',
+ starTip:'Stars: find all bones · save shovels · answer right on the first try',roar:'ROAR!',
+ lvl:'Level',lvlName:n=>`Level ${n}`,
+ hint:L=>{const p=[`${L.cols*L.rows}-square field`,`${L.bones.length} bones`+(L.decoys?` + ${L.decoys} not ours`:'')];p.push(L.rocks?`${L.rocks} rocks`:'no rocks');p.push(L.detects?`${L.detects} scan${L.detects>1?'s':''}`:'no scanner');p.push(L.ghost?'faded skeleton':L.help===1?'faded skeleton after a miss':`faded skeleton after ${L.help} misses`);if(L.turn)p.push('turned bones');return p.join(' · ');},
+ feel:'How was it?',hard:'Too hard',good:'Just right',easy:'Too easy',nextUp:n=>`Next time, try level ${n}!`,nextDown:n=>`Next time, take it slow at level ${n}.`,nextSame:'Same level, one more time!',
+ embedEasy:'Too easy? Thanks for telling me!',embedHard:'Too hard? Thanks for telling me. Going slowly is okay.',
+ bandUp:'Level 5 complete! Choose the next age group with your parents.',maxLevel:'Level 5 complete! You reached the very top.',
+ gateAsk:'Grown-ups: tap the year you were born (4 digits).',gateWrong:'Please try again.'}};
+const T=()=>STR[LANG];
+
+/* ── FIELD[d−1] (LEVELS.md §5.1 v2, d 1..20; d1–5 = the K levels, unchanged) ──
+   ghost: faded-skeleton alpha from the start (only K1–K4) · help: wrong drops before the faded skeleton (α .16) appears
+   turn: tray pieces arrive turned 90/180/270° (d13+) · decoys: bones from another dinosaur (d9+)
+   named: the decoy pop-up says "다른 공룡 뼈!" (d9–14); from d15 it pops up as an ordinary bone (sort by shape)
+   shovels: LEVELS.md start values; see the tuning note below the table */
+const B3=['skull','spine','leg'],B4=['skull','spine','ribs','leg'],B5=['skull','spine','ribs','leg','tail'];
+const FIELD=[
+ {d:1, cols:5,rows:4,bones:B3,decoys:0,named:true, rocks:0, shovels:24,detects:5,snap:95,ghost:.30,help:0,turn:false},
+ {d:2, cols:6,rows:4,bones:B4,decoys:0,named:true, rocks:3, shovels:26,detects:3,snap:85,ghost:.22,help:0,turn:false},
+ {d:3, cols:7,rows:5,bones:B5,decoys:0,named:true, rocks:6, shovels:28,detects:3,snap:80,ghost:.22,help:0,turn:false},
+ {d:4, cols:7,rows:5,bones:B5,decoys:0,named:true, rocks:8, shovels:22,detects:2,snap:62,ghost:.16,help:0,turn:false},
+ {d:5, cols:8,rows:6,bones:B5,decoys:0,named:true, rocks:10,shovels:24,detects:1,snap:52,ghost:0,  help:1,turn:false},
+ {d:6, cols:8,rows:6,bones:B5,decoys:0,named:true, rocks:11,shovels:25,detects:1,snap:50,ghost:0,  help:1,turn:false},
+ {d:7, cols:9,rows:6,bones:B5,decoys:0,named:true, rocks:12,shovels:26,detects:1,snap:48,ghost:0,  help:1,turn:false},
+ {d:8, cols:9,rows:6,bones:B5,decoys:0,named:true, rocks:13,shovels:27,detects:1,snap:46,ghost:0,  help:1,turn:false},
+ {d:9, cols:9,rows:6,bones:B5,decoys:1,named:true, rocks:13,shovels:28,detects:1,snap:45,ghost:0,  help:1,turn:false},
+ {d:10,cols:9,rows:6,bones:B5,decoys:1,named:true, rocks:14,shovels:29,detects:1,snap:44,ghost:0,  help:1,turn:false},
+ {d:11,cols:9,rows:6,bones:B5,decoys:1,named:true, rocks:14,shovels:31,detects:0,snap:43,ghost:0,  help:1,turn:false},
+ {d:12,cols:9,rows:6,bones:B5,decoys:1,named:true, rocks:15,shovels:31,detects:0,snap:42,ghost:0,  help:1,turn:false},
+ {d:13,cols:9,rows:6,bones:B5,decoys:1,named:true, rocks:16,shovels:32,detects:0,snap:41,ghost:0,  help:1,turn:true},
+ {d:14,cols:9,rows:6,bones:B5,decoys:2,named:true, rocks:16,shovels:35,detects:0,snap:40,ghost:0,  help:1,turn:true},
+ {d:15,cols:9,rows:6,bones:B5,decoys:2,named:false,rocks:17,shovels:35,detects:0,snap:39,ghost:0,  help:1,turn:true},
+ {d:16,cols:9,rows:6,bones:B5,decoys:3,named:false,rocks:18,shovels:38,detects:0,snap:38,ghost:0,  help:1,turn:true},
+ {d:17,cols:9,rows:6,bones:B5,decoys:3,named:false,rocks:19,shovels:39,detects:0,snap:37,ghost:0,  help:1,turn:true},
+ {d:18,cols:9,rows:6,bones:B5,decoys:3,named:false,rocks:20,shovels:39,detects:0,snap:36,ghost:0,  help:1,turn:true},
+ {d:19,cols:9,rows:6,bones:B5,decoys:3,named:false,rocks:21,shovels:40,detects:0,snap:35,ghost:0,  help:1,turn:true},
+ {d:20,cols:9,rows:6,bones:B5,decoys:3,named:false,rocks:22,shovels:40,detects:0,snap:34,ghost:0,  help:1,turn:true}];
+/* shovel tuning (LEVELS.md §5.1 footnote, C:/dev/gamecheck/fossil-bot.mjs, 300–600 games per d): with the table start values
+   d6–15 end with a median of 1–3 shovels left, but E3 ended at 0 or −1 (d17), so d16–19 were raised to 38/39/39/40
+   (table: 37/37/38/39). Every d6–20 now ends with a median of 1–3 left. */
+
+/* ── dinosaurs ───────────────────────────── */
+const BONE_NAMES={ko:{skull:'두개골',spine:'등뼈',ribs:'갈비뼈',leg:'다리뼈',tail:'꼬리뼈'},en:{skull:'skull',spine:'backbone',ribs:'ribs',leg:'leg bone',tail:'tail bone'}};
+const DINOS=[
+ {id:'trex',name:{ko:'티라노사우루스',en:'T. rex'},color:'#8FC08A',
+  bones:[{k:'skull',fw:2,fh:1},{k:'spine',fw:3,fh:1},{k:'ribs',fw:2,fh:1},{k:'leg',fw:1,fh:2},{k:'tail',fw:3,fh:1}],
+  slots:{skull:{x:212,y:262,r:-0.12,s:0.95},spine:{x:466,y:224,r:0,s:1},ribs:{x:460,y:330,r:0,s:1},leg:{x:598,y:428,r:0.05,s:0.95},tail:{x:762,y:236,r:-0.28,s:1}}},
+ {id:'tri',name:{ko:'트리케라톱스',en:'Triceratops'},color:'#F2B48B',
+  bones:[{k:'skull',fw:2,fh:2},{k:'spine',fw:3,fh:1},{k:'ribs',fw:2,fh:1},{k:'leg',fw:1,fh:2},{k:'tail',fw:2,fh:1}],
+  slots:{skull:{x:214,y:300,r:0,s:0.95},spine:{x:470,y:236,r:0,s:1},ribs:{x:462,y:342,r:0,s:1},leg:{x:600,y:440,r:0.05,s:0.9},tail:{x:748,y:262,r:-0.18,s:0.9}}},
+ {id:'steg',name:{ko:'스테고사우루스',en:'Stegosaurus'},color:'#B08AD6',
+  bones:[{k:'skull',fw:2,fh:1},{k:'spine',fw:3,fh:1},{k:'ribs',fw:2,fh:1},{k:'leg',fw:1,fh:2},{k:'tail',fw:3,fh:1}],
+  slots:{skull:{x:196,y:342,r:0.1,s:0.9},spine:{x:466,y:212,r:0,s:1},ribs:{x:456,y:338,r:0,s:1},leg:{x:598,y:440,r:0.05,s:0.9},tail:{x:766,y:290,r:-0.2,s:1}}}];
+const DINO_BY_ID={trex:DINOS[0],tri:DINOS[1],steg:DINOS[2]};
+
+/* ── content by band (LEVELS.md §5.3–5.4, verbatim) ── */
+const FACTS={
+K:{
+ trex:{ko:['이빨 하나가 바나나만큼 길었어.','앞다리가 아주 짧아서 손이 입에 안 닿았어.','몸길이가 12미터, 버스보다 길어.'],
+       en:['One tooth was as long as a banana.','Its arms were so short they could not reach its mouth.','It was 12 meters long, longer than a bus.']},
+ tri:{ko:['얼굴에 뿔이 세 개 있어. 이름도 “뿔 셋 얼굴”이라는 뜻이야.','목 뒤에 커다란 방패 같은 프릴이 있어.','이빨이 가위처럼 질긴 풀과 나뭇잎을 싹둑 잘랐어.'],
+      en:['It had three horns. Its name means “three-horned face”.','A big shield called a frill covered its neck.','Its teeth sliced tough plants like scissors.']},
+ steg:{ko:['등에 세운 판이 열일곱 개쯤 있었어.','꼬리 끝에 뾰족한 가시가 네 개 있어.','몸은 코끼리만큼 큰데 머리는 아주 작았어.'],
+       en:['It had about seventeen plates standing on its back.','Four sharp spikes grew at the tip of its tail.','Its body was as big as an elephant, but its head was very small.']}},
+E1:{
+ trex:{ko:['몸길이가 약 12 m야. 10 m 버스보다 2 m 더 길어.','이빨이 50개가 넘었어. 가장 큰 이빨은 뿌리까지 30 cm쯤이야.','앞다리는 1 m쯤이고, 손가락은 두 개였어.'],
+       en:['It was about 12 m long, 2 m longer than a 10 m bus.','It had more than 50 teeth. The biggest was about 30 cm long, root and all.','Its arms were about 1 m long, with two fingers on each hand.']},
+ tri:{ko:['몸길이가 약 9 m야. 티라노사우루스보다 3 m 짧아.','눈 위의 뿔 두 개는 1 m 가까이 자랐어.','티라노사우루스와 같은 때, 같은 곳에 살았어.'],
+      en:['It was about 9 m long, 3 m shorter than T. rex.','The two horns over its eyes grew almost 1 m long.','It lived at the same time and in the same place as T. rex.']},
+ steg:{ko:['몸길이가 9 m까지 자랐고, 등에 판이 17개 있었어.','판은 두 줄로 엇갈려 서 있었어.','꼬리 끝 가시 4개로 몸을 지켰어.'],
+       en:['It grew up to 9 m long and had 17 plates on its back.','The plates stood in two zigzag rows.','It defended itself with 4 spikes at the end of its tail.']}},
+E2:{
+ trex:{ko:['이빨이 두껍고 가장자리가 톱니처럼 깔쭉깔쭉해서 고기와 뼈를 자를 수 있었어.','몸무게는 약 8,000 kg이야. 코끼리 한 마리(약 6,000 kg)보다 무거웠어.','냄새를 맡는 뇌 부분이 커서 냄새를 아주 잘 맡았을 거래.'],
+       en:['Its teeth were thick with saw-like edges, made for cutting meat and bone.','It weighed about 8,000 kg, more than an elephant (about 6,000 kg).','The smell part of its brain was big, so it probably had a great sense of smell.']},
+ tri:{ko:['부리로 식물을 끊고, 줄지어 난 이빨 수백 개로 가위처럼 잘게 잘랐어.','공룡이 죽은 뒤 모래나 진흙에 빨리 묻혀야 뼈가 화석이 될 수 있어.','트리케라톱스 화석은 북아메리카에서 아주 많이 나와. 머리뼈만 수십 개야.'],
+      en:['It snipped plants with its beak and sliced them with hundreds of teeth in rows, like scissors.','A body has to be buried quickly in sand or mud for its bones to become fossils.','Lots of Triceratops fossils are found in North America, including dozens of skulls.']},
+ steg:{ko:['이빨이 작은 나뭇잎 모양이라 부드러운 식물을 먹었어.','쥐라기에 살았어. 티라노사우루스보다 훨씬 먼저 살았던 공룡이야.','화석은 흙과 모래가 층층이 쌓여 굳은 돌(퇴적암)에서 나와.'],
+       en:['Its small teeth were shaped like leaves, good for soft plants.','It lived in the Jurassic, long before T. rex.','Fossils are found in rock made of layers of mud and sand (sedimentary rock).']}},
+E3:{
+ trex:{ko:['중생대 백악기 끝 무렵, 약 6,800만~6,600만 년 전에 살았어.','큰 티라노사우루스의 넓적다리뼈(대퇴골)는 1.3 m가 넘어. 다리뼈 둘레를 재서 몸무게를 어림해.','티라노사우루스 이빨 자국이 난 트리케라톱스 뼈가 있어서, 티라노가 트리케라톱스를 먹었다는 걸 알아.'],
+       en:['It lived at the very end of the Cretaceous, about 68 to 66 million years ago.','A big T. rex thigh bone (femur) is over 1.3 m long. Scientists estimate body mass from how thick the leg bones are.','Triceratops bones with T. rex tooth marks show that T. rex ate Triceratops.']},
+ tri:{ko:['백악기 끝 무렵, 약 6,800만~6,600만 년 전 북아메리카에 살았어.','머리뼈가 2 m를 넘기도 해. 땅에 살았던 동물 가운데 손꼽히게 큰 머리야.','아기부터 어른까지 머리뼈가 여럿 나와서, 자라면서 뿔 방향과 프릴 모양이 바뀐 걸 알아.'],
+      en:['It lived in North America at the very end of the Cretaceous, about 68 to 66 million years ago.','Its skull could be over 2 m long, one of the largest heads of any land animal.','Skulls from babies to adults show that the horns and frill changed shape as it grew.']},
+ steg:{ko:['중생대 쥐라기 후기, 약 1억 5,500만~1억 4,500만 년 전에 살았어.','등판 속에 핏줄이 지나간 홈이 있어. 몸 온도를 맞추는 데 썼을 거라는 생각도 있지만, 아직 연구 중이야.','스테고사우루스 꼬리 가시 모양으로 구멍 난 알로사우루스 뼈가 있어. 가시를 무기로 썼다는 증거야.'],
+       en:['It lived in the Late Jurassic, about 155 to 145 million years ago.','Its plates have grooves where blood vessels ran. Some scientists think they helped control body heat, but this is still being studied.','An Allosaurus bone has a hole the shape of a Stegosaurus tail spike. That is evidence the spikes were weapons.']}}};
+
+const BONE_FACT={
+K:{ko:{skull:'두개골은 머리뼈야. 눈구멍이 보이지?',spine:'등뼈는 몸의 기둥이야. 마디가 쭉 이어져 있어.',ribs:'갈비뼈는 심장과 배를 지켜 줘.',leg:'다리뼈는 무거운 몸을 받치고 걷게 해 줘.',tail:'꼬리뼈는 끝으로 갈수록 작아지는 마디야.'},
+   en:{skull:'The skull is the head bone. Can you see the hole for the eye?',spine:'The backbone is the body’s pillar, made of many little pieces.',ribs:'Ribs protect the heart and belly.',leg:'Leg bones carry the heavy body and let it walk.',tail:'Tail bones get smaller and smaller toward the tip.'}},
+E1:{ko:{skull:'옆에서 본 머리뼈야. 눈구멍과 콧구멍을 찾아봐. 반대쪽에도 똑같이 있어.',spine:'등뼈는 짧은 뼈 마디 수십 개가 한 줄로 이어진 거야.',ribs:'갈비뼈는 왼쪽과 오른쪽이 하나씩 짝을 이뤄.',leg:'넓적다리뼈는 몸에서 가장 긴 뼈 가운데 하나야.',tail:'꼬리뼈 마디는 수십 개야. 끝으로 갈수록 작아져.'},
+    en:{skull:'This is the skull seen from the side. Find the eye hole and the nose hole. The other side has the same.',spine:'The backbone is dozens of short bones joined in a line.',ribs:'Ribs come in pairs, one on the left and one on the right.',leg:'The thigh bone is one of the longest bones in the body.',tail:'There are dozens of tail bones, smaller and smaller toward the tip.'}},
+E2:{ko:{skull:'이빨 모양을 보면 먹이를 알 수 있어. 톱니 달린 뾰족한 이빨은 고기, 잎 모양이나 가위처럼 자르는 이빨은 식물.',spine:'등뼈 마디 위로 솟은 돌기에 힘센 근육이 붙어서 무거운 몸을 받쳐.',ribs:'갈비뼈는 새장처럼 휘어서 폐와 심장을 감싸.',leg:'공룡 다리는 몸 바로 아래로 곧게 뻗어 있어. 옆으로 벌어진 도마뱀 다리와 달라.',tail:'긴 꼬리는 무거운 머리와 균형을 맞추는 시소 역할을 했어.'},
+    en:{skull:'Tooth shape tells what it ate: pointed, saw-edged teeth for meat; leaf-shaped or slicing teeth for plants.',spine:'Spines sticking up from each backbone piece held strong muscles that carried the heavy body.',ribs:'Ribs curve like a cage around the lungs and heart.',leg:'Dinosaur legs stood straight under the body, not sprawled out to the side like a lizard’s.',tail:'The long tail balanced the heavy head, like a seesaw.'}},
+E3:{ko:{skull:'머리뼈는 뼈 여러 개가 맞물려 생겼어. 큰 구멍들은 머리를 가볍게 하고 턱 근육이 붙을 자리를 만들어.',spine:'척추뼈는 목뼈·등뼈·엉치뼈·꼬리뼈로 나뉘어. 공룡은 엉치뼈가 세 개 이상 붙어 있어.',ribs:'갈비뼈 화석에 아문 자국이 있으면 다쳤다가 나았다는 증거야.',leg:'넓적다리뼈(대퇴골) 둘레를 재면 공룡 몸무게를 어림할 수 있어.',tail:'꼬리에 붙은 큰 근육이 넓적다리뼈를 뒤로 당겨서 걷고 뛰게 했어.'},
+    en:{skull:'A skull is many bones locked together. Its big openings make it lighter and give the jaw muscles room to attach.',spine:'Vertebrae are neck, back, hip (sacral) and tail bones. Dinosaurs have three or more hip vertebrae fused together.',ribs:'A healed break on a fossil rib is evidence the animal was hurt and recovered.',leg:'Measuring around the thigh bone (femur) lets scientists estimate body mass.',tail:'A big tail muscle pulled the thigh bone backward to power each step.'}}};
+
+// QUIZ[band][dino][tier][i]; tier 0 = L1–2, 1 = L3–4, 2 = L5; a = index of the right choice (ko.a === en.a)
+const QUIZ={
+K:{
+ trex:[
+  [{ko:{q:'티라노사우루스는 무엇을 먹었을까?',c:['풀','고기','열매','나뭇잎'],a:1,e:'뾰족한 이빨 보이지? 고기를 먹는 육식 공룡이야.'},
+    en:{q:'What did T. rex eat?',c:['Grass','Meat','Berries','Leaves'],a:1,e:'See the sharp teeth? It was a meat-eater.'},pic:{skull:'trex'}},
+   {ko:{q:'그림 속 티라노사우루스 이빨을 세어 봐. 모두 몇 개야?',c:['3개','4개','5개','6개'],a:2,e:'하나, 둘, 셋, 넷, 다섯! 5개야.'},
+    en:{q:'Count the T. rex teeth in the picture. How many are there?',c:['3','4','5','6'],a:2,e:'One, two, three, four, five! Five teeth.'},pic:{groups:[['tooth',5]]}}],
+  [{ko:{q:'티라노사우루스 이빨은 어떤 모양을 닮았을까?',c:['세모','동그라미','네모','별'],a:0,e:'끝이 뾰족한 세모 모양이야. 고기를 찢기 좋았어.'},
+    en:{q:'Which shape does a T. rex tooth look like?',c:['Triangle','Circle','Square','Star'],a:0,e:'A pointed triangle, good for tearing meat.'},pic:{skull:'trex'}},
+   {ko:{q:'위 상자에 이빨 4개, 아래 상자에 이빨 3개가 있어. 모두 몇 개야?',c:['6개','7개','8개','9개'],a:1,e:'위 상자부터 하나씩 세면 일곱! 모두 7개야.'},
+    en:{q:'The top box has 4 teeth and the bottom box has 3. How many teeth in all?',c:['6','7','8','9'],a:1,e:'Count them all, one by one: seven teeth.'},pic:{groups:[['tooth',4],['tooth',3]]}}],
+  [{ko:{q:'위 상자에 이빨 8개, 아래 상자에 이빨 7개가 있어. 모두 몇 개야?',c:['14개','15개','16개','17개'],a:1,e:'아래 상자에서 2개를 위로 옮기면 위 상자가 10개! 아래에 남은 5개를 더 세면 15개야.'},
+    en:{q:'The top box has 8 teeth and the bottom box has 7. How many teeth in all?',c:['14','15','16','17'],a:1,e:'Move 2 teeth up to make 10, then count on the 5 left: 15 teeth.'},pic:{groups:[['tooth',8],['tooth',7]]}},
+   {ko:{q:'위 상자에 이빨 13개, 아래 상자에 8개 있어. 위가 몇 개 더 많아?',c:['3개','4개','5개','6개'],a:2,e:'위아래 이빨을 하나씩 짝지어 봐. 짝이 없는 이빨이 5개야.'},
+    en:{q:'The top box has 13 teeth and the bottom box has 8. How many more are on top?',c:['3','4','5','6'],a:2,e:'Pair up the top and bottom teeth. Five teeth have no partner, so 5 more.'},pic:{groups:[['tooth',13],['tooth',8]]}}]],
+ tri:[
+  [{ko:{q:'트리케라톱스 얼굴에는 뿔이 몇 개 있을까?',c:['2개','3개','4개','1개'],a:1,e:'코 위에 하나, 눈 위에 둘. 모두 세 개야.'},
+    en:{q:'How many horns did Triceratops have on its face?',c:['2','3','4','1'],a:1,e:'One on the nose and two over the eyes: three in all.'},pic:{skull:'tri'}},
+   {ko:{q:'트리케라톱스는 무엇을 먹었을까?',c:['물고기','고기','곤충','풀과 나뭇잎'],a:3,e:'부리로 식물을 끊어 먹는 초식 공룡이야.'},
+    en:{q:'What did Triceratops eat?',c:['Fish','Meat','Insects','Plants'],a:3,e:'It snipped plants with its beak. It was a plant-eater.'},pic:{skull:'tri'}}],
+  [{ko:{q:'트리케라톱스 두 마리가 있어. 뿔을 모두 세면 몇 개일까?',c:['3개','5개','6개','8개'],a:2,e:'한 마리에 3개씩. 하나, 둘, 셋… 여섯! 모두 6개야.'},
+    en:{q:'Here are two Triceratops. How many horns in all?',c:['3','5','6','8'],a:2,e:'Three each. One, two, three… six! Six horns.'},pic:{skulls:2}},
+   {ko:{q:'트리케라톱스라는 이름은 무슨 뜻일까?',c:['뿔 셋 얼굴','긴 목 도마뱀','날개 도마뱀','큰 이빨'],a:0,e:'“뿔 셋 얼굴”이라는 뜻이야. 뿔이 세 개거든.'},
+    en:{q:'What does the name Triceratops mean?',c:['Three-horned face','Long-necked lizard','Winged lizard','Big tooth'],a:0,e:'It means “three-horned face”, because it had three horns.'},pic:{skull:'tri'}}],
+  [{ko:{q:'위 상자에 뿔 화석 7개, 아래 상자에 6개가 있어. 모두 몇 개야?',c:['12개','11개','14개','13개'],a:3,e:'아래 상자에서 3개를 위로 옮기면 위 상자가 10개! 남은 3개를 더 세면 13개야.'},
+    en:{q:'The top box has 7 horn fossils and the bottom box has 6. How many in all?',c:['12','11','14','13'],a:3,e:'Move 3 up to make 10, then count on the 3 left: 13.'},pic:{groups:[['horn',7],['horn',6]]}},
+   {ko:{q:'이빨 화석 14개 중 6개를 박물관에 보냈어. 몇 개가 남았을까?',c:['6개','7개','8개','9개'],a:2,e:'줄이 그어지지 않은 이빨을 세어 봐. 8개가 남았어.'},
+    en:{q:'You had 14 Triceratops tooth fossils and sent 6 to a museum. How many are left?',c:['6','7','8','9'],a:2,e:'Count the teeth that are not crossed out: 8 are left.'},pic:{take:['tooth',14,6]}}]],
+ steg:[
+  [{ko:{q:'스테고사우루스 꼬리 끝에는 가시가 몇 개 있을까?',c:['4개','2개','3개','5개'],a:0,e:'꼬리 끝에 뾰족한 가시가 네 개 있어.'},
+    en:{q:'How many spikes did Stegosaurus have at the end of its tail?',c:['4','2','3','5'],a:0,e:'Four sharp spikes at the tip of its tail.'},pic:{tail:'steg'}},
+   {ko:{q:'위 상자는 등판, 아래 상자는 꼬리 가시야. 어느 쪽이 더 많아?',c:['꼬리 가시','등판','똑같아','알 수 없어'],a:1,e:'등판 5개, 꼬리 가시 3개. 등판이 더 많아.'},
+    en:{q:'The top box has plates and the bottom box has tail spikes. Which are there more of?',c:['Spikes','Plates','Same number','Can’t tell'],a:1,e:'Five plates and three spikes. There are more plates.'},pic:{groups:[['plate',5],['spike',3]]}}],
+  [{ko:{q:'스테고사우루스 등판을 하나씩 세어 봐. 모두 몇 개야?',c:['15개','16개','17개','18개'],a:2,e:'열까지 세고, 열하나, 열둘… 열일곱! 17개야.'},
+    en:{q:'Count the Stegosaurus plates one by one. How many are there?',c:['15','16','17','18'],a:2,e:'Count to ten, then eleven, twelve… seventeen! 17 plates.'},pic:{groups:[['plate',17]]}},
+   {ko:{q:'스테고사우루스 등판은 몇 줄로 서 있을까?',c:['1줄','2줄','3줄','4줄'],a:1,e:'판은 두 줄로 엇갈려 서 있어.'},
+    en:{q:'How many rows of plates did Stegosaurus have?',c:['1','2','3','4'],a:1,e:'The plates stood in two zigzag rows.'},pic:{rows2:1}}],
+  [{ko:{q:'위는 등판 17개, 아래는 꼬리 가시 4개야. 등판이 몇 개 더 많아?',c:['11개','12개','14개','13개'],a:3,e:'가시 4개와 등판 4개를 짝지어 봐. 짝이 없는 등판이 13개야.'},
+    en:{q:'The top box has 17 plates and the bottom box has 4 spikes. How many more plates?',c:['11','12','14','13'],a:3,e:'Pair each spike with a plate. 13 plates have no partner.'},pic:{groups:[['plate',17],['spike',4]]}},
+   {ko:{q:'등판 화석을 어제 9개, 오늘 8개 찾았어. 모두 몇 개야?',c:['15개','16개','17개','18개'],a:2,e:'오늘 찾은 것 중 1개를 옮겨 10을 만들고, 남은 7개를 더 세면 17개! 스테고사우루스 한 마리 등판 수와 같아.'},
+    en:{q:'You found 9 plate fossils yesterday and 8 today. How many in all?',c:['15','16','17','18'],a:2,e:'Move 1 to make 10, then count on the 7 left: 17. That is as many plates as one Stegosaurus has!'},pic:{groups:[['plate',9],['plate',8]]}}]]},
+E1:{
+ trex:[
+  [{ko:{q:'발굴단이 티라노사우루스 이빨 화석을 오전에 27개, 오후에 15개 찾았어. 모두 몇 개일까?',c:['32개','42개','43개','312개'],a:1,e:'일의 자리 7 + 5 = 12. 10은 십의 자리로 올려. 20 + 10 + 10 = 40, 그래서 42개야.'},
+    en:{q:'The dig team found 27 T. rex tooth fossils in the morning and 15 in the afternoon. How many in all?',c:['32','42','43','312'],a:1,e:'Ones: 7 + 5 = 12, so carry the 10. Tens: 20 + 10 + 10 = 40. That makes 42.'}},
+   {ko:{q:'박물관 가게에서 티라노사우루스 엽서는 70원, 이빨 스티커는 50원이야. 둘 다 사면 모두 얼마일까?',c:['12원','110원','120원','130원'],a:2,e:'10원짜리 7개와 5개, 모두 12개야. 10원 열 개는 100원이니까 120원이야.'},
+    en:{q:'At the museum shop, a T. rex postcard costs 70 won and a tooth sticker costs 50 won. How much for both?',c:['12 won','110 won','120 won','130 won'],a:2,e:'That is 7 and 5 ten-won coins, 12 in all. Ten of them make 100 won, so 120 won.'}}],
+  [{ko:{q:'티라노사우루스는 약 12 m, 트리케라톱스는 약 9 m, 스테고사우루스는 약 9 m야. 세 공룡이 한 줄로 서면 모두 몇 m일까?',c:['30 m','21 m','39 m','29 m'],a:0,e:'12 + 9 = 21, 21 + 9 = 30. 모두 30 m야.'},
+    en:{q:'T. rex was about 12 m long, Triceratops about 9 m and Stegosaurus about 9 m. If they stood nose to tail, how long would the line be?',c:['30 m','21 m','39 m','29 m'],a:0,e:'12 + 9 = 21, and 21 + 9 = 30. About 30 m.'}},
+   {ko:{q:'티라노사우루스의 가장 큰 이빨은 뿌리까지 약 30 cm야. 이만한 이빨 3개를 한 줄로 놓으면 몇 cm일까?',c:['33 cm','60 cm','93 cm','90 cm'],a:3,e:'30 + 30 + 30 = 90. 90 cm야. 1 m에서 10 cm 모자라.'},
+    en:{q:'The biggest T. rex tooth was about 30 cm long, root and all. If you lined up 3 teeth that size, how long would the line be?',c:['33 cm','60 cm','93 cm','90 cm'],a:3,e:'30 + 30 + 30 = 90 cm, just 10 cm short of 1 m.'}}],
+  [{ko:{q:'박물관 가게에서 티라노사우루스 열쇠고리가 650원이야. 1,000원을 내면 거스름돈은 얼마일까?',c:['250원','350원','450원','300원'],a:1,e:'650원에서 50원을 더하면 700원, 300원을 더하면 1,000원. 50 + 300 = 350원이야.'},
+    en:{q:'A T. rex key ring costs 650 won. You pay with 1,000 won. How much change do you get?',c:['250 won','350 won','450 won','300 won'],a:1,e:'Count up from 650: 50 more makes 700, then 300 more makes 1,000. 50 + 300 = 350 won.'}},
+   {ko:{q:'티라노사우루스 이빨 모형이 한 상자에 25개씩 들어 있어. 4상자를 사면 모두 몇 개일까?',c:['29개','90개','100개','125개'],a:2,e:'25 + 25 = 50, 50 + 50 = 100. 모두 100개야.'},
+    en:{q:'A box holds 25 model T. rex teeth. How many teeth are in 4 boxes?',c:['29','90','100','125'],a:2,e:'25 + 25 = 50, and 50 + 50 = 100.'}}]],
+ tri:[
+  [{ko:{q:'트리케라톱스는 약 9 m, 티라노사우루스는 약 12 m야. 두 공룡이 한 줄로 서면 모두 몇 m일까?',c:['3 m','19 m','21 m','22 m'],a:2,e:'12 + 8 = 20, 1을 더하면 21. 모두 21 m야.'},
+    en:{q:'Triceratops was about 9 m long and T. rex about 12 m. If they stood nose to tail, how long would the line be?',c:['3 m','19 m','21 m','22 m'],a:2,e:'12 + 8 = 20, and 1 more is 21 m.'}},
+   {ko:{q:'트리케라톱스 이빨 모형이 10개씩 4봉지와 낱개 7개 있어. 낱개 5개를 더 받으면 모두 몇 개일까?',c:['52개','42개','62개','47개'],a:0,e:'낱개 7 + 5 = 12. 10개는 한 봉지로 묶어. 10개씩 5봉지와 낱개 2개, 52개야.'},
+    en:{q:'You have 4 bags of 10 model Triceratops teeth and 7 loose ones. Then you get 5 more loose teeth. How many in all?',c:['52','42','62','47'],a:0,e:'Loose: 7 + 5 = 12, so make one more bag of 10. That is 5 bags of 10 and 2 loose: 52.'}}],
+  [{ko:{q:'트리케라톱스 6마리가 있어. 뿔은 모두 몇 개일까?',c:['18개','9개','24개','12개'],a:0,e:'3씩 여섯 번 뛰어 세기: 3, 6, 9, 12, 15, 18. 모두 18개야.'},
+    en:{q:'There are 6 Triceratops. How many horns do they have in all?',c:['18','9','24','12'],a:0,e:'Count by 3s six times: 3, 6, 9, 12, 15, 18. That is 18 horns.'}},
+   {ko:{q:'트리케라톱스는 이빨이 아주 많았어. 이빨 모형 72개 중 38개를 진열했어. 남은 모형은 몇 개일까?',c:['46개','110개','44개','34개'],a:3,e:'72 − 30 = 42, 42 − 8 = 34. 34개가 남았어.'},
+    en:{q:'Triceratops had lots of teeth. You have 72 model teeth and put 38 on display. How many are left?',c:['46','110','44','34'],a:3,e:'72 − 30 = 42, then 42 − 8 = 34.'}}],
+  [{ko:{q:'발굴단이 트리케라톱스 뼈 조각을 머리 쪽에서 186개, 몸 쪽에서 247개 찾았어. 모두 몇 조각일까?',c:['433조각','323조각','533조각','423조각'],a:0,e:'일의 자리 6 + 7 = 13, 십의 자리 8 + 4 + 1 = 13, 백의 자리 1 + 2 + 1 = 4. 모두 433조각이야.'},
+    en:{q:'The dig team found 186 Triceratops bone pieces near the head and 247 near the body. How many pieces in all?',c:['433','323','533','423'],a:0,e:'Ones: 6 + 7 = 13. Tens: 8 + 4 + 1 = 13. Hundreds: 1 + 2 + 1 = 4. That makes 433.'}},
+   {ko:{q:'트리케라톱스 눈 위 뿔은 1 m 가까이 자랐어. 96 cm 뿔 화석과 87 cm 뿔 화석을 이으면 모두 몇 cm일까?',c:['173 cm','183 cm','193 cm','9 cm'],a:1,e:'96 + 4 = 100, 87 − 4 = 83. 100 + 83 = 183 cm, 1 m 83 cm야.'},
+    en:{q:'The horns over a Triceratops’s eyes grew almost 1 m long. If you put a 96 cm horn fossil and an 87 cm horn fossil end to end, how long is that?',c:['173 cm','183 cm','193 cm','9 cm'],a:1,e:'96 + 4 = 100 and 87 − 4 = 83, so 100 + 83 = 183 cm. That is 1 m 83 cm.'}}]],
+ steg:[
+  [{ko:{q:'스테고사우루스 등판은 17개, 꼬리 가시는 4개야. 모두 몇 개일까?',c:['21개','13개','20개','31개'],a:0,e:'17 + 3 = 20, 1을 더하면 21개야.'},
+    en:{q:'Stegosaurus had 17 plates and 4 tail spikes. How many is that in all?',c:['21','13','20','31'],a:0,e:'17 + 3 = 20, and 1 more is 21.'}},
+   {ko:{q:'스테고사우루스 두 마리가 있어. 한 마리 등판은 17개야. 두 마리 등판을 모두 세면 몇 개일까?',c:['24개','34개','27개','44개'],a:1,e:'일의 자리 7 + 7 = 14, 10은 올려. 10 + 10 + 10 = 30, 30 + 4 = 34개야.'},
+    en:{q:'There are two Stegosaurus, each with 17 plates. How many plates in all?',c:['24','34','27','44'],a:1,e:'Ones: 7 + 7 = 14, so carry the 10. Tens: 10 + 10 + 10 = 30. 30 + 4 = 34.'}}],
+  [{ko:{q:'스테고사우루스 꼬리 가시는 4개야. 스테고사우루스 6마리의 꼬리 가시는 모두 몇 개일까?',c:['28개','24개','20개','10개'],a:1,e:'4씩 여섯 번 뛰어 세기: 4, 8, 12, 16, 20, 24. 모두 24개야.'},
+    en:{q:'Stegosaurus had 4 tail spikes. How many spikes do 6 Stegosaurus have in all?',c:['28','24','20','10'],a:1,e:'Count by 4s six times: 4, 8, 12, 16, 20, 24.'}},
+   {ko:{q:'스테고사우루스 꼬리 가시 화석 두 개를 쟀더니 86 cm와 59 cm였어. 몇 cm 차이일까?',c:['27 cm','33 cm','37 cm','145 cm'],a:0,e:'86 − 50 = 36, 36 − 9 = 27. 27 cm 차이야.'},
+    en:{q:'You measure two Stegosaurus tail-spike fossils: 86 cm and 59 cm. What is the difference?',c:['27 cm','33 cm','37 cm','145 cm'],a:0,e:'86 − 50 = 36, then 36 − 9 = 27 cm.'}}],
+  [{ko:{q:'스테고사우루스 한 마리 등판은 17개야. 세 마리면 등판이 모두 몇 개일까?',c:['20개','41개','54개','51개'],a:3,e:'17 + 17 = 34, 34 + 17 = 51. 모두 51개야.'},
+    en:{q:'One Stegosaurus had 17 plates. How many plates do 3 Stegosaurus have?',c:['20','41','54','51'],a:3,e:'17 + 17 = 34, and 34 + 17 = 51.'}},
+   {ko:{q:'스테고사우루스 등판 모양 쿠키가 한 개 270원이야. 1,000원으로 3개를 사면 거스름돈은 얼마일까?',c:['810원','290원','190원','730원'],a:2,e:'270 + 270 + 270 = 810원. 1,000 − 810 = 190원이야.'},
+    en:{q:'A Stegosaurus-plate cookie costs 270 won. You buy 3 and pay with 1,000 won. How much change do you get?',c:['810 won','290 won','190 won','730 won'],a:2,e:'270 + 270 + 270 = 810 won, and 1,000 − 810 = 190 won.'}}]]},
+E2:{
+ trex:[
+  [{ko:{q:'티라노사우루스 몸무게는 약 8,000 kg이야. 몸무게가 약 2,000 kg인 큰 자동차 몇 대만큼 무거울까?',c:['2대','4대','6대','40대'],a:1,e:'8 ÷ 2 = 4니까 8,000 ÷ 2,000 = 4. 큰 자동차 4대만큼 무거웠어.'},
+    en:{q:'T. rex weighed about 8,000 kg. A big car weighs about 2,000 kg. T. rex was about as heavy as how many big cars?',c:['2','4','6','40'],a:1,e:'8 ÷ 2 = 4, so 8,000 ÷ 2,000 = 4. About as heavy as 4 big cars.'}},
+   {ko:{q:'티라노사우루스 이빨 모형 42개의 1/6을 친구에게 줬어. 몇 개를 줬을까?',c:['36개','8개','7개','6개'],a:2,e:'42를 똑같이 6묶음으로 나누면 한 묶음은 7개야. 42 ÷ 6 = 7.'},
+    en:{q:'You give 1/6 of your 42 model T. rex teeth to a friend. How many teeth is that?',c:['36','8','7','6'],a:2,e:'Split 42 into 6 equal groups: each group has 7. 42 ÷ 6 = 7.'}}],
+  [{ko:{q:'9시 40분에 티라노사우루스 머리뼈를 파기 시작해서 1시간 35분 뒤에 다 꺼냈어. 몇 시 몇 분이었을까?',c:['10시 15분','11시 5분','11시 15분','12시 15분'],a:2,e:'9시 40분 + 1시간 = 10시 40분. 20분 뒤 11시, 15분 더 가면 11시 15분이야.'},
+    en:{q:'The team started digging up a T. rex skull at 9:40 and finished 1 hour 35 minutes later. What time was it?',c:['10:15','11:05','11:15','12:15'],a:2,e:'9:40 + 1 hour = 10:40. 20 minutes more is 11:00, and 15 more is 11:15.'}},
+   {ko:{q:'티라노사우루스 이빨 모형 60개를 4상자에 똑같이 나눠 담으면 한 상자에 몇 개일까?',c:['15개','12개','14개','20개'],a:0,e:'40 ÷ 4 = 10, 20 ÷ 4 = 5. 10 + 5 = 15개야.'},
+    en:{q:'You share 60 model T. rex teeth equally among 4 boxes. How many go in each box?',c:['15','12','14','20'],a:0,e:'40 ÷ 4 = 10 and 20 ÷ 4 = 5, so 10 + 5 = 15.'}}],
+  [{ko:{q:'막대그래프는 발굴단이 찾은 뼈 화석 수야. 눈금 한 칸은 5개야. 티라노사우루스 뼈는 트리케라톱스 뼈보다 몇 개 더 많을까?',c:['75개','3개','5개','15개'],a:3,e:'티라노사우루스 9칸, 트리케라톱스 6칸. 3칸 차이고, 한 칸이 5개니까 3 × 5 = 15개야.'},
+    en:{q:'The bar graph shows how many bone fossils the team found. Each step on the scale is 5 bones. How many more T. rex bones than Triceratops bones were found?',c:['75','3','5','15'],a:3,e:'T. rex is 9 steps and Triceratops 6 steps: 3 steps apart. 3 × 5 = 15.'},pic:{graph:{step:5,bars:[['trex',45],['tri',30],['steg',35]]}}},
+   {ko:{q:'티라노사우루스 이빨 모형이 한 개 850원이야. 3개를 사고 10,000원을 내면 거스름돈은 얼마일까?',c:['2,550원','7,450원','7,550원','8,450원'],a:1,e:'850 × 3 = 2,550원. 10,000 − 2,550 = 7,450원이야.'},
+    en:{q:'A model T. rex tooth costs 850 won. You buy 3 and pay with 10,000 won. How much change do you get?',c:['2,550 won','7,450 won','7,550 won','8,450 won'],a:1,e:'850 × 3 = 2,550 won, and 10,000 − 2,550 = 7,450 won.'}}]],
+ tri:[
+  [{ko:{q:'뿔 모형 27개가 있어. 트리케라톱스 머리 하나에 뿔을 3개씩 붙이면 머리 몇 개를 꾸밀 수 있을까?',c:['7개','8개','9개','24개'],a:2,e:'3 × 9 = 27이니까 27 ÷ 3 = 9. 머리 9개야.'},
+    en:{q:'You have 27 model horns. Each Triceratops head needs 3. How many heads can you decorate?',c:['7','8','9','24'],a:2,e:'3 × 9 = 27, so 27 ÷ 3 = 9 heads.'}},
+   {ko:{q:'박물관 가게에서 트리케라톱스 머리뼈 모형 4개 값이 2,800원이야. 한 개는 얼마일까?',c:['700원','600원','2,796원','7,000원'],a:0,e:'28 ÷ 4 = 7이니까 2,800 ÷ 4 = 700원이야.'},
+    en:{q:'At the museum shop, 4 model Triceratops skulls cost 2,800 won in all. How much is one?',c:['700 won','600 won','2,796 won','7,000 won'],a:0,e:'28 ÷ 4 = 7, so 2,800 ÷ 4 = 700 won.'}}],
+  [{ko:{q:'트리케라톱스 프릴 그림을 똑같이 8칸으로 나눴어. 오전에 3칸(3/8), 오후에 2칸(2/8)을 칠했어. 모두 얼마를 칠했을까?',c:['5/8','5/16','6/8','1/8'],a:0,e:'분모가 같으면 분자끼리 더해. 3/8 + 2/8 = 5/8이야.'},
+    en:{q:'A Triceratops frill drawing is split into 8 equal parts. You color 3/8 in the morning and 2/8 in the afternoon. How much is colored in all?',c:['5/8','5/16','6/8','1/8'],a:0,e:'Same denominators: add the numerators. 3/8 + 2/8 = 5/8.'}},
+   {ko:{q:'트리케라톱스 화석 전시회에 토요일 2,486명, 일요일 3,758명이 왔어. 이틀 동안 모두 몇 명일까?',c:['5,134명','6,144명','6,234명','6,244명'],a:3,e:'일의 자리 6 + 8 = 14, 십의 자리 8 + 5 + 1 = 14, 백의 자리 4 + 7 + 1 = 12, 천의 자리 2 + 3 + 1 = 6. 6,244명이야.'},
+    en:{q:'A Triceratops fossil show had 2,486 visitors on Saturday and 3,758 on Sunday. How many visitors came in the two days?',c:['5,134','6,144','6,234','6,244'],a:3,e:'Ones 6 + 8 = 14, tens 8 + 5 + 1 = 14, hundreds 4 + 7 + 1 = 12, thousands 2 + 3 + 1 = 6: 6,244.'}}],
+  [{ko:{q:'트리케라톱스 머리뼈 하나를 꺼내는 데 45분이 걸려. 머리뼈 4개를 꺼내려면 몇 시간이 걸릴까?',c:['1시간 80분','2시간 40분','3시간','18시간'],a:2,e:'45 × 4 = 180분. 60분이 1시간이니까 180분은 3시간이야.'},
+    en:{q:'It takes 45 minutes to dig out one Triceratops skull. How long does it take to dig out 4 skulls?',c:['1 hour 80 minutes','2 hours 40 minutes','3 hours','18 hours'],a:2,e:'45 × 4 = 180 minutes. 60 minutes make an hour, so 180 minutes is 3 hours.'}},
+   {ko:{q:'트리케라톱스 모형 3,480원과 프릴 퍼즐 2,750원을 사고 10,000원을 냈어. 거스름돈은 얼마일까?',c:['6,230원','4,770원','3,870원','3,770원'],a:3,e:'3,480 + 2,750 = 6,230원. 10,000 − 6,230 = 3,770원이야.'},
+    en:{q:'You buy a Triceratops model for 3,480 won and a frill puzzle for 2,750 won, and pay with 10,000 won. How much change do you get?',c:['6,230 won','4,770 won','3,870 won','3,770 won'],a:3,e:'3,480 + 2,750 = 6,230 won, and 10,000 − 6,230 = 3,770 won.'}}]],
+ steg:[
+  [{ko:{q:'스테고사우루스 꼬리 가시는 4개야. 가시 모형 32개로 꼬리 몇 개를 꾸밀 수 있을까?',c:['8개','6개','28개','7개'],a:0,e:'4 × 8 = 32니까 32 ÷ 4 = 8. 꼬리 8개야.'},
+    en:{q:'A Stegosaurus tail has 4 spikes. How many tails can you decorate with 32 model spikes?',c:['8','6','28','7'],a:0,e:'4 × 8 = 32, so 32 ÷ 4 = 8 tails.'}},
+   {ko:{q:'스테고사우루스 화석 전시회 입장권이 한 장에 900원이야. 6장을 사면 모두 얼마일까?',c:['906원','5,400원','4,500원','4,800원'],a:1,e:'9 × 6 = 54니까 900 × 6 = 5,400원이야.'},
+    en:{q:'A ticket to the Stegosaurus fossil show costs 900 won. How much do 6 tickets cost?',c:['906 won','5,400 won','4,500 won','4,800 won'],a:1,e:'9 × 6 = 54, so 900 × 6 = 5,400 won.'}}],
+  [{ko:{q:'스테고사우루스 한 마리 등판은 17개야. 6마리의 등판은 모두 몇 개일까?',c:['23개','92개','102개','642개'],a:2,e:'10 × 6 = 60, 7 × 6 = 42. 60 + 42 = 102개야.'},
+    en:{q:'One Stegosaurus had 17 plates. How many plates do 6 Stegosaurus have?',c:['23','92','102','642'],a:2,e:'10 × 6 = 60 and 7 × 6 = 42, so 60 + 42 = 102.'}},
+   {ko:{q:'스테고사우루스 전시관은 오전 10시 50분에 열고 오후 4시 30분에 닫아. 하루에 몇 시간 몇 분 열까?',c:['5시간 40분','6시간 20분','5시간 20분','6시간 40분'],a:0,e:'10시 50분 → 11시는 10분, 11시 → 오후 4시는 5시간, 4시 → 4시 30분은 30분. 모두 5시간 40분이야.'},
+    en:{q:'The Stegosaurus hall opens at 10:50 a.m. and closes at 4:30 p.m. How long is it open each day?',c:['5 hours 40 minutes','6 hours 20 minutes','5 hours 20 minutes','6 hours 40 minutes'],a:0,e:'10:50 to 11:00 is 10 minutes, 11:00 to 4:00 is 5 hours, 4:00 to 4:30 is 30 minutes: 5 hours 40 minutes.'}}],
+  [{ko:{q:'스테고사우루스 한 마리는 등판 17개와 꼬리 가시 4개가 있어. 8마리면 등판과 가시가 모두 몇 개일까?',c:['29개','136개','160개','168개'],a:3,e:'한 마리에 17 + 4 = 21개. 21 × 8 = 168개야.'},
+    en:{q:'One Stegosaurus had 17 plates and 4 tail spikes. How many plates and spikes do 8 Stegosaurus have in all?',c:['29','136','160','168'],a:3,e:'One has 17 + 4 = 21. Then 21 × 8 = 168.'}},
+   {ko:{q:'박물관에서 팔린 스테고사우루스 인형 수를 막대그래프로 나타냈어. 눈금 한 칸은 10개야. 사흘 동안 모두 몇 개 팔렸을까?',c:['160개','16개','150개','170개'],a:0,e:'4칸 + 7칸 + 5칸 = 16칸. 한 칸이 10개니까 160개야.'},
+    en:{q:'The bar graph shows how many Stegosaurus toys the museum sold. Each step on the scale is 10 toys. How many were sold in the three days?',c:['160','16','150','170'],a:0,e:'4 + 7 + 5 = 16 steps. Each step is 10, so 160 toys.'},pic:{graph:{step:10,bars:[[{ko:'월',en:'Mon'},40],[{ko:'화',en:'Tue'},70],[{ko:'수',en:'Wed'},50]]}}}]]},
+E3:{
+ trex:[
+  [{ko:{q:'티라노사우루스 몸길이는 약 12 m, 머리뼈는 약 1.5 m야. 머리뼈 길이는 몸길이의 몇 분의 1일까?',c:['1/6','1/8','1/10','1/12'],a:1,e:'1.5 m = 150 cm, 12 m = 1,200 cm. 150/1,200을 150으로 약분하면 1/8이야.'},
+    en:{q:'T. rex was about 12 m long and its skull about 1.5 m. What fraction of its body length was the skull?',c:['1/6','1/8','1/10','1/12'],a:1,e:'1.5 m = 150 cm and 12 m = 1,200 cm. 150/1,200 simplifies to 1/8.'}},
+   {ko:{q:'발굴장에서 티라노사우루스 뼈 두 개를 쟀더니 1.38 m와 0.95 m였어. 두 뼈의 길이 차이는 몇 m일까?',c:['0.53 m','2.33 m','1.63 m','0.43 m'],a:3,e:'1.38 − 0.95 = 0.43. 138 cm − 95 cm = 43 cm로 확인해 봐도 같아.'},
+    en:{q:'At the dig you measure two T. rex bones: 1.38 m and 0.95 m. What is the difference in length?',c:['0.53 m','2.33 m','1.63 m','0.43 m'],a:3,e:'1.38 − 0.95 = 0.43 m. Check in cm: 138 − 95 = 43 cm.'}}],
+  [{ko:{q:'티라노사우루스 전시 입장료가 8,000원인데 오늘 25% 할인이야. 얼마를 내면 될까?',c:['7,975원','2,000원','7,750원','6,000원'],a:3,e:'25% = 1/4이야. 8,000의 1/4은 2,000원. 8,000 − 2,000 = 6,000원.'},
+    en:{q:'A ticket to the T. rex show is 8,000 won, and today it is 25% off. How much do you pay?',c:['7,975 won','2,000 won','7,750 won','6,000 won'],a:3,e:'25% = 1/4. A quarter of 8,000 is 2,000, and 8,000 − 2,000 = 6,000 won.'}},
+   {ko:{q:'티라노사우루스 발자국 모형 하나의 길이가 0.85 m야. 같은 발자국 4개를 한 줄로 이으면 몇 m일까?',c:['0.34 m','3.2 m','3.4 m','34 m'],a:2,e:'0.85 × 4 = 3.40. 85 × 4 = 340이니까 3.4 m야.'},
+    en:{q:'A model T. rex footprint is 0.85 m long. How long is a line of 4 of them?',c:['0.34 m','3.2 m','3.4 m','34 m'],a:2,e:'0.85 × 4 = 3.40, because 85 × 4 = 340. So 3.4 m.'}}],
+  [{ko:{q:'몸길이 12 m인 티라노사우루스를 50분의 1 크기 모형으로 만들어. 모형 길이는 몇 cm일까?',c:['12 cm','24 cm','60 cm','2 m 40 cm'],a:1,e:'12 m = 1,200 cm. 1,200 ÷ 50 = 24 cm야.'},
+    en:{q:'You build a 1:50 scale model of a 12 m T. rex. How long is the model?',c:['12 cm','24 cm','60 cm','2.4 m'],a:1,e:'12 m = 1,200 cm, and 1,200 ÷ 50 = 24 cm.'}},
+   {ko:{q:'티라노사우루스 화석 세 개의 몸길이를 어림했더니 12.3 m, 11.6 m, 12.1 m였다고 해 보자. 평균은 몇 m일까?',c:['12 m','11.6 m','12.3 m','36 m'],a:0,e:'12.3 + 11.6 + 12.1 = 36. 36 ÷ 3 = 12. 평균은 12 m야.'},
+    en:{q:'Suppose three T. rex skeletons are estimated at 12.3 m, 11.6 m and 12.1 m long. What is the average length?',c:['12 m','11.6 m','12.3 m','36 m'],a:0,e:'12.3 + 11.6 + 12.1 = 36, and 36 ÷ 3 = 12. The average is 12 m.'}}]],
+ tri:[
+  [{ko:{q:'트리케라톱스 머리뼈는 2 m를 넘기도 하고, 몸길이는 약 9 m야. 머리뼈 길이는 몸길이의 약 얼마일까?',c:['약 1/2','약 1/4','약 1/10','약 2배'],a:1,e:'2 m는 9 m의 2/9야. 2/9는 2/8 = 1/4과 아주 가까워. 그래서 약 1/4이야.'},
+    en:{q:'A Triceratops skull could be over 2 m long, and its body was about 9 m. About what fraction of its body length is the skull?',c:['About 1/2','About 1/4','About 1/10','About twice as long'],a:1,e:'2 m is 2/9 of 9 m. 2/9 is very close to 2/8 = 1/4, so about 1/4.'}},
+   {ko:{q:'박물관 수장고에 트리케라톱스 머리뼈 화석이 40개 있다고 해 보자. 그중 25%가 어린 트리케라톱스 거야. 어린 트리케라톱스 머리뼈는 몇 개일까?',c:['25개','4개','10개','15개'],a:2,e:'25% = 1/4이야. 40의 1/4은 10개.'},
+    en:{q:'Suppose a museum store room has 40 Triceratops skull fossils, and 25% of them are from young animals. How many skulls is that?',c:['25','4','10','15'],a:2,e:'25% = 1/4, and a quarter of 40 is 10.'}}],
+  [{ko:{q:'트리케라톱스 프릴 모형의 2/3에 색을 칠했어. 칠한 부분의 3/4은 빨간색이야. 빨간 부분은 프릴 전체의 얼마일까?',c:['1/2','5/7','1/4','5/12'],a:0,e:'2/3 × 3/4 = 6/12 = 1/2. 프릴의 절반이 빨간색이야.'},
+    en:{q:'You paint 2/3 of a model Triceratops frill, and 3/4 of the painted part is red. What fraction of the whole frill is red?',c:['1/2','5/7','1/4','5/12'],a:0,e:'2/3 × 3/4 = 6/12 = 1/2. Half of the frill is red.'}},
+   {ko:{q:'트리케라톱스 머리뼈 20개 중 5개의 뿔이 부러져 있었다고 해 보자. 뿔이 부러진 머리뼈는 몇 퍼센트(%)일까?',c:['5%','15%','20%','25%'],a:3,e:'5/20 = 1/4이고, 1/4 = 25/100 = 25%야.'},
+    en:{q:'Suppose 5 of 20 Triceratops skulls had a broken horn. What percent of the skulls is that?',c:['5%','15%','20%','25%'],a:3,e:'5/20 = 1/4, and 1/4 = 25/100 = 25%.'}}],
+  [{ko:{q:'트리케라톱스 화석 네 개의 몸길이가 8.5 m, 9 m, 7 m, 7.5 m라고 해 보자. 평균 몸길이는 몇 m일까?',c:['32 m','7.5 m','8 m','8.5 m'],a:2,e:'8.5 + 9 + 7 + 7.5 = 32. 32 ÷ 4 = 8. 평균은 8 m야.'},
+    en:{q:'Suppose four Triceratops skeletons are 8.5 m, 9 m, 7 m and 7.5 m long. What is the average length?',c:['32 m','7.5 m','8 m','8.5 m'],a:2,e:'8.5 + 9 + 7 + 7.5 = 32, and 32 ÷ 4 = 8. The average is 8 m.'}},
+   {ko:{q:'트리케라톱스 화석 뼈 조각 45개를 두 박물관이 2:3으로 나눠 가져. 더 많이 가진 박물관은 몇 개를 가질까?',c:['15개','18개','30개','27개'],a:3,e:'2 + 3 = 5묶음이야. 45 ÷ 5 = 9. 3묶음은 9 × 3 = 27개.'},
+    en:{q:'Two museums share 45 Triceratops bone pieces in the ratio 2:3. How many pieces does the museum with the larger share get?',c:['15','18','30','27'],a:3,e:'2 + 3 = 5 parts. 45 ÷ 5 = 9, so 3 parts are 9 × 3 = 27.'}}]],
+ steg:[
+  [{ko:{q:'스테고사우루스 등판 모형 68개 중 3/4을 붙였어. 몇 개를 붙였을까?',c:['17개','45개','51개','64개'],a:2,e:'68 ÷ 4 = 17, 17 × 3 = 51개야.'},
+    en:{q:'You have 68 model Stegosaurus plates and glue on 3/4 of them. How many plates is that?',c:['17','45','51','64'],a:2,e:'68 ÷ 4 = 17, and 17 × 3 = 51.'}},
+   {ko:{q:'스테고사우루스 꼬리 가시 화석 두 개가 0.75 m와 0.8 m야. 어느 것이 몇 m 더 길까?',c:['0.75 m 가시가 0.05 m','0.8 m 가시가 0.05 m','0.8 m 가시가 0.73 m','0.75 m 가시가 0.67 m'],a:1,e:'0.8 = 0.80이야. 0.80 − 0.75 = 0.05. 0.8 m 가시가 0.05 m(5 cm) 더 길어.'},
+    en:{q:'Two Stegosaurus tail-spike fossils are 0.75 m and 0.8 m long. Which is longer, and by how much?',c:['The 0.75 m spike, by 0.05 m','The 0.8 m spike, by 0.05 m','The 0.8 m spike, by 0.73 m','The 0.75 m spike, by 0.67 m'],a:1,e:'0.8 = 0.80, and 0.80 − 0.75 = 0.05. The 0.8 m spike is 0.05 m (5 cm) longer.'}}],
+  [{ko:{q:'스테고사우루스 그림을 그리고 있어. 오전에 1/3, 오후에 1/4을 그렸어. 모두 얼마를 그렸을까?',c:['7/12','2/7','1/12','2/12'],a:0,e:'1/3 = 4/12, 1/4 = 3/12. 4/12 + 3/12 = 7/12이야.'},
+    en:{q:'You are drawing a Stegosaurus. You finish 1/3 of it in the morning and 1/4 in the afternoon. How much have you drawn?',c:['7/12','2/7','1/12','2/12'],a:0,e:'1/3 = 4/12 and 1/4 = 3/12, so 4/12 + 3/12 = 7/12.'}},
+   {ko:{q:'스테고사우루스 인형이 12,000원인데 20% 할인해. 할인한 값은 얼마일까?',c:['2,400원','9,600원','10,000원','11,980원'],a:1,e:'20% = 1/5이야. 12,000의 1/5은 2,400원. 12,000 − 2,400 = 9,600원.'},
+    en:{q:'A Stegosaurus toy costs 12,000 won and is 20% off. What is the sale price?',c:['2,400 won','9,600 won','10,000 won','11,980 won'],a:1,e:'20% = 1/5. One fifth of 12,000 is 2,400, and 12,000 − 2,400 = 9,600 won.'}}],
+  [{ko:{q:'스테고사우루스 발굴장은 가로 12 m, 세로 7.5 m인 직사각형이야. 그중 밑변 6 m, 높이 5 m인 직각삼각형 부분은 이미 팠어. 아직 안 판 넓이는 몇 m²일까?',c:['90 m²','60 m²','105 m²','75 m²'],a:3,e:'전체는 12 × 7.5 = 90 m². 직각삼각형은 6 × 5 ÷ 2 = 15 m². 90 − 15 = 75 m²야.'},
+    en:{q:'A Stegosaurus dig site is a rectangle 12 m long and 7.5 m wide. A right-triangle part with a 6 m base and a 5 m height is already dug. What area is left to dig?',c:['90 m²','60 m²','105 m²','75 m²'],a:3,e:'The whole site is 12 × 7.5 = 90 m². The triangle is 6 × 5 ÷ 2 = 15 m². 90 − 15 = 75 m².'}},
+   {ko:{q:'스테고사우루스 전시관 입장료가 두 사람에 8,000원인데 25% 할인받았어. 할인한 값을 나와 친구가 1:3으로 나눠 내기로 했어. 나는 얼마를 낼까?',c:['1,500원','1,600원','2,000원','4,500원'],a:0,e:'25% 할인하면 8,000 − 2,000 = 6,000원. 1 + 3 = 4묶음이니까 6,000 ÷ 4 = 1,500원이야.'},
+    en:{q:'Two tickets to the Stegosaurus hall cost 8,000 won, and you get 25% off. You and a friend split the sale price in the ratio 1:3, and you pay the smaller share. How much do you pay?',c:['1,500 won','1,600 won','2,000 won','4,500 won'],a:0,e:'25% off: 8,000 − 2,000 = 6,000 won. 1 + 3 = 4 parts, and 6,000 ÷ 4 = 1,500 won.'}}]]}};
+const PIC_NAME={trex:{ko:'티라노사우루스',en:'T. rex',col:'#8FC08A'},tri:{ko:'트리케라톱스',en:'Triceratops',col:'#F2B48B'},steg:{ko:'스테고사우루스',en:'Stegosaurus',col:'#B08AD6'}};
+
+/* ── audio ───────────────────────────────── */
+const AU={ctx:null,on:true,
+ init(){if(this.ctx)return;try{this.ctx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}},
+ resume(){if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume();},
+ tone(f,d,type,vol,slide,t0){if(!this.on||!this.ctx)return;const c=this.ctx,o=c.createOscillator(),g=c.createGain(),t=c.currentTime+(t0||0);o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(slide)o.frequency.exponentialRampToValueAtTime(slide,t+d);g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol||0.2,t+0.01);g.gain.exponentialRampToValueAtTime(0.0001,t+d);o.connect(g).connect(c.destination);o.start(t);o.stop(t+d+0.02);},
+ noise(d,vol,fq,t0){if(!this.on||!this.ctx)return;const c=this.ctx,n=c.sampleRate*d,b=c.createBuffer(1,n,c.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=Math.random()*2-1;const s=c.createBufferSource();s.buffer=b;const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=fq||800;const g=c.createGain(),t=c.currentTime+(t0||0);g.gain.setValueAtTime(vol||0.3,t);g.gain.exponentialRampToValueAtTime(0.0001,t+d);s.connect(f).connect(g).connect(c.destination);s.start(t);},
+ tap(){this.tone(600,0.06,'square',0.05)},
+ dig(){this.noise(0.18,0.35,600);this.tone(120,0.12,'sine',0.25,60)},
+ crack(){this.noise(0.08,0.3,2500);this.tone(900,0.05,'square',0.08)},
+ reveal(){this.tone(660,0.12,'triangle',0.15);this.tone(880,0.14,'triangle',0.15,0,0.1)},
+ found(){[523,659,784,1047].forEach((f,i)=>this.tone(f,0.25,'triangle',0.18,0,i*0.09));this.noise(0.4,0.08,6000,0.3)},
+ snap(){this.tone(500,0.08,'square',0.1,900);this.tone(1200,0.1,'sine',0.15,0,0.06)},
+ wrong(){this.tone(300,0.18,'triangle',0.15,220)},
+ ping(){this.tone(1400,0.3,'sine',0.12,1800);this.tone(1400,0.3,'sine',0.08,1800,0.35)},
+ fanfare(){[523,659,784,1047,1319].forEach((f,i)=>this.tone(f,0.35,'triangle',0.2,0,i*0.11));[262,330,392].forEach((f,i)=>this.tone(f,0.9,'sine',0.12,0,0.5))},
+ roar(){this.noise(0.9,0.5,300);this.tone(90,0.9,'sawtooth',0.18,55)},
+ star(i){this.tone(880+i*220,0.3,'triangle',0.18,0,0)}};
+let voiceOn=true;
+/* read-aloud text (LEVELS.md §4): fractions, %, units, ratios and signs are rewritten so TTS reads them naturally */
+const EN_NUM=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
+const EN_DEN={2:['half','halves'],3:['third','thirds'],4:['quarter','quarters'],5:['fifth','fifths'],6:['sixth','sixths'],7:['seventh','sevenths'],8:['eighth','eighths'],9:['ninth','ninths'],10:['tenth','tenths'],11:['eleventh','elevenths'],12:['twelfth','twelfths'],16:['sixteenth','sixteenths'],20:['twentieth','twentieths'],100:['hundredth','hundredths']};
+const koIs=w=>{const ch=w.slice(-1);if(/\d/.test(ch))return '2459'.includes(ch)?'는':'은';const c=ch.charCodeAt(0);return c>=0xAC00&&c<=0xD7A3&&(c-0xAC00)%28?'은':'는';};
+function ttsText(t,lang){t=String(t).replace(/[➜⛏🦴★]/g,'');
+ if(lang==='ko'){
+  t=t.replace(/(\d[\d,]*)\s*\/\s*(\d[\d,]*)/g,(m,a,b)=>`${b}분의 ${a}`).replace(/(\d)\s*%/g,'$1퍼센트').replace(/%/g,'퍼센트')
+   .replace(/(\d)\s*cm²/g,'$1 제곱센티미터').replace(/(\d)\s*m²/g,'$1 제곱미터').replace(/(\d)\s*kg(?![a-z])/g,'$1 킬로그램').replace(/(\d)\s*cm(?![a-z²])/g,'$1 센티미터').replace(/(\d)\s*m(?![a-z²])/g,'$1 미터')
+   .replace(/(^|[^A-Za-z.])(cm²|m²|kg|cm|m)(?![A-Za-z²])/g,(x,p,u)=>p+{'cm²':'제곱센티미터','m²':'제곱미터',kg:'킬로그램',cm:'센티미터',m:'미터'}[u]) // a unit with no number before it: "몇 m", "몇 cm 더"
+   .replace(/(\d+)\s*:\s*(\d+)/g,'$1 대 $2').replace(/\s*×\s*/g,' 곱하기 ').replace(/\s*÷\s*/g,' 나누기 ').replace(/\s*\+\s*/g,' 더하기 ').replace(/\s+[−-]\s+/g,' 빼기 ')
+   .replace(/(\S)\s*=\s*/g,(m,w)=>w+koIs(w)+' ').replace(/\s*→\s*/g,', ').replace(/~/g,'에서 ').replace(/≈/g,'약 ');
+ }else{
+  t=t.replace(/(\d[\d,]*)\s*\/\s*(\d[\d,]*)/g,(m,a,b)=>{const n=+a.replace(/,/g,''),d=+b.replace(/,/g,'');const w=EN_DEN[d];if(!w)return `${a} over ${b}`;return `${n<=12?EN_NUM[n]:a} ${n===1?w[0]:w[1]}`;})
+   .replace(/(\d)\s*%/g,'$1 percent').replace(/%/g,' percent')
+   .replace(/(\d[\d,.]*)\s*(cm²|m²|kg|cm|m)(?![a-z²])/g,(m,v,u)=>{const one=v==='1';return v+' '+({'cm²':one?'square centimeter':'square centimeters','m²':one?'square meter':'square meters',kg:one?'kilogram':'kilograms',cm:one?'centimeter':'centimeters',m:one?'meter':'meters'})[u];})
+   .replace(/(^|[^A-Za-z.'’])(cm²|m²|kg|cm)(?![A-Za-z²])/g,(x,p,u)=>p+{'cm²':'square centimeters','m²':'square meters',kg:'kilograms',cm:'centimeters'}[u]) // "Check in cm" (a bare "m" is left alone: a.m., I'm)
+   .replace(/(\d+):(\d)(?!\d)/g,'$1 to $2').replace(/(\d+):(\d+)(?= scale)/g,'$1 to $2')
+   .replace(/\s*×\s*/g,' times ').replace(/\s*÷\s*/g,' divided by ').replace(/\s*\+\s*/g,' plus ').replace(/\s+[−]\s+/g,' minus ').replace(/\s*=\s*/g,' equals ').replace(/\s*→\s*/g,' to ').replace(/≈/g,'about ');
+ }
+ return t.replace(/\s{2,}/g,' ').trim();}
+let lastSpoken='';
+function speak(t){lastSpoken=ttsText(t,LANG);if(!voiceOn||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(lastSpoken);u.lang=LANG==='ko'?'ko-KR':'en-US';u.rate=LANG==='ko'?1:0.95;speechSynthesis.speak(u);}catch(e){}}
+
+/* ── stage ───────────────────────────────── */
+const stage=$('stage'),cv=$('game'),ctx=cv.getContext('2d');let scale=1,dpr=Math.min(window.devicePixelRatio||1,2);
+function fit(){const vw=innerWidth,vh=innerHeight;scale=Math.min(vw/W,vh/H);stage.style.transform=`scale(${scale})`;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);}
+addEventListener('resize',fit);fit();
+const toStage=e=>{const r=stage.getBoundingClientRect();return{x:(e.clientX-r.left)/scale,y:(e.clientY-r.top)/scale}};
+
+/* ── tweens / timers / particles ─────────── */
+const EASE={linear:t=>t,outCubic:t=>1-Math.pow(1-t,3),inCubic:t=>t*t*t,outBack:t=>{const c=1.70158;return 1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2)},inOutQuad:t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,outElastic:t=>t===0?0:t===1?1:Math.pow(2,-10*t)*Math.sin((t*10-0.75)*(2*Math.PI/3))+1};
+const tweens=[];
+function tween(obj,to,dur,ease,onDone,delay){const from={};for(const k in to)from[k]=obj[k];tweens.push({obj,from,to,dur,ease:EASE[ease||'outCubic'],t:-(delay||0),onDone});}
+const particles=[];
+function burst(x,y,n,opt){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,sp=(opt.speed||300)*(0.4+Math.random()*0.8);particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-(opt.up||150),g:opt.g==null?900:opt.g,life:opt.life||0.6,t:0,r:(opt.r||5)*(0.6+Math.random()*0.8),color:opt.colors[i%opt.colors.length],kind:opt.kind||'dot',rot:Math.random()*6,vr:(Math.random()-0.5)*10});}}
+let shake=0;
+
+/* ── drawing helpers ─────────────────────── */
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+function ink(c,w){c.strokeStyle=INK;c.lineWidth=w;c.lineJoin='round';c.lineCap='round';}
+function fillInk(c,fill,w){c.fillStyle=fill;c.fill();ink(c,w||3);c.stroke();}
+function tube(c,fn,w,fill){c.beginPath();fn();ink(c,w+6);c.stroke();c.strokeStyle=fill||BONE;c.lineWidth=w;c.stroke();}
+function ell(c,x,y,rx,ry,fill){c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fillStyle=fill;c.fill();}
+
+/* ── bones (drawn centered at 0,0) ───────── */
+const BONE_BOX={skull:[240,150],spine:[300,120],ribs:[220,160],leg:[130,230],tail:[300,110]};
+function teeth(c,x0,x1,y,n,h,dir){c.beginPath();for(let i=0;i<n;i++){const x=x0+(x1-x0)*i/(n-1);c.moveTo(x-5,y);c.lineTo(x,y+h*dir);c.lineTo(x+5,y);}c.closePath();c.fillStyle='#fff';c.fill();ink(c,2);c.stroke();}
+function drawSkull(c,dino){
+ if(dino==='tri'){ // frill behind
+  c.beginPath();c.moveTo(-20,-96);c.bezierCurveTo(-120,-96,-136,-10,-104,44);c.bezierCurveTo(-80,74,-40,72,-16,66);c.lineTo(-10,-90);c.closePath();fillInk(c,BONE2,3);
+  c.beginPath();c.moveTo(-20,-96);c.bezierCurveTo(-100,-90,-118,-6,-92,40);c.bezierCurveTo(-72,64,-40,64,-18,58);c.closePath();fillInk(c,BONE,3);
+  for(let i=0;i<5;i++){const a=-2.6+i*0.42;ell(c,-58+Math.cos(a)*44,-16+Math.sin(a)*52,5,5,BONE2);}
+ }
+ // upper skull
+ c.beginPath();
+ if(dino==='trex'){c.moveTo(-116,-6);c.bezierCurveTo(-120,-68,-70,-80,-28,-72);c.bezierCurveTo(30,-64,92,-50,122,-10);c.lineTo(124,12);c.bezierCurveTo(80,20,30,18,-14,22);c.bezierCurveTo(-60,26,-100,20,-116,-6);}
+ else if(dino==='tri'){c.moveTo(-30,-58);c.bezierCurveTo(-10,-84,40,-80,70,-52);c.bezierCurveTo(96,-30,112,-4,124,20);c.bezierCurveTo(114,30,96,26,84,30);c.bezierCurveTo(50,36,10,34,-20,36);c.bezierCurveTo(-36,20,-36,-30,-30,-58);}
+ else{c.moveTo(-84,-6);c.bezierCurveTo(-88,-44,-50,-52,-16,-46);c.bezierCurveTo(30,-40,70,-30,100,-6);c.lineTo(104,10);c.bezierCurveTo(70,16,30,14,-10,16);c.bezierCurveTo(-50,18,-80,14,-84,-6);}
+ c.closePath();fillInk(c,BONE,3);
+ // holes
+ if(dino==='trex'){ell(c,-76,-30,15,20,INK);ell(c,-28,-30,12,15,INK);ell(c,90,-16,7,5,INK);ell(c,20,-38,14,9,BONE2);}
+ else if(dino==='tri'){ell(c,26,-30,12,14,INK);ell(c,104,4,5,4,INK);}
+ else{ell(c,-52,-22,11,13,INK);ell(c,-14,-20,8,9,INK);ell(c,76,-6,5,4,INK);}
+ // horns
+ if(dino==='tri'){[[10,-52,-6,-128],[46,-46,40,-120]].forEach(h=>{c.beginPath();c.moveTo(h[0]-13,h[1]);c.quadraticCurveTo(h[2]-4,h[3]+30,h[2],h[3]);c.quadraticCurveTo(h[2]+8,h[3]+30,h[0]+13,h[1]);c.closePath();fillInk(c,BONE,3);});
+  c.beginPath();c.moveTo(84,-20);c.quadraticCurveTo(102,-60,112,-66);c.quadraticCurveTo(112,-40,110,-14);c.closePath();fillInk(c,BONE,3);}
+ // teeth + lower jaw
+ if(dino==='trex'){teeth(c,-4,110,18,8,13,1);
+  c.beginPath();c.moveTo(-96,28);c.bezierCurveTo(-112,52,-80,70,-44,64);c.lineTo(112,48);c.bezierCurveTo(122,44,118,32,106,32);c.lineTo(-4,36);c.closePath();fillInk(c,BONE,3);teeth(c,6,100,36,7,-11,1);}
+ else if(dino==='tri'){c.beginPath();c.moveTo(-14,40);c.bezierCurveTo(-24,56,0,68,30,64);c.lineTo(110,44);c.bezierCurveTo(120,40,118,34,108,34);c.lineTo(-6,40);c.closePath();fillInk(c,BONE,3);
+  c.beginPath();for(let i=0;i<6;i++){c.moveTo(0+i*14,36);c.lineTo(0+i*14,46);}ink(c,2);c.stroke();}
+ else{c.beginPath();c.moveTo(-70,20);c.bezierCurveTo(-80,38,-50,50,-20,46);c.lineTo(96,30);c.bezierCurveTo(104,26,102,18,92,18);c.lineTo(-10,22);c.closePath();fillInk(c,BONE,3);}
+}
+function drawSpine(c,dino){
+ const n=6,step=54;
+ c.beginPath();c.moveTo(-140,0);c.lineTo(140,0);ink(c,16);c.stroke();c.strokeStyle=BONE2;c.lineWidth=10;c.stroke();
+ for(let i=0;i<n;i++){const x=-135+i*step;
+  if(dino==='steg'){const h=[58,74,66,76,60,70][i];c.beginPath();c.moveTo(x-18,-16);c.lineTo(x-14,-16-h*0.55);c.lineTo(x+2,-16-h);c.lineTo(x+18,-16-h*0.5);c.lineTo(x+20,-16);c.closePath();fillInk(c,'#E9C07C',3);}
+  else{c.beginPath();c.moveTo(x-8,-16);c.lineTo(x-4,-46);c.lineTo(x+6,-46);c.lineTo(x+10,-16);c.closePath();fillInk(c,BONE,3);}
+  rr(c,x-20,-17,40,34,9);fillInk(c,BONE,3);ell(c,x,0,7,5,BONE2);}
+}
+function drawRibs(c){
+ for(let i=0;i<4;i++){const x=-72+i*48;rr(c,x-14,-72,28,22,6);fillInk(c,BONE,3);}
+ c.beginPath();c.moveTo(-90,-61);c.lineTo(90,-61);ink(c,12);c.stroke();c.strokeStyle=BONE2;c.lineWidth=6;c.stroke();
+ for(let i=0;i<5;i++){const x=-80+i*40;tube(c,()=>{c.moveTo(x+6,-48);c.bezierCurveTo(x+22,-10,x+14,40,x-22,70);},10);}
+}
+function drawLeg(c){
+ tube(c,()=>{c.moveTo(0,-88);c.lineTo(0,40);},24);
+ [[-15,-96],[15,-96]].forEach(p=>{ell(c,p[0],p[1],17,15,BONE);c.beginPath();c.ellipse(p[0],p[1],17,15,0,0,Math.PI*2);ink(c,3);c.stroke();});
+ [[-13,44],[13,44]].forEach(p=>{ell(c,p[0],p[1],15,13,BONE);c.beginPath();c.ellipse(p[0],p[1],15,13,0,0,Math.PI*2);ink(c,3);c.stroke();});
+ [[-42,100],[0,108],[42,100]].forEach(p=>{tube(c,()=>{c.moveTo(0,52);c.lineTo(p[0],p[1]);},13);c.beginPath();c.moveTo(p[0]-8,p[1]);c.lineTo(p[0]+p[0]*0.25,p[1]+14);c.lineTo(p[0]+8,p[1]);c.closePath();fillInk(c,'#fff',2);});
+}
+function drawTail(c,dino){
+ const pts=[];for(let i=0;i<8;i++){const t=i/7;pts.push([-140+280*t,26-56*t*t]);}
+ tube(c,()=>{c.moveTo(pts[0][0],pts[0][1]);for(const p of pts)c.lineTo(p[0],p[1]);},8,BONE2);
+ pts.forEach((p,i)=>{const s=30-i*3.2;rr(c,p[0]-s/2,p[1]-s/2,s,s,s*0.3);fillInk(c,BONE,3);});
+ if(dino==='steg'){[[88,-10,112,-78],[118,-16,150,-70],[70,-2,52,-64],[100,-2,132,-40]].forEach(s=>{c.beginPath();c.moveTo(s[0]-9,s[1]);c.lineTo(s[2],s[3]);c.lineTo(s[0]+9,s[1]);c.closePath();fillInk(c,BONE,3);});}
+}
+function drawBone(c,kind,dino){c.save();if(kind==='skull')drawSkull(c,dino);else if(kind==='spine')drawSpine(c,dino);else if(kind==='ribs')drawRibs(c);else if(kind==='leg')drawLeg(c);else drawTail(c,dino);c.restore();}
+function drawBoneFit(c,kind,dino,x,y,w,h,rot){const [bw,bh]=BONE_BOX[kind];const s=Math.min(w/bw,h/bh);c.save();c.translate(x,y);c.rotate(rot||0);c.scale(s,s);drawBone(c,kind,dino);c.restore();return s;}
+function drawSkeleton(c,dino,placed,alpha,ox,oy,sc,only){c.save();c.translate(ox||0,oy||0);c.scale(sc||1,sc||1);for(const b of dino.bones){if(only&&!only.has(b.k))continue;const sl=dino.slots[b.k];if(placed&&!placed.has(b.k)){c.save();c.globalAlpha=alpha==null?0.22:alpha;c.translate(sl.x,sl.y);c.rotate(sl.r);c.scale(sl.s,sl.s);drawBone(c,b.k,dino.id);c.restore();}else if(!placed||placed.has(b.k)){c.save();c.translate(sl.x,sl.y);c.rotate(sl.r);c.scale(sl.s,sl.s);drawBone(c,b.k,dino.id);c.restore();}}c.restore();}
+
+/* ── background ──────────────────────────── */
+function drawBg(c,mode){
+ const g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,'#9FD8FF');g.addColorStop(0.55,'#DDF1FF');g.addColorStop(0.56,'#F6DFA8');g.addColorStop(1,'#E9B96E');c.fillStyle=g;c.fillRect(0,0,W,H);
+ ell(c,880,110,54,54,'#FFE082');ell(c,880,110,44,44,'#FFF1B8');
+ [[140,120,60,22],[190,112,80,26],[610,150,50,18],[660,142,74,22]].forEach(k=>{ell(c,k[0],k[1],k[2],k[3],'#fff');});
+ // far mesas
+ c.fillStyle='#E7B07A';c.beginPath();c.moveTo(0,420);c.lineTo(60,330);c.lineTo(180,330);c.lineTo(230,420);c.lineTo(420,420);c.lineTo(470,300);c.lineTo(600,300);c.lineTo(650,420);c.lineTo(820,420);c.lineTo(870,350);c.lineTo(980,350);c.lineTo(1024,420);c.lineTo(1024,460);c.lineTo(0,460);c.closePath();c.fill();
+ c.fillStyle='#D3844B';c.beginPath();c.moveTo(0,470);c.lineTo(40,400);c.lineTo(130,400);c.lineTo(170,470);c.lineTo(700,470);c.lineTo(740,380);c.lineTo(860,380);c.lineTo(910,470);c.lineTo(1024,470);c.lineTo(1024,520);c.lineTo(0,520);c.closePath();c.fill();
+ c.fillStyle='#B7642F';[[70,412,40,60],[760,392,60,80]].forEach(s=>c.fillRect(s[0],s[1],s[2],s[3]));
+ // ground stripes
+ c.fillStyle='#E1AE62';c.fillRect(0,500,W,268);c.fillStyle='#D89E52';c.beginPath();c.moveTo(0,540);c.bezierCurveTo(300,520,700,560,1024,536);c.lineTo(1024,768);c.lineTo(0,768);c.closePath();c.fill();
+ // cacti & pebbles
+ const cactus=(x,y,s)=>{c.save();c.translate(x,y);c.scale(s,s);tube(c,()=>{c.moveTo(0,0);c.lineTo(0,-70);},22,'#3F7D5B');tube(c,()=>{c.moveTo(-2,-30);c.lineTo(-26,-34);c.lineTo(-26,-60);},14,'#3F7D5B');tube(c,()=>{c.moveTo(2,-42);c.lineTo(26,-46);c.lineTo(26,-72);},14,'#3F7D5B');c.restore();};
+ if(mode!=='dig'){cactus(80,620,1);cactus(940,640,1.2);cactus(600,560,0.6);}else{cactus(70,700,0.8);cactus(960,700,0.9);}
+ [[300,520],[520,530],[760,545],[200,700],[880,740],[420,745]].forEach(p=>{ell(c,p[0],p[1],10,6,'#C98F4A');ell(c,p[0]-3,p[1]-2,5,3,'#E1AE62');});
+}
+
+/* ── Haru (blue blob) ────────────────────── */
+function haruSVG(f){const B='#3E7BFF',D='#2B5BD6',L='#7FA6FF',eyes={dot:`<circle cx="84" cy="92" r="6" fill="#fff"/><circle cx="116" cy="92" r="6" fill="#fff"/>`,happy:`<path d="M75 95 Q84 85 93 95" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M107 95 Q116 85 125 95" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`,wow:`<circle cx="84" cy="92" r="8" fill="#fff"/><circle cx="116" cy="92" r="8" fill="#fff"/>`,think:`<circle cx="84" cy="92" r="6" fill="#fff"/><path d="M107 92 H125" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`},mouth={smile:`<path d="M90 110 Q100 121 110 110" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`,open:`<ellipse cx="100" cy="114" rx="8" ry="9" fill="#fff"/>`,grin:`<path d="M85 108 Q100 128 115 108 Z" fill="#fff"/>`,o:`<circle cx="100" cy="114" r="6" fill="#fff"/>`},arms={down:`<ellipse cx="46" cy="126" rx="13" ry="10" fill="${B}"/><ellipse cx="154" cy="126" rx="13" ry="10" fill="${B}"/>`,wave:`<ellipse cx="46" cy="126" rx="13" ry="10" fill="${B}"/><ellipse cx="160" cy="90" rx="11" ry="14" fill="${B}" transform="rotate(30 160 90)"/>`,up:`<ellipse cx="44" cy="84" rx="11" ry="14" fill="${B}" transform="rotate(-30 44 84)"/><ellipse cx="156" cy="84" rx="11" ry="14" fill="${B}" transform="rotate(30 156 84)"/>`,chin:`<ellipse cx="46" cy="126" rx="13" ry="10" fill="${B}"/><ellipse cx="128" cy="118" rx="12" ry="9" fill="${B}"/>`},props={none:'',star:`<path d="M164 34 L168 46 L180 48 L170 56 L173 68 L164 61 L155 68 L158 56 L148 48 L160 46 Z" fill="#F2C14E"/>`,q:`<text x="148" y="60" font-family="Arial" font-size="32" font-weight="700" fill="#F2C14E">?</text>`,check:`<circle cx="160" cy="48" r="15" fill="#8FC08A"/><path d="M152 48 L158 54 L169 42" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`,shovel:`<g transform="rotate(-40 160 60)"><rect x="150" y="30" width="10" height="46" rx="3" fill="#B98B5E" stroke="#1C2333" stroke-width="2"/><path d="M143 76 L167 76 L165 96 Q155 104 145 96 Z" fill="#9AA3AE" stroke="#1C2333" stroke-width="2"/></g>`,bone:`<g transform="rotate(-30 160 50)"><rect x="140" y="45" width="40" height="10" rx="5" fill="#F6EEDC" stroke="#1C2333" stroke-width="2"/><circle cx="140" cy="43" r="6" fill="#F6EEDC" stroke="#1C2333" stroke-width="2"/><circle cx="140" cy="57" r="6" fill="#F6EEDC" stroke="#1C2333" stroke-width="2"/><circle cx="180" cy="43" r="6" fill="#F6EEDC" stroke="#1C2333" stroke-width="2"/><circle cx="180" cy="57" r="6" fill="#F6EEDC" stroke="#1C2333" stroke-width="2"/></g>`};
+ const F={hello:['dot','smile','wave','star'],talk:['dot','open','down','none'],think:['think','o','chin','q'],cheer:['happy','grin','up','check'],wow:['wow','open','up','star'],dig:['dot','smile','down','shovel'],bone:['happy','smile','down','bone']}[f]||['dot','smile','down','none'];
+ return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><ellipse cx="100" cy="182" rx="44" ry="7" fill="#1C2333" opacity=".1"/>${arms[F[2]]}<path d="M100 26 C138 26 156 62 156 100 C156 142 136 172 100 172 C64 172 44 142 44 100 C44 62 62 26 100 26 Z" fill="${B}"/><path d="M60 150 C75 175 125 175 140 150 C130 165 70 165 60 150 Z" fill="${D}"/><ellipse cx="84" cy="58" rx="20" ry="10" fill="${L}" transform="rotate(-25 84 58)"/>${eyes[F[0]]}${mouth[F[1]]}${props[F[3]]}</svg>`;}
+function haru(id,face,text){$(id).innerHTML=haruSVG(face);const b=$(id).nextElementSibling;if(text!=null){b.textContent=text;b.classList.remove('pop');void b.offsetWidth;b.classList.add('pop');if(autoTalk())speak(text);}}
+// K: Haru talks out loud by himself. E1–E3: questions are read automatically, Haru's lines and tips on a tap (LEVELS.md §4)
+function autoTalk(){const b=scene==='title'?band:(roundBand||band);return !b||b==='K';}
+
+
+/* ── quiz pictures (LEVELS.md §5.4 `pic`; K items and the two E2 bar graphs only) ──
+   drawn at 280×150 (a bar graph at 320×190). Kinds: skull, skulls, tail, rows2,
+   groups:[[icon,n],…] (each group in its own 2×10 frame, the 1st on top), take:[icon,n,k] (last k crossed out),
+   graph:{step,bars:[[label,value],…]} (gridlines and a scale every step, no value labels on the bars) */
+const PIC_SIZE=p=>p&&p.graph?[320,190]:[280,150];
+function picIcon(c,kind,x,y,s,fill){c.save();c.translate(x,y);c.scale(s||1,s||1);
+ if(kind==='plate'){c.beginPath();c.moveTo(-9,10);c.lineTo(-8,-1);c.lineTo(0,-12);c.lineTo(8,-2);c.lineTo(9,10);c.closePath();fillInk(c,fill||'#E9C07C',2);}
+ else if(kind==='tooth'){c.beginPath();c.moveTo(-7,-11);c.lineTo(7,-11);c.quadraticCurveTo(6,2,0,12);c.quadraticCurveTo(-6,2,-7,-11);c.closePath();fillInk(c,fill||'#fff',2);}
+ else if(kind==='horn'){c.beginPath();c.moveTo(-7,11);c.quadraticCurveTo(-8,-2,3,-12);c.quadraticCurveTo(1,0,7,11);c.closePath();fillInk(c,fill||BONE,2);}
+ else{c.beginPath();c.moveTo(-5,10);c.lineTo(0,-12);c.lineTo(5,10);c.closePath();fillInk(c,fill||BONE,2);} // spike
+ c.restore();}
+function tenFrame(c,x,y,cw,ch,kind,n,cross){ // 2 rows × 10: the first row fills first
+ rr(c,x-3,y-3,cw*10+6,ch*2+6,7);c.fillStyle='#fff';c.fill();ink(c,2.5);c.stroke();
+ c.beginPath();for(let i=1;i<10;i++){c.moveTo(x+i*cw,y);c.lineTo(x+i*cw,y+2*ch);}c.moveTo(x,y+ch);c.lineTo(x+10*cw,y+ch);c.moveTo(x+5*cw,y-3);c.lineTo(x+5*cw,y+2*ch+3);c.strokeStyle='#C9D2E0';c.lineWidth=1.2;c.stroke();
+ const s=Math.min(cw/22,ch/29); // icons are about 22 px tall at scale 1
+ for(let i=0;i<n;i++){const r=Math.floor(i/10),col=i%10,cx=x+col*cw+cw/2,cy=y+r*ch+ch/2;picIcon(c,kind,cx,cy+s,s);
+  if(cross&&i>=n-cross){c.beginPath();c.moveTo(cx-cw*0.38,cy-ch*0.38);c.lineTo(cx+cw*0.38,cy+ch*0.38);c.moveTo(cx+cw*0.38,cy-ch*0.38);c.lineTo(cx-cw*0.38,cy+ch*0.38);c.strokeStyle='#DB5F52';c.lineWidth=3;c.lineCap='round';c.stroke();}}}
+function drawQuizPic(c,p){const [w,h]=PIC_SIZE(p);c.clearRect(0,0,w,h);
+ if(p.skull){c.save();c.translate(140,84);c.scale(.5,.5);drawSkull(c,p.skull);c.restore();}
+ else if(p.skulls){for(let i=0;i<p.skulls;i++){c.save();c.translate(84+i*124,90);c.scale(.4,.4);drawSkull(c,'tri');c.restore();}}
+ else if(p.tail){c.save();c.translate(136,98);c.scale(.62,.62);drawTail(c,p.tail);c.restore();}
+ else if(p.rows2){tube(c,()=>{c.moveTo(22,118);c.lineTo(258,118);},12,BONE2); // two zigzag rows of plates: back (light), front (dark)
+  for(let i=0;i<6;i++)picIcon(c,'plate',38+i*40,84,1.9,'#F6E3BC');
+  for(let i=0;i<6;i++)picIcon(c,'plate',58+i*40,100,1.7,'#D39A48');}
+ else if(p.groups){const g=p.groups.slice(0,2),cw=25,x=(w-cw*10)/2;
+  if(g.length===1)tenFrame(c,x,(h-2*34)/2,cw,34,g[0][0],g[0][1]);
+  else g.forEach(([kind,n],i)=>tenFrame(c,x,9+i*69,cw,29,kind,n));}
+ else if(p.take){const [kind,n,k]=p.take,cw=25;tenFrame(c,(w-cw*10)/2,(h-2*34)/2,cw,34,kind,n,k);}
+ else if(p.graph){const {step,bars}=p.graph,max=Math.max(...bars.map(b=>b[1])),top=Math.ceil(max/step)*step+step,x0=40,x1=w-10,y0=h-30,y1=12,py=(y0-y1)/top;
+  c.font='800 11px sans-serif';c.textAlign='right';c.textBaseline='middle';
+  for(let v=0;v<=top;v+=step){const y=y0-v*py;c.beginPath();c.moveTo(x0,y);c.lineTo(x1,y);c.strokeStyle=v?'#D5DCE8':INK;c.lineWidth=v?1:2;c.stroke();c.fillStyle=INK;c.fillText(String(v),x0-5,y);}
+  c.beginPath();c.moveTo(x0,y0);c.lineTo(x0,y1-4);ink(c,2);c.stroke();
+  const slot=(x1-x0)/bars.length,bw=Math.min(44,slot*0.5);
+  bars.forEach(([lab,v],i)=>{const cx=x0+slot*(i+0.5),nm=typeof lab==='string'?PIC_NAME[lab]:null,col=nm?nm.col:['#6B9BFF','#F2C14E','#8FC08A'][i%3];
+   rr(c,cx-bw/2,y0-v*py,bw,v*py,4);fillInk(c,col,2);
+   c.fillStyle=INK;c.textAlign='center';c.textBaseline='top';c.font='800 12px sans-serif';c.fillText(nm?nm[LANG]:lab[LANG],cx,y0+6);});}
+}
+
+/* ── state ───────────────────────────────── */
+let scene='title',dino=DINOS[0],grid=null,shovels=28,refilled=false,detects=3,flying=[],marks=[],placed=new Set(),tray=[],drag=null,stars=0,quizRight=false,hints={},bones=[],decoys=[],buried=[],L=FIELD[0],ghostAlpha=0.22,feel=null,wrongDrops=0,quizNow=null,hasBox=false;
+let roundBand=null,roundLevel=1,roundD=1,reachedBefore=0,nextLevel=1,suggestBandUp=false,roundSuggested=false,lastPost=null;
+let save={};try{save=JSON.parse(localStorage.getItem('sia-fossil-v1')||'{}')||{};}catch(e){}
+if(!save||typeof save!=='object'||Array.isArray(save))save={};
+['levels','reached','dinos','seen','lastQuiz'].forEach(k=>{if(!save[k]||typeof save[k]!=='object'||Array.isArray(save[k]))save[k]={};});
+// old save {level, trex:{stars…}}: that level was the K scale (d1–5), so it becomes levels.K
+if(save.level!=null){const n=clampLevel(save.level);if(n&&!save.levels.K){save.levels.K=n;save.reached.K=Math.max(save.reached.K||0,n);}delete save.level;}
+DINOS.forEach(d=>{if(save[d.id]&&typeof save[d.id]==='object'){save.dinos.K=save.dinos.K||{};if(!save.dinos.K[d.id])save.dinos.K[d.id]=save[d.id];delete save[d.id];}});
+// a v1 save's band was the child's own age pick; levels keep their meaning inside the band (LEVELS.md §3.3)
+if(!BANDS.includes(save.ageBand)){delete save.ageBand;if(BANDS.includes(save.band))save.ageBand=save.band;}
+function persist(){try{localStorage.setItem('sia-fossil-v1',JSON.stringify(save));}catch(e){}}
+const once=k=>{if(save.seen[k])return false;save.seen[k]=1;persist();return true;};
+const savedLevel=b=>clampLevel(save.levels[b])||1;
+// band: ?band= → ?age= → (standalone) the saved band, else none until the child's age is picked
+let band=qBand||(qAge?ageBand(qAge):null)||(BANDS.includes(save.band)?save.band:null);
+// embedded: always the URL level (the app decides level changes); standalone: the level saved for this band
+let level=band?(EMBED?(clampLevel(Q.get('level'))||1):savedLevel(band)):1;
+if(band&&!EMBED){save.band=band;save.levels[band]=level;save.reached[band]=Math.max(save.reached[band]||0,level);persist();}
+const D=()=>band?BASE[band]+level-1:0;
+// "부모님이 고른 묶음": embedded when ?band differs from ageBand(?age); standalone when the band differs from the child's age pick
+const overridden=()=>EMBED?!!(qBand&&qAge&&ageBand(qAge)!==qBand):!!(band&&save.ageBand&&band!==save.ageBand);
+// standalone only: replay a lower level (never jump up)
+function setLevel(n){n=clampLevel(n);if(EMBED||!band||!n)return;level=n;save.levels[band]=n;save.reached[band]=Math.max(save.reached[band]||0,n);persist();renderTitleBand();}
+// standalone only. The child's first pick is the age (save.ageBand); later band changes come from the parent panel.
+// A new band starts at level 1 unless a level is saved for it (LEVELS.md §3.2 [올리기]).
+function pickBand(b){if(EMBED||!BANDS.includes(b))return;band=b;save.band=b;if(!save.ageBand)save.ageBand=b;const sb=save.suggestBandUp;
+ if(sb&&sb.from!==b)delete save.suggestBandUp;
+ level=savedLevel(b);save.levels[b]=level;save.reached[b]=Math.max(save.reached[b]||0,level);persist();renderTitleBand();buildDinoCards();renderGate();}
+function setAgeBand(b){if(EMBED||!BANDS.includes(b))return;save.ageBand=b;pickBand(b);}
+document.querySelectorAll('#levels button').forEach((b,i)=>b.addEventListener('click',()=>{AU.init();AU.resume();AU.tap();if(EMBED||!band||i+1>Math.max(save.reached[band]||1,level))return;setLevel(i+1);}));
+// "몇 살이야?": only until the first answer; after that the row is gone and a parent hold is needed
+document.querySelectorAll('#bandRow button').forEach(b=>b.addEventListener('click',()=>{AU.init();AU.resume();AU.tap();if(EMBED||save.ageBand)return;setAgeBand(b.dataset.b);haru('haruT','cheer',T().pick);}));
+/* parent gate: press and hold "나이 바꾸기 (부모님)" for 2 s, then the grown-up taps the year they were born (4 digits,
+   1930 … this year − 18) before the age and band buttons appear (LEVELS.md §4, standalone). A child who can read the
+   button still cannot switch to a younger band on their own. Nothing is stored; every opening asks again. */
+let gateT=null,gateOk=false,gateDigits='',gateBad=false;
+function gateReset(){clearTimeout(gateT);gateT=null;$('btnGate').classList.remove('holding');}
+$('btnGate').addEventListener('pointerdown',e=>{e.preventDefault();AU.init();AU.resume();if(EMBED)return;gateReset();$('btnGate').classList.add('holding');gateT=setTimeout(()=>{gateReset();openGate();},2000);});
+['pointerup','pointerleave','pointercancel'].forEach(ev=>$('btnGate').addEventListener(ev,gateReset));
+function openGate(){if(EMBED)return;AU.reveal();gateOk=false;gateDigits='';gateBad=false;renderGate();$('gateWrap').classList.remove('hidden');}
+function closeGate(){$('gateWrap').classList.add('hidden');gateOk=false;gateDigits='';gateBad=false;}
+function renderGateCheck(){const t=T();$('gateCheck').classList.toggle('hidden',gateOk);$('gateRows').classList.toggle('hidden',!gateOk);
+ $('gateAsk').textContent=(gateBad?t.gateWrong+' ':'')+t.gateAsk;const y=$('gateYear');y.innerHTML='';for(let i=0;i<4;i++){const s=document.createElement('span');s.textContent=gateDigits[i]||'';y.appendChild(s);}}
+function gateKey(k){if(gateOk)return;AU.tap();gateBad=false;if(k==='←')gateDigits=gateDigits.slice(0,-1);else if(gateDigits.length<4)gateDigits+=k;
+ if(gateDigits.length===4){const y=+gateDigits,now=new Date().getFullYear();if(y>=1930&&y<=now-18){gateOk=true;AU.reveal();}else{gateBad=true;gateDigits='';AU.wrong();}}
+ renderGateCheck();}
+['1','2','3','4','5','6','7','8','9','0','←'].forEach(k=>{const b=document.createElement('button');b.textContent=k;b.dataset.k=k;b.addEventListener('click',()=>gateKey(k));$('gatePad').appendChild(b);});
+function renderGate(){const t=T();$('gateTitle').textContent=t.gateTitle;$('gateAgeL').textContent=t.gateAge;$('gateBandL').textContent=t.gateBand;$('gateHelp').textContent=t.gateHelp;$('btnGateClose').textContent=t.gateClose;renderGateCheck();
+ const row=(id,on,label,fn)=>{const box=$(id);box.innerHTML='';BANDS.forEach(b=>{const x=document.createElement('button');x.dataset.b=b;x.textContent=label(b);x.classList.toggle('on',b===on);x.addEventListener('click',()=>{if(!gateOk)return;AU.tap();fn(b);});box.appendChild(x);});};
+ row('gateAge',save.ageBand,b=>BAND_LABEL[LANG][b],setAgeBand);
+ row('gateBand',band,b=>BAND_LABEL[LANG][b]+(b===save.ageBand?' ('+t.gateMatch+')':''),pickBand);}
+$('btnGateClose').addEventListener('click',()=>{AU.tap();closeGate();});
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));if(id)$(id).classList.add('on');}
+function renderTitleBand(){const t=T(),asked=EMBED||!!save.ageBand,ov=overridden();
+ $('bandRow').classList.toggle('hidden',asked);$('bandChip').classList.toggle('hidden',!asked||!band);$('btnGate').classList.toggle('hidden',EMBED||!save.ageBand);$('levels').classList.toggle('hidden',EMBED||!band);
+ if(band)$('bandChip').textContent=BAND_LABEL[LANG][band]+' · '+t.lvlName(level)+(ov?' · '+t.parentBand:'');
+ if(!EMBED){$('bandLabel').textContent=t.age;$('gateText').textContent=t.gate;document.querySelectorAll('#bandRow button').forEach(b=>{b.textContent=t.bandBtn[b.dataset.b];b.classList.toggle('on',b.dataset.b===band);});
+  const top=band?Math.max(save.reached[band]||1,level):0;document.querySelectorAll('#levels button').forEach((b,i)=>b.classList.toggle('hidden',i+1>top));}
+ document.querySelectorAll('#levels button').forEach((b,i)=>b.classList.toggle('on',i+1===level)); // kept even when hidden: older app builds read the .on button on Start
+ const h=$('lvlHint');h.classList.toggle('solo',EMBED);h.textContent=band?BAND_LABEL[LANG][band]+' · '+t.lvlName(level)+' — '+t.hint(FIELD[BASE[band]+level-2]):t.pickBand;
+ const sb=save.suggestBandUp;$('bandNote').textContent=!EMBED&&sb&&sb.from===band&&NEXT_BAND[band]?t.bandNote(BAND_LABEL[LANG][sb.from],BAND_LABEL[LANG][sb.to]):'';
+ $('btnStart').disabled=!band;}
+function applyLang(){const t=T();document.documentElement.lang=LANG;document.title=t.title;$('logo').firstChild.textContent=t.title;$('logo').querySelector('small').textContent=t.sub;$('pick').textContent=t.pick;$('btnStart').textContent=t.start;$('detectLabel').textContent=t.detect;$('foundTag').textContent=t.found;$('btnFoundOk').textContent=t.next;$('resultTitle').textContent=t.result;$('resultSub').textContent=t.foundBones;$('btnAssemble').textContent=t.assemble;$('btnCardNext').textContent=t.next;$('doneTitle').textContent=t.done;$('btnAgain').textContent=t.again;$('btnOther').textContent=t.other;$('btnLang').textContent=LANG==='ko'?'EN':'한글';$('lvlLabel').textContent=t.lvl;$('feelQ').textContent=t.feel;document.querySelectorAll('#feel .faces button').forEach(b=>b.querySelector('span').textContent=t[b.dataset.f]);renderTitleBand();buildDinoCards();renderGate();}
+// a tap on Haru reads the bubble out loud (E1–E3 do not hear Haru automatically). A tap on the bubble where it covers
+// a field square still digs, as before (a 3-line bubble can reach the bottom row of a 9×6 field).
+const cellAtPoint=p=>{const c=Math.floor((p.x-GX)/(CELL+GAP)),r=Math.floor((p.y-GY)/(CELL+GAP));if(r<0||c<0||r>=ROWS||c>=COLS)return null;const q=cellXY(r,c);return p.x-q.x<=CELL&&p.y-q.y<=CELL?{r,c}:null;};
+document.querySelectorAll('.haru').forEach(h=>h.addEventListener('pointerdown',e=>{if(!e.target.closest('.face')&&scene==='dig'&&grid&&cellAtPoint(toStage(e)))return;e.stopPropagation();AU.init();AU.resume();const b=h.querySelector('.bubble');if(b&&b.textContent)speak(b.textContent);}));
+/* Haru: a few lines in a row (each new task type is explained once, see once()) */
+let sayTok=0;
+function cancelSay(){sayTok++;}
+function say(id,face,lines,gap){const tok=++sayTok;lines.forEach((t,i)=>{if(!i)haru(id,face,t);else setTimeout(()=>{if(tok===sayTok)haru(id,'talk',t);},i*(gap||4600));});}
+
+/* ── title ───────────────────────────────── */
+function buildDinoCards(){const box=$('dinos');box.innerHTML='';const bs=(band&&save.dinos[band])||{};DINOS.forEach((d,i)=>{const el=document.createElement('div');el.className='dino'+(d===dino?' sel':'');const c=document.createElement('canvas');c.width=400;c.height=260;const cc=c.getContext('2d');cc.scale(2,2);cc.save();cc.translate(100,68);cc.scale(0.62,0.62);drawSkull(cc,d.id);cc.restore();el.appendChild(c);const b=document.createElement('b');b.textContent=d.name[LANG];el.appendChild(b);const s=document.createElement('div');s.className='stars';const n=(bs[d.id]&&bs[d.id].stars)||0;s.innerHTML=[0,1,2].map(k=>k<n?'<i>★</i>':'★').join('');el.appendChild(s);el.addEventListener('pointerdown',()=>{AU.init();AU.resume();AU.tap();dino=d;document.querySelectorAll('.dino').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');});box.appendChild(el);});}
+function gotoTitle(){scene='title';cancelSay();show('s-title');renderTitleBand();buildDinoCards();haru('haruT','hello',T().hello(CHILD)+(band?'':' '+T().pickBand));}
+
+/* ── dig scene ───────────────────────────── */
+let COLS=7,ROWS=5,CELL=96,GX=0,GY=138;const GAP=4;
+function setGrid(cols,rows){COLS=cols;ROWS=rows;CELL=Math.floor(Math.min((700+GAP)/cols,(496+GAP)/rows))-GAP;GX=(W-(COLS*(CELL+GAP)-GAP))/2;GY=138+Math.floor((496-(ROWS*(CELL+GAP)-GAP))/2);}
+const cellXY=(r,c)=>({x:GX+c*(CELL+GAP),y:GY+r*(CELL+GAP)});
+// a decoy must look different from our bone of the same kind: skulls always differ; spine and tail differ only between Stegosaurus and the others; ribs and legs look the same for all three
+function pickDecoys(n){if(!n)return [];const pool=[];for(const o of DINOS){if(o.id===dino.id)continue;for(const b of o.bones){const differs=b.k==='skull'||((b.k==='spine'||b.k==='tail')&&(o.id==='steg')!==(dino.id==='steg'));if(differs)pool.push({k:b.k,fw:b.fw,fh:b.fh,dino:o.id,decoy:true});}}return shuffle(pool).slice(0,n);}
+function tryGrid(force){
+ const cells=[];for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)cells.push({r,c,type:'dirt',hp:1,dug:false,bone:-1,n:0,mark:false,grass:Math.random()<0.22,pop:1,cracked:false});
+ const at=(r,c)=>cells[r*COLS+c];
+ // place bones and decoys (indices into buried)
+ for(const bi of shuffle(buried.map((b,i)=>i))){const b=buried[bi];let ok=false;for(let tries=0;tries<200&&!ok;tries++){const fw=b.fw,fh=b.fh;const r0=Math.floor(Math.random()*(ROWS-fh+1)),c0=Math.floor(Math.random()*(COLS-fw+1));let free=true;for(let r=r0;r<r0+fh;r++)for(let c=c0;c<c0+fw;c++)if(at(r,c).bone>=0)free=false;if(!free)continue;for(let r=r0;r<r0+fh;r++)for(let c=c0;c<c0+fw;c++)at(r,c).bone=bi;b.r0=r0;b.c0=c0;ok=true;}
+  if(!ok){if(!force)return null;b.r0=0;b.c0=0;}}
+ // rocks
+ let rocks=0;while(rocks<L.rocks){const k=cells[Math.floor(Math.random()*cells.length)];if(k.type==='dirt'){k.type='rock';k.hp=2;k.grass=false;rocks++;}}
+ // numbers (decoys count too)
+ for(const k of cells){let n=0;for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){if(!dr&&!dc)continue;const r=k.r+dr,c=k.c+dc;if(r<0||c<0||r>=ROWS||c>=COLS)continue;if(at(r,c).bone>=0)n++;}k.n=n;}
+ return{cells,at};
+}
+function makeGrid(){for(let i=0;i<80;i++){const g=tryGrid(false);if(g)return g;}return tryGrid(true);}
+function startDig(){
+ if(!band)return;
+ cancelSay();scene='dig';roundBand=band;roundLevel=level;roundD=BASE[band]+level-1;L=FIELD[roundD-1];
+ reachedBefore=Math.max(save.reached[band]||0,level);nextLevel=level;suggestBandUp=false;roundSuggested=false;quizNow=null;quizRight=false;
+ if(!EMBED){save.band=band;save.levels[band]=level;save.reached[band]=reachedBefore;persist();} // embedded: the app owns band and level
+ bones=dino.bones.filter(b=>L.bones.includes(b.k)).map(b=>({k:b.k,fw:b.fw,fh:b.fh,dino:dino.id,decoy:false}));
+ decoys=pickDecoys(L.decoys);buried=bones.concat(decoys);
+ setGrid(L.cols,L.rows);ghostAlpha=L.ghost;wrongDrops=0;feel=null;
+ buried.forEach(b=>{b.found=false;b.dugCells=0;});grid=makeGrid();shovels=L.shovels;refilled=false;detects=L.detects;flying=[];marks=[];hints={};particles.length=0;
+ paintBadge();show('s-dig');buildSlots();updHud();$('btnDetect').classList.toggle('hidden',!L.detects);
+ const lines=[T().digIntro];
+ if(L.decoys){if(!L.named)lines.push(T().decoyIntroHidden);else if(once('decoy'))lines.push(T().decoyIntro);} // unnamed decoys: the warning starts every round
+ if(!L.detects&&once('noScan'))lines.push(T().noScanIntro);
+ say('haruD','dig',lines);
+}
+function paintBadge(){const t=T(),b=$('lvlBadge'),bl=BAND_LABEL[LANG][roundBand];b.innerHTML='';const s=document.createElement('small');s.textContent=bl;const v=document.createElement('b');v.textContent=t.lvlName(roundLevel);b.append(s,v);const ov=overridden();if(ov){const i=document.createElement('i');i.textContent=t.parentBand;b.appendChild(i);}b.setAttribute('aria-label',bl+' · '+t.lvlName(roundLevel)+(ov?' · '+t.parentBand:''));}
+function buildSlots(){const box=$('slots');box.innerHTML='';bones.forEach((b,i)=>{const s=document.createElement('div');s.className='slot';s.id='slot'+i;const c=document.createElement('canvas');c.width=128;c.height=96;s.appendChild(c);box.appendChild(s);paintSlot(i,false);});
+ if(decoys.length&&L.named){const s=document.createElement('div');s.className='slot box';s.id='slotX';box.appendChild(s);paintBox();}}
+function paintSlot(i,got){const c=$('slot'+i).firstChild,cc=c.getContext('2d');cc.setTransform(1,0,0,1,0,0);cc.clearRect(0,0,128,96);cc.globalAlpha=got?1:0.28;drawBoneFit(cc,bones[i].k,dino.id,64,48,108,80,0);cc.globalAlpha=1;if(got)$('slot'+i).classList.add('got');}
+function paintBox(){const s=$('slotX');if(!s)return;s.innerHTML='';const a=document.createElement('span');a.textContent=T().boxSlot;const n=document.createElement('b');n.textContent=decoys.filter(d=>d.found).length;s.append(a,n);}
+function updHud(){$('shovelN').textContent=shovels;$('shovel').classList.toggle('low',shovels<=5);$('detectN').textContent=detects;$('btnDetect').disabled=detects<=0;}
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),900);}
+function boneRect(b){const p=cellXY(b.r0,b.c0);return{x:p.x,y:p.y,w:b.fw*(CELL+GAP)-GAP,h:b.fh*(CELL+GAP)-GAP};}
+function digAt(r,c){
+ const k=grid.at(r,c);if(k.dug)return;
+ // out of shovels: one refill of 8 (costs the shovel star); after that Haru hands out 4 at a time so the dig can always be finished
+ if(shovels<=0){if(!refilled){refilled=true;shovels=8;updHud();haru('haruD','cheer',T().refill);}else{shovels=4;updHud();haru('haruD','think',T().more);}AU.reveal();return;}
+ shovels--;updHud();k.hp--;k.pop=0.85;tween(k,{pop:1},0.35,'outBack');const p=cellXY(r,c);shake=6;
+ if(k.hp>0){k.cracked=true;AU.crack();burst(p.x+CELL/2,p.y+CELL/2,10,{colors:['#9AA3AE','#CBD2DE'],speed:220,up:120,r:4});if(!hints.rock){hints.rock=1;haru('haruD','talk',T().rock);}return;}
+ k.dug=true;k.mark=false;AU.dig();burst(p.x+CELL/2,p.y+CELL/2,16,{colors:['#7E4E2B','#A0673C','#5B3A20'],speed:260,up:180,r:6});
+ if(k.bone>=0){const b=buried[k.bone];b.dugCells++;if(b.dugCells>=b.fw*b.fh){foundBone(k.bone);}else{AU.reveal();if(!hints.partial){hints.partial=1;haru('haruD','wow',T().partial);}}}
+ else{if(!hints.num){hints.num=1;haru('haruD','talk',k.n===0?T().zero:T().num(k.n));}else if(k.n>=2&&Math.random()<0.35)toast(T().num(k.n).split('!')[0]+'!');}
+ if(shovels===4&&!hints.low){hints.low=1;haru('haruD','think',T().low);}
+}
+// a named decoy (d9–14) is tagged "다른 공룡 뼈!"; an unnamed one (d15–20) looks like any other bone until the child compares shapes
+const namedDecoy=b=>b.decoy&&L.named,hiddenDecoy=b=>b.decoy&&!L.named;
+function popSlot(i){const s=$('slot'+i);if(!s)return;s.style.animation='none';void s.offsetWidth;s.style.animation='slotpop .4s';}
+function foundBone(bi){
+ const b=buried[bi],tagged=namedDecoy(b),hidden=hiddenDecoy(b);b.found=true;AU.found();const rc=boneRect(b);
+ burst(rc.x+rc.w/2,rc.y+rc.h/2,26,{colors:tagged?['#DB5F52','#fff','#F2B48B']:['#F2C14E','#fff','#FFE082'],speed:320,up:200,r:6,kind:'star',g:500});
+ const si=hidden?bones.findIndex(x=>x.k===b.k):bi,slot=$(tagged?'slotX':'slot'+si).getBoundingClientRect(),st=stage.getBoundingClientRect();
+ const fl={bi,x:rc.x+rc.w/2,y:rc.y+rc.h/2,w:rc.w,h:rc.h,s:1,rot:0,tx:(slot.left-st.left)/scale+slot.width/scale/2,ty:(slot.top-st.top)/scale+slot.height/scale/2};
+ flying.push(fl);tween(fl,{x:fl.tx,y:fl.ty,s:0.35,rot:Math.PI*2},0.8,'inOutQuad',()=>{flying.splice(flying.indexOf(fl),1);if(tagged)paintBox();else if(hidden)popSlot(si);else paintSlot(bi,true);AU.snap();openFound(bi);},0.35);
+ haru('haruD',tagged?'think':'bone',tagged?T().decoyLine:T().foundLine(BONE_NAMES[LANG][b.k]));
+}
+function openFound(bi){const b=buried[bi],t=T(),tagged=namedDecoy(b);show('s-found');$('foundCard').classList.toggle('wide',tagged||roundBand==='E2'||roundBand==='E3');
+ const c=$('foundCv'),cc=c.getContext('2d');cc.setTransform(2,0,0,2,0,0);cc.clearRect(0,0,380,220);drawBoneFit(cc,b.k,b.dino,190,110,340,190,0);
+ const tag=$('foundTag');tag.textContent=tagged?t.decoyTag:t.found;tag.classList.toggle('red',tagged);
+ const name=tagged?t.decoyName(DINO_BY_ID[b.dino].name[LANG],BONE_NAMES[LANG][b.k]):BONE_NAMES[LANG][b.k],fact=tagged?t.decoyFact:BONE_FACT[roundBand][LANG][b.k];
+ $('foundName').textContent=name;$('foundFact').textContent=fact;if(autoTalk())speak(name+'. '+fact);}
+$('btnSpeakF').addEventListener('click',()=>{AU.tap();speak($('foundName').textContent+'. '+$('foundFact').textContent);});
+$('btnFoundOk').addEventListener('click',()=>{AU.tap();if(bones.every(b=>b.found)){openResult();}else{show('s-dig');}});
+function openResult(){cancelSay();show('s-result');const row=$('resultRow');row.innerHTML='';const got=buried.filter(b=>b.found);if(!L.named)shuffle(got);
+ got.forEach((b,i)=>{const d=document.createElement('div');if(namedDecoy(b))d.className='decoy';d.style.animationDelay=(i*0.12)+'s';const c=document.createElement('canvas');c.width=184;c.height=136;const cc=c.getContext('2d');cc.scale(2,2);drawBoneFit(cc,b.k,b.dino,46,34,84,60,0);d.appendChild(c);row.appendChild(d);});AU.fanfare();haru('haruD','cheer',T().allFound);}
+$('btnAssemble').addEventListener('click',()=>{AU.tap();startAssemble();});
+$('btnDetect').addEventListener('click',()=>{AU.init();AU.resume();if(detects<=0){haru('haruD','think',T().noDetect);return;}
+ const cand=grid.cells.filter(k=>!k.dug&&k.bone>=0&&!buried[k.bone].decoy&&!k.mark);if(!cand.length)return;const k=cand[Math.floor(Math.random()*cand.length)];k.mark=true;detects--;updHud();AU.ping();const p=cellXY(k.r,k.c);marks.push({x:p.x+CELL/2,y:p.y+CELL/2,t:0});haru('haruD','wow',T().detected);});
+$('btnClose').addEventListener('click',()=>{AU.tap();gotoTitle();});
+$('btnClose2').addEventListener('click',()=>{AU.tap();gotoTitle();});
+
+/* ── assemble scene ──────────────────────── */
+const BOX={x:776,y:418,w:172,h:134};   // "다른 공룡 뼈 / Not ours" box, only when a decoy was dug up
+const TAU=Math.PI*2,wrapPi=a=>a-TAU*Math.round(a/TAU),normAng=a=>{a=((a%TAU)+TAU)%TAU;return a>TAU-1e-6?0:a;};
+function startAssemble(){
+ cancelSay();scene='assemble';placed=new Set();drag=null;roarT=-1;eyes=false;wrongDrops=0;
+ const items=shuffle(bones.map(b=>({k:b.k,dino:dino.id,decoy:false})).concat(decoys.filter(d=>d.found).map(d=>({k:d.k,dino:d.dino,decoy:true}))));
+ hasBox=items.some(it=>it.decoy);
+ const n=items.length,ts=n<=5?0.42:0.36,step=Math.min(150,880/n);
+ tray=items.map((it,i)=>{const x=512+(i-(n-1)/2)*step,rot=L.turn?(1+Math.floor(Math.random()*3))*Math.PI/2:0;return Object.assign(it,{x,y:672,s:ts,ts,rot,home:{x,y:672},placedAt:null,boxed:false});});
+ show('s-assemble');
+ const lines=[T().asmIntro(ghostAlpha>0)+(ghostAlpha===0&&L.help?' '+T().ghostHint(L.help):'')];
+ if(L.ghost>0&&L.snap<=62&&once('exact'))lines.push(T().exactIntro);
+ if(hasBox&&once('box'))lines.push(T().boxIntro);
+ if(L.turn&&once('turn'))lines.push(T().turnIntro);
+ say('haruA','talk',lines);}
+// with up to 8 pieces in the tray (E3: 3 decoys) the touch areas overlap: take the piece whose centre is nearest
+function trayHit(p){let best=null,bd=1e9;for(let i=tray.length-1;i>=0;i--){const b=tray[i];if(b.placedAt||b.boxed)continue;let [bw,bh]=BONE_BOX[b.k];if(Math.abs(Math.sin(b.rot))>0.7)[bw,bh]=[bh,bw];const w=bw*b.s*0.5+18,h=bh*b.s*0.5+18;if(Math.abs(p.x-b.x)<w&&Math.abs(p.y-b.y)<h){const dd=Math.hypot(p.x-b.x,p.y-b.y);if(dd<bd-0.5){best=b;bd=dd;}}}return best;}
+function assembleDown(p){const b=trayHit(p);if(!b)return;drag=b;drag.dx=p.x-b.x;drag.dy=p.y-b.y;drag.sx=p.x;drag.sy=p.y;drag.moved=false;tray.splice(tray.indexOf(b),1);tray.push(b);tween(b,{s:dino.slots[b.k].s},0.18,'outCubic');AU.tap();}
+function assembleMove(p){if(!drag)return;drag.x=p.x-drag.dx;drag.y=p.y-drag.dy;if(Math.hypot(p.x-drag.sx,p.y-drag.sy)>12)drag.moved=true;}
+function wrongDrop(key){wrongDrops++;AU.wrong();let msg=T()[key];if(ghostAlpha===0&&L.help&&wrongDrops>=L.help){ghostAlpha=0.16;msg+=' '+T().ghostOn;}haru('haruA','think',msg);}
+const inBox=b=>b.x>BOX.x-14&&b.x<BOX.x+BOX.w+14&&b.y>BOX.y-14&&b.y<BOX.y+BOX.h+14;
+function assembleUp(){if(!drag)return;const b=drag;drag=null;
+ const home=()=>tween(b,{x:b.home.x,y:b.home.y,s:b.ts},0.4,'outBack');
+ if(!b.moved){ // a tap: turns a turned piece by 90°
+  if(L.turn){AU.tap();tween(b,{x:b.home.x,y:b.home.y,s:b.ts,rot:b.rot+Math.PI/2},0.22,'outCubic',()=>{b.rot=normAng(b.rot);});}else home();return;}
+ if(hasBox&&inBox(b)){if(b.decoy)boxIt(b);else{wrongDrop('boxWrong');home();}return;}
+ const nearSlot=(k,rad)=>{const s=dino.slots[k];return Math.hypot(b.x-s.x,b.y-s.y)<rad;};
+ if(b.decoy){if(bones.some(bb=>nearSlot(bb.k,Math.max(L.snap,70))))wrongDrop('decoyOnSlot');else haru('haruA','think',T().boxIntro);home();return;}
+ const sl=dino.slots[b.k];
+ if(nearSlot(b.k,L.snap)){
+  if(Math.abs(wrapPi(b.rot-sl.r))<=0.3){b.rot=sl.r+wrapPi(b.rot-sl.r);b.placedAt=sl;tween(b,{x:sl.x,y:sl.y,rot:sl.r,s:sl.s},0.25,'outBack',()=>{placed.add(b.k);AU.snap();burst(sl.x,sl.y,14,{colors:['#F2C14E','#fff'],speed:200,up:100,r:5,kind:'star',g:400});checkDone(T().snap);});}
+  else{wrongDrop('turnWrong');home();}
+  return;}
+ const near=bones.some(bb=>bb.k!==b.k&&nearSlot(bb.k,L.snap));
+ if(near||(ghostAlpha===0&&b.y<590))wrongDrop('wrongSlot');
+ home();}
+function boxIt(b){const n=tray.filter(t=>t.boxed).length;b.boxed=true;const x=BOX.x+44+(n%3)*42,y=BOX.y+90;tween(b,{x,y,s:0.2,rot:0},0.3,'outBack',()=>{AU.snap();burst(x,y,10,{colors:['#DB5F52','#fff'],speed:180,up:90,r:4,kind:'star',g:400});checkDone(T().boxOk);});}
+function checkDone(msg){const left=tray.some(t=>t.decoy&&!t.boxed);if(placed.size===bones.length&&!left)completeSkeleton();else if(placed.size===bones.length)haru('haruA','think',T().boxLeft);else haru('haruA','cheer',msg);}
+let roarT=-1,eyes=false;
+function completeSkeleton(){cancelSay();haru('haruA','cheer',T().complete(dino.name[LANG]));AU.fanfare();setTimeout(()=>{AU.roar();roarT=0;eyes=true;shake=10;burst(512,300,60,{colors:['#F2C14E','#DB5F52','#3E7BFF','#8FC08A','#fff'],speed:520,up:420,r:7,kind:'confetti',g:600,life:1.6});},700);setTimeout(openCard,2600);}
+
+/* ── card / quiz / done ──────────────────── */
+function fitCard(){const c=$('dinoCard');if(c.offsetHeight>742)c.classList.add('dense');}
+// LEVELS.md §5.4: tier by level (L1–2, L3–4, L5); the item not shown last time for this band × dino; choices shuffled
+const quizTier=lv=>lv<=2?0:lv<=4?1:2;
+function pickQuiz(b,dinoId,lv){const tier=quizTier(lv),lq=save.lastQuiz[b]=save.lastQuiz[b]||{},last=lq[dinoId],i=last===0||last===1?1-last:(Math.random()<0.5?0:1);
+ lq[dinoId]=i;persist();return {tier,i,item:QUIZ[b][dinoId][tier][i],order:shuffle([0,1,2,3])};}
+function openCard(){if(scene!=='assemble')return;scene='card';show('s-card');const t=T(),card=$('dinoCard');card.classList.toggle('wide',roundBand!=='K');card.classList.remove('dense');
+ const c=$('cardCv'),cc=c.getContext('2d');cc.setTransform(2,0,0,2,0,0);cc.clearRect(0,0,300,180);cc.fillStyle='#EAF2FF';rr(cc,0,0,300,180,18);cc.fill();drawSkeleton(cc,dino,null,1,-18,-22,0.335);
+ $('cardName').textContent=dino.name[LANG];const ul=$('cardFacts');ul.innerHTML='';FACTS[roundBand][dino.id][LANG].forEach(f=>{const li=document.createElement('li');li.textContent=f;ul.appendChild(li);});
+ const P=pickQuiz(roundBand,dino.id,roundLevel),qz=P.item[LANG],right=P.order.indexOf(qz.a);
+ quizNow={band:roundBand,tier:P.tier,i:P.i,item:P.tier+'-'+P.i,q:qz.q,c:P.order.map(k=>qz.c[k]),a:right,e:qz.e,pic:P.item.pic||null,taps:0};
+ $('quizText').textContent=qz.q;$('quizE').textContent='';$('btnCardNext').classList.add('invis');quizRight=false;
+ const tip=t.quizTip[roundBand],showTip=!!tip&&once('quiz'+roundBand);$('quizTip').classList.toggle('hidden',!showTip);if(showTip){$('quizHaru').innerHTML=haruSVG('think');$('quizTipText').textContent=tip;}
+ const pic=P.item.pic,pc=$('quizPic');pc.classList.toggle('hidden',!pic);pc.classList.toggle('graph',!!(pic&&pic.graph));if(pic){const [w,h]=PIC_SIZE(pic);pc.width=w*2;pc.height=h*2;const g=pc.getContext('2d');g.setTransform(2,0,0,2,0,0);drawQuizPic(g,pic);}
+ // the quiz star only for a right FIRST tap (LEVELS.md §3.1); after a wrong tap the child still finds the answer and reads why
+ const box=$('choices');box.innerHTML='';quizNow.c.forEach((txt,i)=>{const b=document.createElement('button');const n=document.createElement('i');n.textContent=i+1;const s=document.createElement('span');s.textContent=txt;b.append(n,s);
+  b.addEventListener('click',()=>{if(b.disabled)return;AU.tap();quizNow.taps++;
+   if(i===right){quizRight=quizNow.taps===1;b.classList.add('ok');box.querySelectorAll('button').forEach(x=>x.disabled=true);$('quizE').textContent=qz.e;AU.found();speak((quizRight?t.right:t.rightLate)+' '+qz.e);$('btnCardNext').classList.remove('invis');}
+   else{b.classList.add('no');b.disabled=true;AU.wrong();$('quizE').textContent=t.wrong;speak(t.wrong);}fitCard();});box.appendChild(b);});
+ fitCard();speak(t.quiz(dino.name[LANG])+' '+qz.q);} // the question is always read; the tip only on a tap
+$('btnSpeakQ').addEventListener('click',()=>{if(quizNow)speak(quizNow.q+'. '+quizNow.c.join('. '));});
+$('quizTip').addEventListener('click',()=>{const s=$('quizTipText').textContent;if(s)speak(s);});
+$('btnCardNext').addEventListener('click',()=>{if($('btnCardNext').classList.contains('invis'))return;AU.tap();openDone();});
+function openDone(){scene='done';show('s-done');stars=1+(refilled?0:1)+(quizRight?1:0);const bd=save.dinos[roundBand]=save.dinos[roundBand]||{};const prev=bd[dino.id]||{};bd[dino.id]={stars:Math.max(prev.stars||0,stars),plays:(prev.plays||0)+1,level:roundLevel};persist();
+ feel=null;nextLevel=roundLevel;suggestBandUp=false;roundSuggested=false;$('feelMsg').textContent='';document.querySelectorAll('#feel .faces button').forEach(b=>b.classList.remove('on'));
+ const is=$('bigStars').querySelectorAll('i');is.forEach((el,i)=>{el.className='';setTimeout(()=>{if(i<stars){el.className='on';AU.star(i);}else el.className='off';},300+i*350);});
+ $('doneMsg').innerHTML='';$('doneMsg').append(T().doneMsg(stars));const tip=document.createElement('small');tip.textContent=T().starTip;$('doneMsg').appendChild(tip);speak(T().doneMsg(stars));
+ post();}
+// result for the app (LEVELS.md §4); the app's own respond() is authoritative, nextLevel is advisory; level = the level played
+function post(){const m={type:'mysia-game',game:'fossil-dig',dino:dino.id,band:roundBand,level:roundLevel,d:roundD,stars,quizRight,quizItem:quizNow?quizNow.item:null,feel,nextLevel,suggestBandUp,lang:LANG};lastPost=m;try{parent.postMessage(m,'*');}catch(e){}}
+// "어땠어?": ±1 inside the band, never skipping; level 5 + easy + a good result stays 5 and suggests the next band to a parent.
+// A good result (LEVELS.md §3.1) = ≥ 2 stars AND the quiz right on the first tap. The bones star is always given (a round
+// cannot end without every bone), so "≥ 2 stars" alone would let a wrong quiz count as good.
+// Embedded, the game never changes its own level ("다시 하기" replays the URL level); the app decides through respond(),
+// so the line names no level there (it would promise a level the replay does not play).
+const goodResult=()=>stars>=2&&quizRight;
+function setFeel(f){if(scene!=='done'||!['hard','good','easy'].includes(f))return;feel=f;document.querySelectorAll('#feel .faces button').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+ let next=roundLevel,maxed=false;suggestBandUp=false;
+ if(f==='easy'&&goodResult()){if(roundLevel<5)next=roundLevel+1;else if(roundBand!=='E3')suggestBandUp=true;else maxed=true;}
+ else if(f==='hard')next=Math.max(1,roundLevel-1);
+ nextLevel=next;
+ if(!EMBED){
+  if(suggestBandUp){save.suggestBandUp={from:roundBand,to:NEXT_BAND[roundBand],at:Date.now()};roundSuggested=true;}else if(roundSuggested){delete save.suggestBandUp;roundSuggested=false;}
+  if(band===roundBand)level=next;save.levels[roundBand]=next;save.reached[roundBand]=Math.max(reachedBefore,next);persist();}
+ const t=T(),msg=suggestBandUp?t.bandUp:maxed?t.maxLevel:EMBED?(f==='hard'?t.embedHard:next>roundLevel?t.embedEasy:t.nextSame):next>roundLevel?t.nextUp(next):next<roundLevel?t.nextDown(next):t.nextSame;$('feelMsg').textContent=msg;speak(msg);AU.reveal();post();}
+document.querySelectorAll('#feel .faces button').forEach(b=>b.addEventListener('click',()=>{AU.tap();setFeel(b.dataset.f);}));
+$('btnAgain').addEventListener('click',()=>{AU.tap();startDig();});
+$('btnOther').addEventListener('click',()=>{AU.tap();gotoTitle();});
+$('btnStart').addEventListener('click',()=>{AU.init();AU.resume();AU.tap();if(!band){haru('haruT','think',T().pickBand);return;}startDig();});
+$('btnSound').addEventListener('click',()=>{AU.init();AU.on=!AU.on;voiceOn=AU.on;$('btnSound').textContent=AU.on?'🔊':'🔇';if(!AU.on&&'speechSynthesis' in window)speechSynthesis.cancel();});
+$('btnLang').addEventListener('click',()=>{LANG=LANG==='ko'?'en':'ko';applyLang();haru('haruT','hello',T().hello(CHILD)+(band?'':' '+T().pickBand));});
+
+/* ── input ───────────────────────────────── */
+stage.addEventListener('pointerdown',e=>{if(e.target.closest('button,.dino,.card,#gateWrap'))return;AU.init();AU.resume();const p=toStage(e);
+ if(scene==='dig'){const k=cellAtPoint(p);if(k)digAt(k.r,k.c);}
+ else if(scene==='assemble'){assembleDown(p);}
+});
+stage.addEventListener('pointermove',e=>{if(scene==='assemble'&&drag){e.preventDefault();assembleMove(toStage(e));}});
+addEventListener('pointerup',()=>{if(scene==='assemble')assembleUp();});
+addEventListener('pointercancel',()=>{if(scene==='assemble')assembleUp();});
+
+/* ── render ──────────────────────────────── */
+function drawCell(k){const p=cellXY(k.r,k.c),S=96,u=CELL/S;ctx.save();ctx.translate(p.x+CELL/2,p.y+CELL/2);ctx.scale(k.pop*u,k.pop*u);ctx.translate(-S/2,-S/2);
+ if(!k.dug){if(k.type==='rock'){rr(ctx,4,4,S-8,S-8,22);fillInk(ctx,'#9AA3AE',3);ell(ctx,36,34,16,11,'#CBD2DE');ell(ctx,60,58,10,8,'#7F8A99');if(k.cracked){ctx.beginPath();ctx.moveTo(20,20);ctx.lineTo(44,48);ctx.lineTo(38,66);ctx.moveTo(44,48);ctx.lineTo(72,40);ink(ctx,3);ctx.stroke();}}
+  else{rr(ctx,2,2,S-4,S-4,12);fillInk(ctx,'#A0673C',3);[[20,26],[62,20],[40,58],[74,70],[24,74]].forEach((s,i)=>ell(ctx,s[0],s[1],4+(i%2),3,'#8B5533'));if(k.grass){ctx.beginPath();ctx.moveTo(58,14);ctx.lineTo(54,2);ctx.moveTo(62,14);ctx.lineTo(66,4);ctx.moveTo(60,14);ctx.lineTo(60,0);ctx.strokeStyle='#3F7D5B';ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();}}
+  if(k.mark){ctx.save();ctx.globalAlpha=0.55+0.45*Math.sin(performance.now()/180);rr(ctx,2,2,S-4,S-4,12);ctx.strokeStyle='#F2C14E';ctx.lineWidth=6;ctx.stroke();ctx.restore();ctx.font='900 40px sans-serif';ctx.textAlign='center';ctx.fillStyle='#F2C14E';ctx.strokeStyle=INK;ctx.lineWidth=5;ctx.strokeText('🦴',S/2,S/2+14);ctx.fillText('🦴',S/2,S/2+14);}}
+ else{rr(ctx,2,2,S-4,S-4,12);fillInk(ctx,k.bone>=0?'#E9C07C':'#5B3A20',3);if(k.bone<0){rr(ctx,10,10,S-20,S-20,10);ctx.fillStyle='rgba(0,0,0,.18)';ctx.fill();if(k.n>0){ctx.font='900 40px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=['#F6EEDC','#F2C14E','#E88F4D','#DB5F52','#DB5F52','#DB5F52','#DB5F52','#DB5F52','#DB5F52'][k.n];ctx.fillText(k.n,S/2,S/2+2);}else{ell(ctx,S/2,S/2+4,12,8,'#8B5533');ell(ctx,S/2-3,S/2+2,5,3,'#A0673C');}}}
+ ctx.restore();}
+function renderDig(){
+ // board
+ rr(ctx,GX-26,GY-26,COLS*(CELL+GAP)-GAP+52,ROWS*(CELL+GAP)-GAP+52,26);fillInk(ctx,'#B98B5E',5);rr(ctx,GX-12,GY-12,COLS*(CELL+GAP)-GAP+24,ROWS*(CELL+GAP)-GAP+24,16);fillInk(ctx,'#7E4E2B',3);
+ for(const k of grid.cells)drawCell(k);
+ // bones and decoys (clipped to dug cells)
+ buried.forEach((b,i)=>{if(b.found||b.dugCells===0)return;const rc=boneRect(b);ctx.save();ctx.beginPath();for(const k of grid.cells)if(k.dug&&k.bone===i){const p=cellXY(k.r,k.c);ctx.rect(p.x+4,p.y+4,CELL-8,CELL-8);}ctx.clip();const vert=b.fh>b.fw;drawBoneFit(ctx,b.k,b.dino,rc.x+rc.w/2,rc.y+rc.h/2,vert?rc.w-14:rc.w-16,vert?rc.h-16:rc.h-14,0);ctx.restore();});
+ // detector rings
+ for(const m of marks){if(m.t<1.2){ctx.beginPath();ctx.arc(m.x,m.y,20+m.t*90,0,Math.PI*2);ctx.strokeStyle=`rgba(62,123,255,${1-m.t/1.2})`;ctx.lineWidth=6;ctx.stroke();}}
+ for(const f of flying){const b=buried[f.bi];ctx.save();ctx.translate(f.x,f.y);ctx.rotate(f.rot);ctx.scale(f.s,f.s);drawBoneFit(ctx,b.k,b.dino,0,0,f.w-16,f.h-16,0);ctx.restore();}
+}
+function renderAssemble(){
+ // table
+ rr(ctx,60,96,904,470,30);fillInk(ctx,'#EAF2FF',5);ctx.save();ctx.setLineDash([12,10]);rr(ctx,80,116,864,430,22);ctx.strokeStyle='#B9CBFF';ctx.lineWidth=4;ctx.stroke();ctx.restore();
+ rr(ctx,40,600,944,150,26);fillInk(ctx,'#B98B5E',5);
+ if(hasBox){ctx.save();rr(ctx,BOX.x,BOX.y,BOX.w,BOX.h,20);ctx.fillStyle='#FFF1EE';ctx.fill();ctx.setLineDash([10,8]);ctx.strokeStyle='#DB5F52';ctx.lineWidth=4;ctx.stroke();ctx.setLineDash([]);ctx.font='900 20px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#A33A2F';ctx.fillText(T().box,BOX.x+BOX.w/2,BOX.y+26);ctx.restore();}
+ const bounce=roarT>=0&&roarT<1.2?Math.abs(Math.sin(roarT*Math.PI*3))*(1-roarT/1.2)*40:0;
+ ctx.save();ctx.translate(0,-bounce);
+ if(ghostAlpha>0)drawSkeleton(ctx,dino,placed,ghostAlpha,0,0,1,new Set(bones.map(b=>b.k)));
+ for(const b of tray){if(!b.placedAt)continue;ctx.save();ctx.translate(b.x,b.y);ctx.rotate(b.rot);ctx.scale(b.s,b.s);drawBone(ctx,b.k,dino.id);ctx.restore();}
+ if(eyes){const sl=dino.slots.skull;ctx.save();ctx.translate(sl.x,sl.y);ctx.rotate(sl.r);ctx.scale(sl.s,sl.s);const e=dino.id==='trex'?[-28,-30]:dino.id==='tri'?[26,-30]:[-52,-22];ell(ctx,e[0],e[1],11,12,'#fff');ell(ctx,e[0]+2,e[1]+1,5,6,INK);ctx.restore();
+  if(roarT>=0&&roarT<2){ctx.font='900 64px sans-serif';ctx.textAlign='center';ctx.fillStyle='#DB5F52';ctx.strokeStyle='#fff';ctx.lineWidth=10;const t=T().roar;ctx.strokeText(t,sl.x+40,sl.y-120-bounce);ctx.fillText(t,sl.x+40,sl.y-120-bounce);}}
+ ctx.restore();
+ for(const b of tray){if(!b.boxed)continue;ctx.save();ctx.translate(b.x,b.y);ctx.rotate(b.rot);ctx.scale(b.s,b.s);drawBone(ctx,b.k,b.dino);ctx.restore();}
+ for(const b of tray){if(b.placedAt||b.boxed)continue;ctx.save();ctx.translate(b.x,b.y);if(b===drag){ctx.shadowColor='rgba(0,0,0,.35)';ctx.shadowBlur=24;ctx.shadowOffsetY=14;}ctx.rotate(b.rot);ctx.scale(b.s,b.s);drawBone(ctx,b.k,b.dino);ctx.restore();}
+}
+function drawParticles(){for(const p of particles){ctx.save();ctx.translate(p.x,p.y);const a=Math.max(0,1-p.t/p.life);ctx.globalAlpha=a;ctx.fillStyle=p.color;if(p.kind==='star'){ctx.rotate(p.rot);ctx.beginPath();for(let i=0;i<5;i++){const A=i*Math.PI*2/5-Math.PI/2;ctx.lineTo(Math.cos(A)*p.r*1.6,Math.sin(A)*p.r*1.6);const B=A+Math.PI/5;ctx.lineTo(Math.cos(B)*p.r*0.7,Math.sin(B)*p.r*0.7);}ctx.closePath();ctx.fill();}else if(p.kind==='confetti'){ctx.rotate(p.rot);ctx.fillRect(-p.r,-p.r*0.6,p.r*2,p.r*1.2);}else{ctx.beginPath();ctx.arc(0,0,p.r,0,Math.PI*2);ctx.fill();}ctx.restore();}}
+let last=performance.now();
+function frame(now){const dt=Math.min(0.05,(now-last)/1000);last=now;
+ for(let i=tweens.length-1;i>=0;i--){const t=tweens[i];t.t+=dt;if(t.t<0)continue;const k=Math.min(1,t.t/t.dur),e=t.ease(k);for(const p in t.to)t.obj[p]=t.from[p]+(t.to[p]-t.from[p])*e;if(k>=1){tweens.splice(i,1);t.onDone&&t.onDone();}}
+ for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.t+=dt;if(p.t>=p.life){particles.splice(i,1);continue;}p.vy+=p.g*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.rot+=p.vr*dt;}
+ for(const m of marks)m.t+=dt;if(roarT>=0)roarT+=dt;shake=Math.max(0,shake-dt*40);
+ ctx.save();if(shake>0)ctx.translate((Math.random()-0.5)*shake,(Math.random()-0.5)*shake);
+ drawBg(ctx,scene);
+ if(scene==='dig'||scene==='found')renderDig();else if(scene==='assemble'||scene==='card'||scene==='done')renderAssemble();
+ drawParticles();ctx.restore();requestAnimationFrame(frame);}
+applyLang();gotoTitle();requestAnimationFrame(frame);
+// test hooks
+window.__fossil={get scene(){return scene},get grid(){return grid},get dino(){return dino},get shovels(){return shovels},set shovels(v){shovels=v;updHud()},get refilled(){return refilled},bubble:()=>$('bubbleD').textContent,bubbleA:()=>$('bubbleA').textContent,bubbleT:()=>$('bubbleT').textContent,get placed(){return placed},get tray(){return tray},get stars(){return stars},get bones(){return bones},get decoys(){return decoys},get buried(){return buried},get level(){return level},get band(){return band},get embed(){return EMBED},get overridden(){return overridden()},get d(){return scene==='title'?D():roundD},get L(){return L},get cell(){return CELL},get cols(){return COLS},get rows(){return ROWS},get ghost(){return ghostAlpha},get wrongDrops(){return wrongDrops},get save(){return save},get lastPost(){return lastPost},get quiz(){return quizNow},get quizRight(){return quizRight},set quizRight(v){quizRight=!!v},get gateOk(){return gateOk},get box(){return hasBox?BOX:null},get lastSpoken(){return lastSpoken},
+ get task(){const b=scene==='title'?band:roundBand;if(!b)return null;const lv=scene==='title'?level:roundLevel,d=BASE[b]+lv-1,F=FIELD[d-1],tier=quizTier(lv);
+  return {band:b,level:lv,d,scene,dino:dino.id,tier,field:{cols:F.cols,rows:F.rows,bones:F.bones.length,decoys:F.decoys,named:F.named,rocks:F.rocks,shovels:F.shovels,detects:F.detects,snap:F.snap,ghost:F.ghost,help:F.help,turn:F.turn},
+   grid:grid&&scene!=='title'?{cols:COLS,rows:ROWS,cells:grid.cells.length,rocks:grid.cells.filter(k=>k.type==='rock').length,bones:bones.length,decoys:decoys.length,decoyCells:grid.cells.filter(k=>k.bone>=0&&buried[k.bone].decoy).length}:null,
+   decoys:decoys.map(x=>({k:x.k,dino:x.dino,found:!!x.found})),quizItems:QUIZ[b][dino.id][tier].map(x=>x[LANG].q),quiz:quizNow,facts:FACTS[b][dino.id][LANG].slice(),boneFact:BONE_FACT[b][LANG]};},
+ badge:()=>$('lvlBadge').getAttribute('aria-label'),
+ setLevel,setBand:pickBand,setAgeBand,openGate,setFeel,cellXY,digAt,startDig,startAssemble,openCard,openDone,pickQuiz,quizTier,ttsText,drawQuizPic,PIC_SIZE,DINOS,FIELD,LEVELS:FIELD,FACTS,BONE_FACT,QUIZ,BASE,ageBand,setDino:i=>{dino=DINOS[i]},T};
+})();
+</script>
+</body>
+</html>
