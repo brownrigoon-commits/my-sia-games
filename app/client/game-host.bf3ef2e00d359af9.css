@@ -29,9 +29,9 @@
 .astra-card-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}.play-world .play-place .destination-astra .play-destination-label{z-index:2}.play-world .play-place .destination-astra::after{z-index:2}
 
 .play-world .play-place .play-destination:is(.destination-bubble-theater,.destination-train-time,.destination-seed-garden,.destination-deep-sea){justify-content:center;padding-bottom:18px;background-size:100% 100%}
-.play-world .play-place .destination-bubble-theater{background-image:linear-gradient(160deg,#ead6ef,#af89c2)}
-.play-world .play-place .destination-train-time{background-image:linear-gradient(160deg,#fff0cc,#eab376)}
-.play-world .play-place .destination-seed-garden{background-image:linear-gradient(160deg,#e7f0c7,#93bb73)}
-.play-world .play-place .destination-deep-sea{background-image:linear-gradient(160deg,#b3e4ec,#5c9fc7)}
+.play-world .play-place .play-destination.destination-bubble-theater{background-image:linear-gradient(160deg,#ead6ef,#af89c2)}
+.play-world .play-place .play-destination.destination-train-time{background-image:linear-gradient(160deg,#fff0cc,#eab376)}
+.play-world .play-place .play-destination.destination-seed-garden{background-image:linear-gradient(160deg,#e7f0c7,#93bb73)}
+.play-world .play-place .play-destination.destination-deep-sea{background-image:linear-gradient(160deg,#b3e4ec,#5c9fc7)}
 .play-world .play-place :is(.destination-bubble-theater,.destination-train-time,.destination-seed-garden,.destination-deep-sea) .play-destination-label{background:linear-gradient(#ffe8a5,#f8c96b)}
 @media(max-width:600px){.play-world .play-place :is(.destination-bubble-theater,.destination-train-time,.destination-seed-garden,.destination-deep-sea) .play-destination-label strong{font-size:14px}}

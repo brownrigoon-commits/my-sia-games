@@ -1,5 +1,5 @@
 {
-  "version": "dedcfc81ce1330a2",
+  "version": "2be00d2909e348fa",
   "assets": {
     "voice.js": "client/voice.aa532cd48554cca5.js",
     "learning-core.js": "client/learning-core.989c74f29bfbfae8.js",
@@ -23,7 +23,7 @@
     "app.js": "client/app.854f6c2f96fa3545.js",
     "site-update.js": "client/site-update.6b84facfcc3d5ce2.js",
     "play-mode.css": "client/play-mode.9d700d02c5f05572.css",
-    "game-host.css": "client/game-host.f57f64a16b724fec.css",
+    "game-host.css": "client/game-host.bf3ef2e00d359af9.css",
     "learning-mode.css": "client/learning-mode.55711a34496a4d2a.css"
   }
 }
