@@ -1,7 +1,7 @@
 (function(root){
  'use strict';
- // One iframe host for the six content games (SPEC.md §8, LEVELS.md §4): fossil-dig, letter-flight, fruit-orchard,
- // float-lab, nature-explorer, fruit-stand. The app owns band and level; the game's own pickers stay hidden.
+ // Shared host for the ten Claude games and four Astra games.
+ // The app owns band and level; the game's own pickers stay hidden.
  const B=root.SiaGameBridge,L=root.SiaLearning,games=B.GAMES;
  const E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  let api,host=null,frame=null,run=null,resize=null,loadTimer=0,ownsFullscreen=false,result=null;
@@ -59,7 +59,7 @@
    if(button.matches('#feel .faces button,#sk-feels .sk-feel')){if(feelingSent||result?.learning?.feedback){event.preventDefault();event.stopImmediatePropagation();return;}feelingSent=true;return;}
    if(button.matches('#btnAgain,#btnOther,#btnTitle,#sk-again,#sk-home')){
     event.preventDefault();event.stopImmediatePropagation();
-    if(result&&!result.learning?.feedback)return;
+    if(result&&!result.learning?.feedback||!result&&doc.querySelector('#sk-feels,#feel .faces')){status(ko()?'어땠는지 얼굴을 골라 줘.':'Choose a face to tell us how it felt.');return;}
     // A replay keeps the played URL level; a new menu launch uses the newly earned level.
     const container=host.parentElement;
     open(container,{...L.profile(),gameId:run.game,lang:run.lang,playLevel:run.level,playBand:run.band});return;
@@ -87,7 +87,7 @@
   host.querySelector('.game-close').addEventListener('click',()=>{const id=run.game;close();api.onClose(id);});
   host.querySelector('.game-fullscreen').addEventListener('click',fullscreen);
   const area=host.querySelector('.game-viewport');
-  frame=document.createElement('iframe');frame.className='game-frame'+(game.astra?' is-fluid':'');frame.title=title;
+  frame=document.createElement('iframe');frame.className='game-frame'+(game.astra||game.fluid?' is-fluid':'');frame.title=title;
   frame.allow='autoplay; fullscreen';frame.allowFullscreen=true;frame.referrerPolicy='same-origin';
   frame.src=B.gameUrl(document.baseURI,run,root.SIA_GAMES_RELEASE?.games?.[game.id]?.sha256?.slice(0,16));
   const current=frame;
@@ -119,7 +119,7 @@
  function parentRecord(r){
   const g=B.meta(r.gameId),date=new Date(r.completedAt).toLocaleDateString('ko-KR'),lang=r.lang==='en'?'영어':'한글',level=r.learning?.level||r.tier||r.level||1,stars=Math.max(0,Math.min(3,Number(r.stars)||0));
   const detail=r.gameId==='fossil-dig'?'<span class="game-record-name">'+E(B.DINOS[r.dino]?.ko||'')+'</span>':'';
-  const extra=r.gameId==='fossil-dig'?'퀴즈 '+(r.quizRight?'정답':'다시 생각해 보기'):r.gameId==='fruit-stand'?'실수 '+(r.mistakes||0)+'번':g.astra?'첫 시도 '+r.firstTry+'/'+r.questions+' · 힌트 '+r.hints+'번 · 실제 놀이 '+Math.round(r.activeMs/1000)+'초':'';
+  const extra=r.gameId==='fossil-dig'?'퀴즈 '+(r.quizRight?'정답':'다시 생각해 보기'):r.gameId==='fruit-stand'?'실수 '+(r.mistakes||0)+'번':g.astra?'첫 시도 '+r.firstTry+'/'+r.questions+' · 힌트 '+r.hints+'번 · 실제 놀이 '+Math.round(r.activeMs/1000)+'초':Number.isInteger(r.firstTry)&&Number.isInteger(r.questions)?'첫 시도 '+r.firstTry+'/'+r.questions+(Number.isInteger(r.mistakes)?' · 실수 '+r.mistakes+'번':''):Number.isInteger(r.mistakes)?'실수 '+r.mistakes+'번':'';
   const feedback=r.learning?.feedback?E(L.core.MOODS[r.learning.feedback])+' · 다음 레벨 '+r.learning.adjustment.to+(r.learning.adjustment.reason==='band-up'?' · 다음 묶음 제안':''):'';
   return '<div class="game-record"><span aria-hidden="true">'+g.icon+'</span><div><strong>'+E(g.title)+'</strong><small>'+date+' · '+lang+' · '+(r.band?L.core.BAND_LABEL[r.band]+' · ':'')+'레벨 '+level+(r.child?.name?' · '+E(r.child.name):'')+'</small>'+detail+(g.astra?'<details class="astra-parent-answers"><summary>문제와 배운 내용 보기</summary>'+r.answers.map(a=>'<p><b>'+E(a.prompt)+'</b><br>아이의 답: '+E(a.answer)+'<br>예시 답: '+E(a.expected)+'<br>'+E(a.explanation)+'<br><small>'+(a.firstTry?'첫 시도에 해결':'함께 연습')+' · '+a.attempts+'번 시도 · '+Math.round(a.activeMs/1000)+'초</small></p>').join('')+'</details>':'')+'</div><p><span class="game-stars" aria-label="별 '+stars+'개 / 3개">'+'★'.repeat(stars)+'☆'.repeat(3-stars)+'</span>'+(extra?'<br><small>'+E(extra)+'</small>':'')+(feedback?'<br><small>'+feedback+'</small>':'')+'</p></div>';
  }

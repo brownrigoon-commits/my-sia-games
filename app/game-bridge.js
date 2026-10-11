@@ -14,6 +14,10 @@
   {id:'float-lab',title:'뜰까 가라앉을까 실험실',en:'Float Lab',icon:'🧪',subject:'과학',subjectEn:'Science',skill:'예측 · 실험 · 뜨고 가라앉는 이유',skillEn:'Predict, test, floating and sinking',three:true},
   {id:'nature-explorer',title:'자연 탐험 사진가',en:'Nature Explorer',icon:'📷',subject:'자연',subjectEn:'Nature',skill:'동물 관찰 · 사는 곳 · 먹이',skillEn:'Animals, habitats and food',three:true},
   {id:'fruit-stand',title:'과일 가게 계산대',en:'Fruit Stand',icon:'🧺',subject:'수학',subjectEn:'Math',skill:'수 세기 · 덧셈 · 돈과 거스름돈',skillEn:'Counting, adding, prices and change'},
+  {id:'bubble-theater',title:'말풍선 극장',en:'Bubble Theater',icon:'🎭',subject:'언어',subjectEn:'Language',skill:'감정 · 상황 · 알맞은 말',skillEn:'Feelings, context and dialogue',three:true,fluid:true},
+  {id:'train-time',title:'기차 시간표',en:'Train Time',icon:'🚂',subject:'수학',subjectEn:'Math',skill:'시각 · 시간표 · 걸린 시간',skillEn:'Clocks, timetables and elapsed time',three:true,fluid:true},
+  {id:'seed-garden',title:'씨앗 정원',en:'Seed Garden',icon:'🌱',subject:'과학',subjectEn:'Science',skill:'물 · 빛 · 성장 관찰과 실험',skillEn:'Water, light, plant growth and experiments',three:true,fluid:true},
+  {id:'deep-sea',title:'바다 탐험 잠수함',en:'Deep Sea',icon:'🔦',subject:'자연',subjectEn:'Nature',skill:'바다 생물 · 깊이 · 환경',skillEn:'Sea life, depth and habitats',three:true,fluid:true},
   {id:'star-mail',title:'별빛 문장 우체국',en:'Star Mail',icon:'✉️',subject:'언어',subjectEn:'Language',skill:'낱말 · 문장 · 맥락',skillEn:'Words, sentences and context',three:true,astra:true},
   {id:'cloud-bridge',title:'구름 다리 건축가',en:'Cloud Bridge',icon:'🚂',subject:'수학',subjectEn:'Math',skill:'수 감각 · 연산 · 비율',skillEn:'Number sense, operations and ratios',three:true,astra:true},
   {id:'prism-lab',title:'무지개 빛 연구소',en:'Prism Lab',icon:'💎',subject:'과학',subjectEn:'Science',skill:'빛의 혼합 · 필터 · 실험',skillEn:'Light mixing, filters and experiments',three:true,astra:true},
@@ -24,6 +28,8 @@
  const DINOS={trex:{ko:'티라노사우루스',en:'T. rex'},tri:{ko:'트리케라톱스',en:'Triceratops'},steg:{ko:'스테고사우루스',en:'Stegosaurus'}};
  // Game-specific result fields (LEVELS.md §4): validated and copied into the parent record.
  const FIELDS={'fossil-dig':{keys:['dino','quizRight','quizItem'],valid:v=>Object.hasOwn(DINOS,v.dino)&&typeof v.quizRight==='boolean'},'fruit-stand':{keys:['mistakes'],valid:v=>Number.isInteger(v.mistakes)&&v.mistakes>=0}};
+ // The second Claude batch can include these metrics; keep optional fields without inventing them.
+ for(const id of ['bubble-theater','train-time','seed-garden','deep-sea'])FIELDS[id]={keys:['mistakes','firstTry','questions'],valid:v=>['mistakes','firstTry','questions'].every(k=>v[k]===undefined||(Number.isSafeInteger(v[k])&&v[k]>=0))&&(v.firstTry===undefined||v.questions===undefined||v.firstTry<=v.questions)};
  for(const g of GAMES.filter(g=>g.astra))FIELDS[g.id]={keys:['firstTry','questions','mistakes','hints','activeMs','answers'],valid:v=>Number.isInteger(v.firstTry)&&v.firstTry>=0&&v.firstTry<=3&&v.questions===3&&v.stars===v.firstTry&&Number.isInteger(v.mistakes)&&v.mistakes>=0&&Number.isInteger(v.hints)&&v.hints>=0&&v.hints<=3&&Number.isFinite(v.activeMs)&&v.activeMs>=0&&Array.isArray(v.answers)&&v.answers.length===3&&v.answers.every(a=>a&&['id','prompt','answer','expected','explanation'].every(k=>typeof a[k]==='string'&&a[k].length<=3000)&&typeof a.firstTry==='boolean'&&typeof a.hinted==='boolean'&&Number.isInteger(a.attempts)&&a.attempts>=1&&Number.isFinite(a.activeMs)&&a.activeMs>=0)};
  const meta=id=>GAMES.find(g=>g.id===id);
  const has=id=>!!meta(id);
