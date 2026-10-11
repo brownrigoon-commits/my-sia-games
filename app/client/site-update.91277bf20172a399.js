@@ -7,7 +7,8 @@
  function canRefresh(){
   if(document.hidden||!navigator.onLine)return false;
   const route=location.hash.slice(1)||'home';
-  if(!['home','stories','library','companion'].includes(route))return false;
+  const playMenu=route==='play'&&document.querySelector('#play-room > .play-world');
+  if(!playMenu&&!['home','stories','library','companion'].includes(route))return false;
   if(document.querySelector('.intro-screen,dialog[open],#reader:not([hidden]),#series-reader:not([hidden])'))return false;
   return !document.activeElement?.matches('input,textarea,select,[contenteditable="true"]');
  }

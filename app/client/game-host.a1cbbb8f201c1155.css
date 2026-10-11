@@ -17,7 +17,6 @@
 .play-world .play-place .play-destination.destination-fruit-stand{background-image:linear-gradient(160deg,#ffe3cb,#f3a068);background-size:100% 100%}
 .play-world .play-place .play-destination.destination-fossil-dig{background-size:200% 300%;background-position:100% 100%}
 .play-world .play-place .play-destination.destination-astra{background:radial-gradient(ellipse at 60% 28%,#fff9d9c9,transparent 55%),linear-gradient(145deg,#b8cedf,#819abf);justify-content:center;padding-bottom:32px;isolation:isolate}
-.play-world .play-place .destination-astra::after{content:'ASTRA · 3D';position:absolute;top:14px;left:15px;font-size:10px;letter-spacing:.15em;color:#38596b;background:#ffffffe6;padding:7px 10px;border-radius:20px;font-weight:850}
 .play-world .play-place .destination-astra .game-destination-icon{width:86px;height:86px;border-radius:28px;font-size:51px;background:#fffdf2cc;border:2px solid #fffffff0;box-shadow:0 12px 0 #456d7230,0 20px 35px #405f8644;transform:rotate(-6deg)}
 .play-world .play-place .destination-astra .play-destination-label{background:#fff9e7;color:#294f5f}
 .play-world .play-place .destination-cloud-bridge{background:radial-gradient(ellipse at 60% 28%,#fff9d9c9,transparent 55%),linear-gradient(145deg,#ccede8,#7ab3ac)!important}
@@ -26,7 +25,7 @@
 .game-shell-star-mail,.game-shell-cloud-bridge,.game-shell-prism-lab,.game-shell-living-forest{background:#dae6e5}
 .game-shell-star-mail .game-toolbar,.game-shell-cloud-bridge .game-toolbar,.game-shell-prism-lab .game-toolbar,.game-shell-living-forest .game-toolbar{background:#234b5a}
 .astra-parent-answers{margin-top:8px;font-size:13px;color:#536f67;max-width:700px}.astra-parent-answers summary{cursor:pointer;font-weight:700}.astra-parent-answers p{padding:10px 0;border-bottom:1px solid #dbe3da;line-height:1.7}
-.astra-card-image,.game-card-scene{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:22px;pointer-events:none}.play-world .play-place .destination-astra .play-destination-label{z-index:2}.play-world .play-place .destination-astra::after{z-index:2}
+.astra-card-image,.game-card-scene{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:22px;pointer-events:none}.play-world .play-place .destination-astra .play-destination-label{z-index:2}
 
 .play-world .play-place .play-destination:is(.destination-bubble-theater,.destination-train-time,.destination-seed-garden,.destination-deep-sea){justify-content:center;padding-bottom:18px;background-size:100% 100%}
 .play-world .play-place .play-destination.destination-bubble-theater{background-image:linear-gradient(160deg,#ead6ef,#af89c2)}
@@ -41,8 +40,8 @@
 .play-world .play-place .play-destination.destination-scene .play-destination-label strong{font-size:clamp(14px,1.6vw,18px);line-height:1.25}
 .play-world .play-place .play-destination.destination-scene .play-destination-arrow{flex:none}
 .play-world .play-place .play-destination.destination-scene .play-destination-label:hover{filter:brightness(1.04)}
-.play-world .play-place .play-destination.destination-scene .game-card-subject{position:absolute;top:12px;left:12px;padding:5px 9px;border-radius:20px;background:#fffffff0;color:#24546a;font-size:11px;font-weight:800;box-shadow:0 2px 8px #214f4020}
-@media(max-width:600px){.play-world .play-place .play-destination.destination-scene .game-card-subject{top:9px;left:9px;font-size:10px;padding:4px 6px}}
+.play-world .play-place .play-destination .game-card-subject{position:absolute;top:12px;left:12px;padding:5px 9px;border-radius:20px;background:#fffffff0;color:#24546a;font-size:11px;font-weight:800;box-shadow:0 2px 8px #214f4020;z-index:2}
+@media(max-width:600px){.play-world .play-place .play-destination .game-card-subject{top:9px;left:9px;font-size:10px;padding:4px 6px}}
 
 .play-level-dialog{padding:0;border:3px solid #fff8e6;border-radius:28px;width:min(470px,calc(100vw - 28px));max-height:calc(100dvh - 30px);overflow-y:auto;background:#fffdf5;color:#244859;box-shadow:0 24px 80px #062f5066;font-family:inherit}
 .play-level-dialog::backdrop{background:#092e47a8;backdrop-filter:blur(7px)}
@@ -65,3 +64,5 @@
 @media(max-width:380px){.play-level-body{padding:20px 16px}.play-level-options{gap:8px}.play-level-options button{height:60px}.play-level-body h2{font-size:23px}}
 
 .play-level-cover>.game-card-scene{position:absolute;inset:0;width:100%;height:100%;border-radius:0}
+
+.game-retry-panel{position:absolute;inset:0;z-index:10;display:grid;place-items:center;padding:18px;background:#173e5fe0;backdrop-filter:blur(8px);overflow:auto;color:#234b5a}.game-retry-card{width:min(460px,100%);padding:26px;border-radius:28px;background:#fffaf0;text-align:center;box-shadow:0 24px 60px #08243855}.game-retry-card h1{font-size:27px;margin:10px 0}.game-retry-card>p{font-size:16px;line-height:1.6}.game-retry-symbol{font-size:46px;color:#ba8025}.game-retry-card .play-button{width:100%;margin-top:10px}.game-retry-card .learning-feedback{margin:18px 0}.game-retry-card .learning-feedback h2{font-size:20px}.game-retry-card .learning-feelings{display:flex;gap:8px;justify-content:center}.game-retry-card .learning-feelings button{flex:1;font-size:14px;padding:8px}.game-retry-card .learning-feelings button span{display:block;font-size:28px}@media(max-height:600px){.game-retry-card{width:min(640px,100%);padding:15px 24px;display:grid;grid-template-columns:1fr 1fr;column-gap:22px}.game-retry-symbol{display:none}.game-retry-card>p:first-of-type{grid-column:1/-1;margin:0}.game-retry-card h1{font-size:22px}.game-retry-card .learning-feedback{grid-column:2;grid-row:2/4;margin:0}.game-retry-card .play-button{min-height:44px;font-size:16px}.game-retry-card>p{font-size:14px}}

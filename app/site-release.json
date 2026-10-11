@@ -1,9 +1,9 @@
 {
-  "version": "fb4482090dcd3ce2",
+  "version": "05ffd822e718fb3d",
   "assets": {
     "voice.js": "client/voice.aa532cd48554cca5.js",
-    "learning-core.js": "client/learning-core.a2cd0f504256be3d.js",
-    "learning-mode.js": "client/learning-mode.df51c68a0af69f38.js",
+    "learning-core.js": "client/learning-core.7a47b63fa595c781.js",
+    "learning-mode.js": "client/learning-mode.8a09117912eb79c9.js",
     "styles.css": "client/styles.02dfa91e2e921f61.css",
     "simple.css": "client/simple.0331b516015d7d63.css",
     "onboarding.css": "client/onboarding.f0f5bbbe6b2cc148.css",
@@ -15,15 +15,16 @@
     "story-release.js": "client/story-release.5318b231bb9c88d8.js",
     "story-art.js": "client/story-art.3175af3adc18c512.js",
     "story-mode.js": "client/story-mode.ab467570092753f7.js",
-    "game-release.js": "client/game-release.6f4e367d417155aa.js",
-    "game-bridge.js": "client/game-bridge.f356671d86b19a84.js",
-    "game-host.js": "client/game-host.dadae95b61714c40.js",
+    "game-release.js": "client/game-release.9f8c40230f4291fe.js",
+    "game-bridge.js": "client/game-bridge.dc62ab5102bd1f70.js",
+    "game-assessment.js": "client/game-assessment.dbbc73dba07b14f1.js",
+    "game-host.js": "client/game-host.ee29f8609327919c.js",
     "play-core.js": "client/play-core.2b3de28da8330aa0.js",
-    "play-mode.js": "client/play-mode.53a1df2586759d38.js",
+    "play-mode.js": "client/play-mode.be6363655f989e02.js",
     "app.js": "client/app.854f6c2f96fa3545.js",
-    "site-update.js": "client/site-update.6b84facfcc3d5ce2.js",
+    "site-update.js": "client/site-update.91277bf20172a399.js",
     "play-mode.css": "client/play-mode.9d700d02c5f05572.css",
-    "game-host.css": "client/game-host.a8cfc4fd8e1e04ef.css",
+    "game-host.css": "client/game-host.a1cbbb8f201c1155.css",
     "learning-mode.css": "client/learning-mode.55711a34496a4d2a.css"
   }
 }

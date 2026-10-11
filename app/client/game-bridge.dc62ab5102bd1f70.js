@@ -8,6 +8,10 @@
  // Content games from the my-sia-stories repository (SPEC.md §8, LEVELS.md §4): one self-contained page each,
  // served unchanged from games/<id>/index.html. The 3D ones also load three.js r128 from cdnjs.
  const GAMES=[
+  {id:'story-studio',title:'이야기 영화 공방',en:'Story Studio',icon:'🎬',subject:'언어',subjectEn:'Language',skill:'장면 순서 · 원인과 결과',skillEn:'Sequence, cause and effect',three:true,fluid:true,expedition:true},
+  {id:'balance-port',title:'우주 화물 항구',en:'Balance Port',icon:'⚖️',subject:'수학',subjectEn:'Math',skill:'질량 · 수의 합 · 분수와 소수',skillEn:'Mass, sums, fractions and decimals',three:true,fluid:true,expedition:true},
+  {id:'circuit-workshop',title:'반짝 회로 공방',en:'Circuit Workshop',icon:'💡',subject:'과학',subjectEn:'Science',skill:'전기 회로 · 연결 · 공간 추론',skillEn:'Electrical circuits and spatial reasoning',three:true,fluid:true,expedition:true},
+  {id:'habitat-rangers',title:'작은 지구 설계사',en:'Habitat Rangers',icon:'🌳',subject:'자연',subjectEn:'Nature',skill:'서식지 · 생물의 필요 · 연결',skillEn:'Habitats, living needs and connections',three:true,fluid:true,expedition:true},
   {id:'fossil-dig',title:'공룡 화석 발굴',en:'Fossil Dig',icon:'🦖',subject:'과학',subjectEn:'Science',skill:'수 세기 · 관찰 · 공룡 탐구',skillEn:'Counting · observing · dinosaurs'},
   {id:'letter-flight',title:'글자 비행',en:'Letter Flight',icon:'🎈',subject:'언어',subjectEn:'Language',skill:'글자와 소리 · 낱말 만들기',skillEn:'Letters, sounds and spelling',three:true},
   {id:'fruit-orchard',title:'열매 숲',en:'Fruit Orchard',icon:'🍎',subject:'수학',subjectEn:'Math',skill:'수 세기 · 덧셈 · 곱셈 · 분수',skillEn:'Counting, adding, multiplying, fractions',three:true},
@@ -30,6 +34,7 @@
  const FIELDS={'fossil-dig':{keys:['dino','quizRight','quizItem'],valid:v=>Object.hasOwn(DINOS,v.dino)&&typeof v.quizRight==='boolean'},'fruit-stand':{keys:['mistakes'],valid:v=>Number.isInteger(v.mistakes)&&v.mistakes>=0}};
  // The second Claude batch can include these metrics; keep optional fields without inventing them.
  for(const id of ['bubble-theater','train-time','seed-garden','deep-sea'])FIELDS[id]={keys:['mistakes','firstTry','questions'],valid:v=>['mistakes','firstTry','questions'].every(k=>v[k]===undefined||(Number.isSafeInteger(v[k])&&v[k]>=0))&&(v.firstTry===undefined||v.questions===undefined||v.firstTry<=v.questions)};
+ for(const g of GAMES.filter(g=>g.expedition))FIELDS[g.id]={keys:['mistakes','firstTry','questions','activeMs','answers'],valid:v=>Number.isInteger(v.mistakes)&&v.mistakes>=0&&Number.isInteger(v.firstTry)&&v.firstTry>=0&&v.firstTry<=3&&v.questions===3&&v.stars===v.firstTry&&Array.isArray(v.answers)&&v.answers.length<=3};
  for(const g of GAMES.filter(g=>g.astra))FIELDS[g.id]={keys:['firstTry','questions','mistakes','hints','activeMs','answers'],valid:v=>Number.isInteger(v.firstTry)&&v.firstTry>=0&&v.firstTry<=3&&v.questions===3&&v.stars===v.firstTry&&Number.isInteger(v.mistakes)&&v.mistakes>=0&&Number.isInteger(v.hints)&&v.hints>=0&&v.hints<=3&&Number.isFinite(v.activeMs)&&v.activeMs>=0&&Array.isArray(v.answers)&&v.answers.length===3&&v.answers.every(a=>a&&['id','prompt','answer','expected','explanation'].every(k=>typeof a[k]==='string'&&a[k].length<=3000)&&typeof a.firstTry==='boolean'&&typeof a.hinted==='boolean'&&Number.isInteger(a.attempts)&&a.attempts>=1&&Number.isFinite(a.activeMs)&&a.activeMs>=0)};
  const meta=id=>GAMES.find(g=>g.id===id);
  const has=id=>!!meta(id);
@@ -38,7 +43,7 @@
  const ageBand=age=>{const a=Number(age)||7;return a<=7?'K':a<=9?'E1':a<=11?'E2':'E3';};
  const difficulty=(band,value)=>BASE[band]+value-1;
  function session(profile,id,now=Date.now()){
-  const game=meta(profile.gameId)||GAMES[0],age=Number.isInteger(profile.age)&&profile.age>=5&&profile.age<=13?profile.age:7;
+  const game=meta(profile.gameId)||meta('fossil-dig'),age=Number.isInteger(profile.age)&&profile.age>=5&&profile.age<=13?profile.age:7;
   return {id,game:game.id,lang:language(profile.lang),level:Math.max(1,Math.min(5,Number(profile.playLevel)||1)),band:BANDS.includes(profile.playBand)?profile.playBand:ageBand(age),overridden:profile.playBandOverridden===true,child:{name:typeof profile.name==='string'?profile.name:'',age},startedAt:new Date(now).toISOString(),count:0,record:null};
  }
  function begin(run,options={},now=Date.now()){
@@ -85,6 +90,14 @@
   record.messages.push({receivedAt:new Date(now).toISOString(),payload:message});
   run.record=record;return record;
  }
- function validRecord(record){return validResult(record)&&record.gameId===record.game&&typeof record.id==='string'&&Number.isFinite(Date.parse(record.completedAt));}
- return {GAMES,BANDS,BASE,DINOS,meta,has,ageBand,difficulty,session,begin,gameUrl,validResult,validMessage,receive,validRecord};
+ function failed(run,evidence,now=Date.now()){
+  if(!run.count)begin(run,{},Date.parse(run.startedAt));
+  const assessment={policy:1,verified:!!evidence,passed:false,completed:false,mistakes:evidence?.mistakes??null};
+  return {id:run.id+':'+run.count,type:'mysia-game-attempt',game:run.game,gameId:run.game,band:run.band,d:difficulty(run.band,run.level),level:run.level,tier:run.level,age:run.child.age,child:{...run.child},lang:run.lang,stars:0,startedAt:run.startedAt,completedAt:new Date(now).toISOString(),assessment,feel:null,messages:[]};
+ }
+ function validRecord(record){
+  if(record?.type==='mysia-game-attempt')return has(record.game)&&record.gameId===record.game&&BANDS.includes(record.band)&&level(record.level)&&record.d===difficulty(record.band,record.level)&&['ko','en'].includes(record.lang)&&record.assessment?.policy===1&&record.assessment.passed===false&&record.assessment.completed===false&&(record.assessment.mistakes===null||Number.isSafeInteger(record.assessment.mistakes)&&record.assessment.mistakes>=0)&&typeof record.id==='string'&&Number.isFinite(Date.parse(record.completedAt));
+  return validResult(record)&&record.gameId===record.game&&typeof record.id==='string'&&Number.isFinite(Date.parse(record.completedAt));
+ }
+ return {GAMES,BANDS,BASE,DINOS,meta,has,ageBand,difficulty,session,begin,gameUrl,validResult,validMessage,receive,validRecord,failed};
 });
