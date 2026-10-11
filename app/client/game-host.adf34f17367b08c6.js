@@ -67,6 +67,7 @@
  }
  function bindGameUI(){
   const doc=frame.contentDocument,view=frame.contentWindow,game=B.meta(run.game);let feelingSent=false;
+  root.SiaVoice?.attach(view);
   // Keep the content repository unchanged. Only gate its public controls and capture round boundaries
   // so duplicate postMessages never count as replays. The 3D kit still shows its level dial when embedded:
   // hide it, since the app decides level changes (LEVELS.md R2).
