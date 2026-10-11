@@ -1,0 +1,108 @@
+/* A local, touch-controlled theme park. Every ride and photo subject is real 3D geometry. */
+(function(){'use strict';const T=window.THREE,TAU=Math.PI*2,assetVersion=new URL(document.currentScript.src).search;
+ function create(canvas,id,onPick){
+  const renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance',preserveDrawingBuffer:id==='balloon-safari'}),scene=new T.Scene(),camera=new T.PerspectiveCamera(48,1,.1,220);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.outputEncoding=T.sRGBEncoding;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.setClearColor(0x000000,0);
+  scene.background=new T.Color(0xc9d6df);const sky=new T.TextureLoader().load('../cloud-park/sky.webp'+assetVersion);sky.encoding=T.sRGBEncoding;scene.background=sky;
+  scene.fog=new T.Fog(0xd9d8db,62,160);scene.add(new T.HemisphereLight(0xffede0,0x8b93b5,.9));
+  const sun=new T.DirectionalLight(0xffd8b0,2.0);sun.position.set(-18,32,12);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);Object.assign(sun.shadow.camera,{left:-30,right:30,top:30,bottom:-30,near:1,far:90});sun.shadow.normalBias=.045;scene.add(sun);const fill=new T.DirectionalLight(0xb6e9f5,.8);fill.position.set(20,8,-20);scene.add(fill);
+  const materials=new Map(),geometries=new Map(),textures=[],targets=[],anim=[],staticGroup=new T.Group(),content=new T.Group();scene.add(staticGroup,content);
+  const getGeo=(key,fn)=>{if(!geometries.has(key))geometries.set(key,fn());return geometries.get(key);};
+  const material=(color,metal=0,rough=.48)=>{const key=color+':'+metal+':'+rough;if(!materials.has(key)){const m=new T.MeshStandardMaterial({color,metalness:metal,roughness:rough});m.color.convertSRGBToLinear();materials.set(key,m);}return materials.get(key);};
+  function mesh(geo,color,x,y,z,p=content,metal=0){const o=new T.Mesh(geo,material(color,metal));o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;p.add(o);return o;}
+  function box(x,y,z,w,h,d,c,p=content,metal=0){const o=mesh(getGeo('box',()=>new T.BoxGeometry(1,1,1)),c,x,y,z,p,metal);o.scale.set(w,h,d);return o;}
+  function ball(x,y,z,r,c,p=content,metal=0){return mesh(getGeo('ball'+r,()=>new T.SphereGeometry(r,20,14)),c,x,y,z,p,metal);}
+  function cyl(x,y,z,rt,rb,h,c,p=content,segments=32,metal=0){const key=['cyl',rt,rb,h,segments].join(':');return mesh(getGeo(key,()=>new T.CylinderGeometry(rt,rb,h,segments)),c,x,y,z,p,metal);}
+  function line(a,b,r,c,p=content,metal=.2){const av=new T.Vector3(...a),v=new T.Vector3(...b).sub(av),o=cyl(av.x,av.y,av.z,r,r,v.length(),c,p,8,metal);o.position.addScaledVector(v,.5);o.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),v.normalize());return o;}
+  function ring(x,y,z,r,tube,c,p=content){const o=mesh(getGeo('ring'+r+':'+tube,()=>new T.TorusGeometry(r,tube,8,80)),c,x,y,z,p,.55);o.rotation.x=Math.PI/2;return o;}
+  function label(text,x,y,z,w=1,p=content,color='#654f60',bg='#fff7e6'){
+   const c=document.createElement('canvas');c.width=256;c.height=128;const ctx=c.getContext('2d');ctx.fillStyle=bg;ctx.beginPath();ctx.roundRect(4,8,248,112,35);ctx.fill();ctx.font='bold 64px Arial,sans-serif';ctx.fillStyle=color;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,128,66,225);const tex=new T.CanvasTexture(c);tex.encoding=T.sRGBEncoding;textures.push(tex);const s=new T.Sprite(new T.SpriteMaterial({map:tex,depthTest:false}));s.position.set(x,y,z);s.scale.set(w,w/2,1);s.userData.sign=true;p.add(s);return s;
+  }
+  const cloudTexture=(()=>{const c=document.createElement('canvas');c.width=c.height=128;const ctx=c.getContext('2d'),g=ctx.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,'rgba(255,247,244,.72)');g.addColorStop(.4,'rgba(255,229,224,.42)');g.addColorStop(1,'rgba(255,231,229,0)');ctx.fillStyle=g;ctx.fillRect(0,0,128,128);const tx=new T.CanvasTexture(c);textures.push(tx);return tx;})();
+  function cloud(x,y,z,scale,p=staticGroup){const g=new T.Group();g.position.set(x,y,z);p.add(g);for(let i=0;i<6;i++){const s=new T.Sprite(new T.SpriteMaterial({map:cloudTexture,transparent:true,depthWrite:false,opacity:.75}));s.position.set((i-2.5)*scale*.7,Math.sin(i*1.8)*scale*.3,0);s.scale.set(scale*2.5,scale*1.5,1);g.add(s);}return g;}
+  function island(x,y,z,r,p=staticGroup){const g=new T.Group();g.position.set(x,y,z);p.add(g);cyl(0,-.36,0,r,r*.82,.72,0xe9d6c3,g,48);cyl(0,-1.55,0,r*.83,r*.17,2.1,0xbbaab4,g,14);cyl(0,.01,0,r*.985,r,.12,0xb9cba0,g,48);ring(0,.1,0,r*.93,.075,0xd6bf92,g);cloud(0,-1.6,0,r*.6,g);return g;}
+  function tree(x,y,z,s=1,p=staticGroup){const g=new T.Group();g.position.set(x,y,z);g.scale.setScalar(s);p.add(g);line([0,0,0],[.05,2.1,0],.15,0x846c65,g);line([0,1,0],[-.75,2.2,.1],.075,0x846c65,g);line([0,1.3,0],[.7,2.5,-.2],.065,0x846c65,g);for(const [a,b,c,r]of [[0,2.8,0,1],[-.65,2.3,.1,.7],[.65,2.6,-.1,.75]]){const o=ball(a,b,c,r,0xa3bc9b,g);o.scale.y*=1.3;}return g;}
+  function flower(x,y,z,s=1,p=staticGroup){line([x,y,z],[x,y+.6*s,z],.035*s,0x719e86,p);for(let j=0;j<5;j++){const a=j*TAU/5;ball(x+Math.cos(a)*.2*s,y+.65*s,z+Math.sin(a)*.2*s,.16*s,0xf0adc5,p);}ball(x,y+.72*s,z,.15*s,0xf2cd7c,p);}
+  function haru(x,y,z,s=1,p=content){const g=new T.Group();g.position.set(x,y,z);g.scale.setScalar(s);p.add(g);const b=ball(0,.5,0,.38,0x89d6e2,g);b.scale.y=1.3;ball(-.14,.59,.34,.057,0x274b64,g);ball(.14,.59,.34,.057,0x274b64,g);ball(-.15,.61,.38,.015,0xffffff,g);ball(.13,.61,.38,.015,0xffffff,g);ball(-.22,.48,.35,.055,0xefbbca,g);ball(.22,.48,.35,.055,0xefbbca,g);ball(-.22,.08,0,.16,0x75bdd6,g);ball(.22,.08,0,.16,0x75bdd6,g);return g;}
+  function balloon(x,y,z,s=1,p=staticGroup){const g=new T.Group();g.position.set(x,y,z);g.scale.setScalar(s);p.add(g);for(let i=0;i<12;i++){const geo=getGeo('balloon'+i,()=>new T.SphereGeometry(2.1,8,20,i*TAU/12,TAU/12));const o=mesh(geo,[0xe8a0bc,0xefbd92,0xc7b7d8,0xf6d4b1][i%4],0,4.8,0,g);o.scale.y=1.35;}cyl(0,2.3,0,.65,.43,.75,0xc89ea9,g);box(0,.25,0,1.4,.1,1.2,0xb18b70,g);for(const side of[-1,1]){box(0,.65,side*.58,1.4,.85,.08,0xb18b70,g);box(side*.66,.65,0,.08,.85,1.2,0xb18b70,g);for(let i=0;i<7;i++){box(0,.27+i*.12,side*.635,1.4,.035,.025,0xe1c6a5,g);box(side*.715,.27+i*.12,0,.025,.035,1.2,0xe1c6a5,g);}}for(const a of[-1,1])for(const b of[-1,1])line([a*.59,1,b*.48],[a*.53,2.5,b*.43],.026,0xbda783,g);return g;}
+  for(let i=0;i<9;i++)cloud(Math.sin(i*2.1)*34,-3-(i%3),Math.cos(i*2.1)*34,4+i%3);
+  const distant=balloon(-26,13,-30,.8);anim.push(t=>distant.position.y=13+Math.sin(t*.25)*.8);
+  const moon=ball(35,24,-68,5,0xffe5c2,staticGroup);moon.castShadow=false;
+  const basketView=new T.Group();camera.add(basketView);scene.add(camera);basketView.visible=false;
+  box(0,-.75,-1.9,2.8,.32,.11,0xb18b70,basketView);for(let i=0;i<4;i++)box(0,-.63-i*.06,-1.83,2.8,.024,.02,0xddbd99,basketView);
+  line([-1.37,-.58,-1.87],[1.37,-.58,-1.87],.06,0xdab58c,basketView);for(const x of[-1.36,1.36])line([x,-.6,-1.87],[x,1.5,-1.87],.012,0xddc6a4,basketView);
+  const ties=[];let task,state={},alive=true,frame=0,ride=0,rideStart=0,onRideEnd=null,rideInside=true,orbit=.55,overhead=false,carousel=null,horses=[],selection=null,train=null,track=null,yaw=0,pitch=-.08,photoSubjects=[],tourBalloon=null,elapsed=0,last=performance.now(),down=null,dragged=false;
+  const ray=new T.Raycaster(),pointer=new T.Vector2(),v=new T.Vector3();
+  function horse(p,seat,color){const g=new T.Group();p.add(g);const body=ball(0,1.37,0,.56,0xfff2df,g);body.scale.set(.67,.72,1.4);const neck=ball(0,1.9,.52,.32,0xfff2df,g);neck.scale.set(.7,1.5,.8);const head=ball(0,2.22,.65,.28,0xfff2df,g);head.scale.z=1.45;ball(-.18,2.29,.78,.04,0x3b4854,g);ball(.18,2.29,.78,.04,0x3b4854,g);for(const x of[-.13,.13]){const ear=ball(x,2.54,.55,.11,0xffe6d2,g);ear.scale.y=2.1;}
+   for(const x of[-.25,.25])for(const z of[-.42,.4]){line([x,1.2,z],[x,.58,z+.14],.074,0xf2dcc4,g);ball(x,.52,z+.15,.11,0x9a7c6b,g);}for(let i=0;i<6;i++)ball(0,1.65+i*.13,.35,.12,0xb9a0c4,g);const tail=ball(0,1.38,-.76,.22,0xb9a0c4,g);tail.scale.set(.7,1.7,.8);const saddle=ball(0,1.74,-.1,.31,color,g);saddle.scale.set(1.25,.24,1.2);const pole=line([0,.28,-.13],[0,5.4,-.13],.032,0xdfbc76,p,.8);pole.userData.pole=true;label(String(seat+1),0,2.95,0,1.15,p);g.userData.seat=seat;g.traverse(o=>o.userData.pick='seat:'+seat);targets.push(g);return g;
+  }
+  function makeCarousel(){
+   const ground=island(0,-.3,0,10,content);for(let i=0;i<7;i++)tree(Math.sin(i*.9)*8.5,0,Math.cos(i*.9)*8.5,.55,ground);
+   const g=new T.Group();content.add(g);carousel=g;cyl(0,.04,0,6.3,6.5,.45,0xc9b5a7,g);cyl(0,.31,0,6.15,6.25,.16,0xf6e5c9,g);ring(0,.45,0,6.12,.11,0xcaa677,g);ring(0,.14,0,6.4,.08,0xf2d398,g);
+   cyl(0,3.05,0,1.25,1.25,5.5,0xf1d7cb,g,32);for(let i=0;i<8;i++){const a=i*TAU/8;const mirror=box(Math.sin(a)*1.24,3.1,Math.cos(a)*1.24,.56,3,.05,0xa6c7cd,g,.55);mirror.rotation.y=a;line([Math.sin(a)*1.32,.5,Math.cos(a)*1.32],[Math.sin(a)*1.32,5.4,Math.cos(a)*1.32],.06,0xc9a26c,g,.8);}
+   for(let i=0;i<16;i++){const geom=getGeo('roof'+i,()=>new T.CylinderGeometry(.15,6.8,2.55,4,1,false,i*TAU/16,TAU/16));mesh(geom,i%2?0xf6e8cb:0xcda8bd,0,6.65,0,g);const a=i*TAU/16;line([0,7.93,0],[Math.sin(a)*6.8,5.4,Math.cos(a)*6.8],.035,0xd5b173,g);ball(Math.sin(a)*6.63,5.23,Math.cos(a)*6.63,.16,0xffedb2,g);}
+   ring(0,5.4,0,6.8,.15,0xd1ae78,g);ring(0,5.05,0,6.6,.11,0xf7dfb0,g);cyl(0,5.23,0,6.64,6.64,.36,0xf2dac8,g,64);ball(0,8.17,0,.32,0xd7b168,g,.7);cyl(0,8.55,0,0,.22,.6,0xd7b168,g,16,.65);
+   horses=[];for(let i=0;i<task.seats;i++){const a=i*TAU/task.seats,p=new T.Group();p.position.set(Math.sin(a)*4.45,.42,Math.cos(a)*4.45);p.rotation.y=a+Math.PI/2;g.add(p);const h=horse(p,i,[0xdca2b7,0xa8cfd0,0xe2c281,0xc0b3d3][i%4]);h.scale.setScalar(1.13);horses.push({p,h});if(i===task.start)label('START',0,3.68,0,1.5,p,'#476f73','#d7f0db');}
+   selection=ring(0,.58,0,.92,.07,0xfbd375,g);selection.visible=false;
+   for(let i=0;i<6;i++){const a=(i+.5)*TAU/6;flower(Math.sin(a)*7.4,0,Math.cos(a)*7.4,.7,ground);}haru(-6.9,.15,4.4,1.3,content);
+  }
+  function station(x,y,z,p,name){const g=new T.Group();g.position.set(x,y,z);p.add(g);box(0,.3,0,4.2,.5,3.3,0xe5d1b9,g);for(const a of[-1.7,1.7])for(const b of[-1.2,1.2])cyl(a,2,b,.1,.1,3.3,0xe8d8b8,g,10);const roof=mesh(getGeo('stationroof',()=>new T.ConeGeometry(3.5,1.7,4)),0xa5c2bf,0,4.2,0,g);roof.rotation.y=Math.PI/4;roof.scale.z=.8;label(name,0,3,1.75,2.5,g);return g;}
+  function makeTrain(){
+   const start=island(-12,0,6,6,content),end=island(14,1,-10,6,content);station(-12,.1,6,content,'01');station(14,1.1,-10,content,'02');tree(-3,0,-1,1,start);tree(3,0,-1,.7,end);
+   track=new T.CatmullRomCurve3([new T.Vector3(-12,.9,6),new T.Vector3(-6,1.3,7),new T.Vector3(2,3,5),new T.Vector3(6,4.3,-1),new T.Vector3(2,3.5,-6),new T.Vector3(7,2,-11),new T.Vector3(14,1.9,-10)]);
+   for(let side of[-1,1]){const pts=Array.from({length:130},(_,i)=>{const p=track.getPoint(i/129),d=track.getTangent(i/129);return p.add(new T.Vector3(-d.z,0,d.x).multiplyScalar(side*.52));});const railCurve=new T.CatmullRomCurve3(pts);mesh(new T.TubeGeometry(railCurve,180,.065,6,false),0xb99e80,0,0,0,content,.7);}
+   for(let i=0;i<80;i++){const p=track.getPoint(i/79),d=track.getTangent(i/79),o=box(p.x,p.y-.15,p.z,1.6,.16,.23,0xc2b19c,content);o.rotation.y=Math.atan2(d.x,d.z);ties.push(o);}
+   const g=new T.Group();content.add(g);train=g;box(0,.46,0,1.2,.45,2.5,0x83b9ba,g);const boiler=cyl(0,1.08,.45,.46,.46,1.48,0xe5b9c2,g);boiler.rotation.x=Math.PI/2;ring(0,1.06,1.18,.44,.06,0xddb37d,g).rotation.set(0,0,0);box(0,1.35,-.75,1.25,1.6,1.1,0x99c6c4,g);box(0,2.22,-.72,1.55,.2,1.5,0xf2dbc1,g);box(0,1.55,-.16,.78,.65,.05,0xd5e5df,g,.4);cyl(0,1.83,.8,.18,.13,.55,0xbaa4ad,g);ball(0,1.15,1.32,.16,0xffd79a,g);
+   for(const x of[-.68,.68])for(const z of[-.9,.2,.95]){const w=cyl(x,.38,z,.3,.3,.12,0x706c82,g,18);w.rotation.z=Math.PI/2;const hub=ball(x,.38,z,.14,0xe1bf91,g);hub.scale.x=.5;}
+   haru(0,1.05,-.8,.6,g);for(let i=0;i<5;i++){const pt=track.getPoint((i+.8)/6);cloud(pt.x,-1,pt.z,2.2,content);line([pt.x+1,pt.y,pt.z],[pt.x+1,pt.y+2,pt.z],.045,0xc4a57c,content);ball(pt.x+1,pt.y+2,pt.z,.19,0xffdea8,content);}
+   // A moving fairground landmark beside the elevated track, visible from the carriage.
+   const fair=island(-5,-1,-9,4.3,content),wheel=new T.Group();wheel.position.set(0,5,0);fair.add(wheel);
+   for(const x of[-1.8,1.8])line([x,0,.4],[0,5,0],.13,0xbfc5be,fair);
+   const rim=ring(0,0,0,3.3,.09,0xd2ae79,wheel);rim.rotation.x=0;
+   for(let i=0;i<8;i++){const a=i*TAU/8;line([0,0,0],[Math.cos(a)*3.3,Math.sin(a)*3.3,0],.045,0xd5b58c,wheel);const pod=box(Math.cos(a)*3.3,Math.sin(a)*3.3-.4,0,.7,.65,.7,[0xe3b0c6,0xa9cbc8,0xe7cba2][i%3],wheel);anim.push(()=>pod.rotation.z=-wheel.rotation.z);}
+   anim.push(t=>wheel.rotation.z=t*.1);for(let i=0;i<5;i++)flower(Math.sin(i)*3,0,Math.cos(i)*3,.6,fair);
+   for(let i=0;i<4;i++){const puff=new T.Sprite(new T.SpriteMaterial({map:cloudTexture,transparent:true,depthWrite:false,opacity:.55}));content.add(puff);anim.push(t=>{const u=(t*.8+i/4)%1;puff.position.copy(train.position).add(new T.Vector3(0,2.5+u*2.5,0));puff.scale.setScalar(.35+u*1.4);puff.material.opacity=(1-u)*.55;});}
+   positionTrain(0);
+  }
+  function positionTrain(u){const p=track.getPoint(u),d=track.getTangent(u);train.position.copy(p);train.rotation.y=Math.atan2(d.x,d.z);}
+  function subject(kind,p){
+   if(kind==='tree')tree(0,0,0,1.35,p);
+   if(kind==='flowers'){for(let i=0;i<10;i++)flower(Math.sin(i*2.4)*2,0,Math.cos(i*2.4)*1.6,.8+(i%3)*.25,p);for(let i=0;i<3;i++){const b=new T.Group();b.position.set(i-1,2.5,i*.5);p.add(b);const left=ball(-.25,0,0,.35,0xe7b0ca,b),right=ball(.25,0,0,.35,0xf3d389,b);left.scale.set(1,.2,1.4);right.scale.set(1,.2,1.4);line([0,0,-.3],[0,0,.3],.04,0x765573,b);anim.push(t=>{b.position.y=2.3+Math.sin(t*2+i)*.3;left.rotation.z=Math.sin(t*8)*.6;right.rotation.z=-left.rotation.z;});}}
+   if(kind==='waterfall'){const rock=ball(0,1.2,-.5,2,0xb2bac3,p);rock.scale.set(1,1,.6);const water=box(0,.25,.75,1.5,4.4,.12,0x9edddd,p);water.material=material(0x9edddd,.4,.15);cyl(0,.1,.7,1.65,1.65,.12,0xb7e6e1,p);for(let i=0;i<8;i++){const drop=ball((i%3-.8)*.55,-.7,.95,.09,0xc5f0ed,p);anim.push(t=>drop.position.y=1.8-((t*2+i*.4)%4.2));}}
+   if(kind==='windmill'){cyl(0,1.6,0,.65,1,3.2,0xf1dfca,p);const roof=mesh(getGeo('windroof',()=>new T.ConeGeometry(1,1.1,24)),0xc8a5bc,0,3.7,0,p);const blades=new T.Group();blades.position.set(0,2.7,.86);p.add(blades);for(let i=0;i<4;i++){const a=i*Math.PI/2,g=new T.Group();g.rotation.z=a;blades.add(g);box(0,1.05,0,.34,2.1,.1,0xe9d9b7,g);for(let j=0;j<4;j++)box(.19,.35+j*.46,0,.65,.08,.14,0xb6a080,g);}ball(0,2.7,1,.2,0xb38a69,p);anim.push(t=>blades.rotation.z=-t*.38);}
+   if(kind==='solar'){box(0,1,0,3,2,2.7,0xf5dccb,p);const roof=box(0,2.1,0,3.4,.2,3.2,0xbdadb9,p);roof.rotation.x=.18;for(let x=-1;x<=1;x++)for(let z=-1;z<=1;z++){const panel=box(x,2.27-z*.17,z,.87,.06,.85,0x61879d,p,.55);panel.rotation.x=.18;}box(0,.8,1.37,.6,1.5,.08,0x90b6bd,p);}
+   if(kind==='rainbow'){[0xdd9aa8,0xefc78c,0xf2e3b4,0xa8cfb4,0x9bc9d9,0xb7b0d4].forEach((c,i)=>{const o=mesh(new T.TorusGeometry(3-i*.16,.1,8,50,Math.PI),c,0,.5,0,p);});cloud(-2.8,.5,0,.7,p);cloud(2.8,.5,0,.7,p);}
+  }
+  function makeSafari(){
+   photoSubjects=[];window.CloudParkCore.OBJECTS.forEach((o,i)=>{const a=(i-2.5)*.7,r=22+((i%2)*2),x=Math.sin(a)*r,z=-Math.cos(a)*r,y=(i%3)*1.4;const p=island(x,y,z,3.8,content);p.rotation.y=-a;subject(o.id,p);label(o[task.lang],0,5.25,0,2.7,p);for(let j=0;j<7;j++){const a=j*2.4;flower(Math.sin(a)*3,.02,Math.cos(a)*2.5,.3,p);}photoSubjects.push({id:o.id,center:new T.Vector3(x,y+2.0,z)});});
+   tourBalloon=balloon(0,3.6,1.2,1.3,content);tourBalloon.rotation.y=Math.PI;haru(.35,.4,.15,.7,tourBalloon);cloud(0,-3,2,3,content);
+  }
+  function clear(){for(const o of [...content.children]){o.traverse(n=>{if(n.isSprite)n.material.dispose();if(n.isMesh&&!Array.from(geometries.values()).includes(n.geometry))n.geometry.dispose();});content.remove(o);}targets.length=0;ties.length=0;anim.splice(1);horses=[];carousel=train=selection=null;}
+  function set(next){task=next;state={};ride=0;overhead=false;rideInside=true;if(id==='balloon-safari'&&photoSubjects.length)return;clear();orbit=id==='sky-rail'?.3:.45;if(id==='carousel-pattern')makeCarousel();else if(id==='sky-rail')makeTrain();else{yaw=0;pitch=-.08;makeSafari();}}
+  function update(next){state={...state,...next};if(state.rails){const total=state.rails.reduce((a,c)=>a+c,0);ties.forEach((o,i)=>{o.material=material(i/79<=total/task.goal?0xb9a381:0xdbd4d6);});}if(selection){selection.visible=Number.isInteger(state.selected);if(selection.visible){const a=state.selected*TAU/task.seats;selection.position.set(Math.sin(a)*4.45,.56,Math.cos(a)*4.45);}}}
+  function startRide(callback){ride=1;rideStart=elapsed;onRideEnd=callback;rideInside=!matchMedia('(prefers-reduced-motion: reduce)').matches;}
+  function stopRide(){if(!ride)return;ride=0;if(carousel)carousel.rotation.y=0;const cb=onRideEnd;onRideEnd=null;cb?.();}
+  function control(dx,dy){if(id==='balloon-safari'){yaw+=dx*.055;pitch=Math.max(-.48,Math.min(.36,pitch+dy*.035));}else orbit+=dx*.05;}
+  function framePhoto(){camera.updateMatrixWorld();let best=null,score=Infinity;photoSubjects.forEach(o=>{const d=o.center.clone().project(camera),s=Math.hypot(d.x,d.y);if(d.z<1&&d.z>0&&s<score){best=o;score=s;}});return score<task.tolerance?best?.id:null;}
+  function photograph(){renderer.render(scene,camera);const copy=document.createElement('canvas');copy.width=720;copy.height=420;const ctx=copy.getContext('2d'),w=canvas.width,h=canvas.height,sw=Math.min(w,h*720/420)*.72,sh=sw*420/720;ctx.drawImage(canvas,(w-sw)/2,(h-sh)/2,sw,sh,0,0,720,420);return copy.toDataURL('image/jpeg',.86);}
+  // Pointer drags only move the camera. A stationary release selects a real 3D horse.
+  canvas.addEventListener('pointerdown',e=>{down={x:e.clientX,y:e.clientY,px:e.clientX,py:e.clientY};dragged=false;canvas.setPointerCapture(e.pointerId);});
+  canvas.addEventListener('pointermove',e=>{if(!down||ride)return;const dx=e.clientX-down.px,dy=e.clientY-down.py;if(Math.hypot(e.clientX-down.x,e.clientY-down.y)>7)dragged=true;if(dragged){if(id==='balloon-safari'){yaw-=dx*.006;pitch=Math.max(-.48,Math.min(.36,pitch+dy*.004));}else orbit-=dx*.005;}down.px=e.clientX;down.py=e.clientY;});
+  canvas.addEventListener('pointerup',e=>{if(down&&!dragged&&!ride){const rect=canvas.getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);ray.setFromCamera(pointer,camera);const hit=ray.intersectObjects(targets,true).find(h=>h.object.userData.pick);if(hit)onPick(hit.object.userData.pick);}down=null;});canvas.addEventListener('pointercancel',()=>down=null);
+  function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+  window.addEventListener('resize',resize);resize();
+  function loop(now){if(!alive)return;frame=requestAnimationFrame(loop);const dt=Math.min(.04,(now-last)/1000);last=now;if(document.hidden)return;elapsed+=dt;anim.forEach(fn=>fn(elapsed));
+   if(id==='carousel-pattern'){
+    carousel.children.forEach(o=>{if(o.position.y>=5)o.visible=ride||!overhead;});carousel.traverse(o=>{if(o.isSprite)o.visible=!ride;});horses.forEach((o,i)=>o.p.children.forEach(n=>{if(n.userData.pole)n.visible=!(ride&&rideInside&&i===state.selected);}));
+    if(ride){carousel.rotation.y=(elapsed-rideStart)*.34;const i=state.selected??task.start,a=i*TAU/task.seats+carousel.rotation.y;if(rideInside){const px=Math.sin(a)*4.45,pz=Math.cos(a)*4.45;camera.position.set(px-Math.cos(a)*.85,3.65+Math.sin(elapsed*2)*.12,pz+Math.sin(a)*.85);camera.lookAt(px+Math.cos(a)*8,3.0,pz-Math.sin(a)*8);}else{camera.position.set(Math.sin(orbit)*19,10,Math.cos(orbit)*19);camera.lookAt(0,3.2,0);}if(elapsed-rideStart>13)stopRide();}
+    else{const distance=camera.aspect<1.5?23:20;camera.position.set(Math.sin(orbit)*distance,overhead?23:10,Math.cos(orbit)*distance*(overhead?.22:1));camera.lookAt(0,overhead?0:3.6,0);}
+    horses.forEach((o,i)=>o.h.position.y=Math.sin(elapsed*1.5+i)*.13);
+   }else if(id==='sky-rail'){
+    const u=ride?Math.min(1,.10+(elapsed-rideStart)/17*.90):.10;positionTrain(u);content.traverse(o=>{if(o.userData.sign)o.visible=!ride;});if(ride&&rideInside){const p=track.getPoint(u),look=track.getPoint(Math.min(1,u+.035));const dir=track.getTangent(u);camera.position.copy(p).addScaledVector(dir,.25).add(new T.Vector3(0,2.8,0));camera.lookAt(look.x+dir.x*3,look.y+1.55,look.z+dir.z*3);}else{camera.position.set(Math.sin(orbit)*34,23,Math.cos(orbit)*34);camera.lookAt(1,1,-2);}if(ride&&u===1)stopRide();
+   }else{basketView.visible=!!state.playing;tourBalloon.visible=!state.playing;if(state.playing){camera.position.set(0,5.7,1.2);camera.lookAt(Math.sin(yaw)*25,5.7+Math.sin(pitch)*25,1.2-Math.cos(yaw)*25);}else{camera.position.set(10,9,17);camera.lookAt(0,8,0);tourBalloon.position.y=3.6+Math.sin(elapsed*.6)*.18;}}
+   renderer.render(scene,camera);
+  }frame=requestAnimationFrame(loop);
+  return {set,update,control,startRide,stopRide,framePhoto,photograph,toggleView(){if(ride)rideInside=!rideInside;else overhead=!overhead;},dispose(){alive=false;cancelAnimationFrame(frame);window.removeEventListener('resize',resize);clear();scene.traverse(o=>{if(o.isSprite)o.material.dispose();});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(tx=>tx.dispose());sky.dispose();renderer.dispose();}};
+ }
+ window.CloudParkWorld={create};
+})();

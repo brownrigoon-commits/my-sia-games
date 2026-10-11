@@ -8,6 +8,9 @@
  // Content games from the my-sia-stories repository (SPEC.md §8, LEVELS.md §4): one self-contained page each,
  // served unchanged from games/<id>/index.html. The 3D ones also load three.js r128 from cdnjs.
  const GAMES=[
+  {id:'carousel-pattern',title:'구름 회전목마',en:'Cloud Carousel',icon:'🎠',subject:'수학 · 관찰',subjectEn:'Math · Observation',skill:'순서 · 회전 · 공간 추론',skillEn:'Order, rotation and spatial reasoning',three:true,fluid:true,expedition:true,park:true},
+  {id:'sky-rail',title:'하늘 레일 여행',en:'Sky Rail Journey',icon:'🚂',subject:'수학 · 설계',subjectEn:'Math · Building',skill:'길이의 합 · 분수 · 속력과 거리',skillEn:'Adding lengths, fractions, speed and distance',three:true,fluid:true,expedition:true,park:true},
+  {id:'balloon-safari',title:'열기구 사진 탐험',en:'Balloon Photo Safari',icon:'🎈',subject:'자연 · 과학',subjectEn:'Nature · Science',skill:'관찰 · 자연 현상 · 에너지',skillEn:'Observation, nature and energy',three:true,fluid:true,expedition:true,park:true},
   {id:'story-studio',title:'이야기 영화 공방',en:'Story Studio',icon:'🎬',subject:'언어',subjectEn:'Language',skill:'장면 순서 · 원인과 결과',skillEn:'Sequence, cause and effect',three:true,fluid:true,expedition:true},
   {id:'balance-port',title:'우주 화물 항구',en:'Balance Port',icon:'⚖️',subject:'수학',subjectEn:'Math',skill:'질량 · 수의 합 · 분수와 소수',skillEn:'Mass, sums, fractions and decimals',three:true,fluid:true,expedition:true},
   {id:'circuit-workshop',title:'반짝 회로 공방',en:'Circuit Workshop',icon:'💡',subject:'과학',subjectEn:'Science',skill:'전기 회로 · 연결 · 공간 추론',skillEn:'Electrical circuits and spatial reasoning',three:true,fluid:true,expedition:true},

@@ -1,0 +1,733 @@
+[
+  {
+    "title": "The Pocket Garden",
+    "story_id": "the-pocket-garden",
+    "variant_id": "the-pocket-garden:8-9:L4",
+    "age_band": "8-9",
+    "level": 4,
+    "leveling_policy": "MY_SIA_story_levels_v1",
+    "official_bl": null,
+    "story": [
+      "On Saturday, Sia found an empty shoebox lid. She put it on the courtyard table. \"I will make a garden small enough to carry,\" she told her friend Milo. She cut yellow flowers from paper and folded green paper into grass.",
+      "Milo watched her leave one corner empty. \"Did you run out of paper?\" he asked. \"No,\" said Sia. \"That space is for an idea I have not found yet.\" Then she placed her last flower in the little garden.",
+      "Just then, a gust of wind swept across the table. A yellow flower flew into Milo's lap. Two more fell flat. Sia pressed her hands over the box. \"My garden will never work outside,\" she said. Her smile was gone.",
+      "Milo picked up a small, smooth stone beside the path. \"We cannot stop the wind,\" he said, \"but we can help the flowers stand.\" They folded a wide paper foot under each flower. Then they put a stone on each foot.",
+      "They set the garden on the table again and took their hands away. The next breeze made the paper flowers shake, but they did not fall. Sia let out a long breath. \"Your idea gave my flowers strong feet!\" she said.",
+      "A girl named Ava stood by the blue bench. She had just moved into the building. She watched the two friends but did not come closer. Sia lifted the box. \"Would you like to add something?\" she asked. Ava stepped toward the table.",
+      "\"I can make a snail,\" Ava said softly. She curled a strip of blue paper into a shell. Soon a tiny paper snail sat in the empty corner. \"It needs a place to rest,\" she said. Milo bent a paper leaf over it.",
+      "Now the little garden held flowers, stones, and a snail under a leaf. It held three ideas, too. Sia carried it to the bench, and her new friend walked beside her. The box was small, but Sia was glad she had left room for something new."
+    ],
+    "multiple_choice": [
+      {
+        "n": 1,
+        "q": "What does Sia use as the base of her garden?",
+        "options": [
+          "A flowerpot filled with soil",
+          "An empty shoebox lid",
+          "A basket full of leaves",
+          "A large glass jar"
+        ],
+        "answer": "B",
+        "ref": "1",
+        "why": "She puts an empty shoebox lid on the courtyard table.",
+        "ko": "정원의 바탕은 빈 신발 상자 뚜껑입니다."
+      },
+      {
+        "n": 2,
+        "q": "Why does Sia leave one corner empty?",
+        "options": [
+          "She wants to hide her scissors there.",
+          "She is saving it for a real plant.",
+          "She has no paper left for that corner.",
+          "She is leaving room for a new idea."
+        ],
+        "answer": "D",
+        "ref": "2",
+        "why": "Sia says the space is for an idea she has not found yet.",
+        "ko": "종이가 부족해서가 아니라, 아직 떠올리지 못한 아이디어를 위한 공간입니다."
+      },
+      {
+        "n": 3,
+        "q": "What happens just before Sia covers the box with her hands?",
+        "options": [
+          "The wind blows some flowers over.",
+          "Ava makes a small paper snail.",
+          "Milo folds a leaf over the snail.",
+          "Sia carries the box to the bench."
+        ],
+        "answer": "A",
+        "ref": "3",
+        "why": "One flower flies away and two fall flat before Sia covers the box.",
+        "ko": "바람에 꽃이 날아가거나 쓰러진 뒤 손으로 상자를 덮습니다."
+      },
+      {
+        "n": 4,
+        "q": "In paragraph 3, what does \"gust\" mean?",
+        "options": [
+          "A long piece of paper",
+          "A bright patch of sunlight",
+          "A sudden strong rush of wind",
+          "A small drop of rain"
+        ],
+        "answer": "C",
+        "ref": "3",
+        "why": "The gust sweeps across the table and blows a flower into Milo's lap.",
+        "ko": "꽃을 날려 보낸 상황에서 갑자기 세게 부는 바람이라는 뜻을 찾습니다."
+      },
+      {
+        "n": 5,
+        "q": "Which plan helps the paper flowers stay up?",
+        "options": [
+          "Putting the lid under the blue bench",
+          "Folding paper feet and adding stones",
+          "Making the paper flowers much taller",
+          "Holding every flower all afternoon"
+        ],
+        "answer": "B",
+        "ref": "4-5",
+        "why": "Stones on wide paper feet hold the flowers in place in the next breeze.",
+        "ko": "넓게 접은 종이 받침 위에 돌을 얹어 꽃을 지탱합니다."
+      },
+      {
+        "n": 6,
+        "q": "Which detail best shows that Ava wants to join in?",
+        "options": [
+          "She steps closer and offers to make a snail.",
+          "She stands by a bench before Sia speaks.",
+          "She has just moved into the building.",
+          "She watches the garden from far away."
+        ],
+        "answer": "A",
+        "ref": "6-7",
+        "why": "After the invitation, Ava comes closer and offers her own idea.",
+        "ko": "가까이 다가와 만들 것을 제안한 행동이 참여 의사를 가장 잘 보여 줍니다."
+      },
+      {
+        "n": 7,
+        "q": "How does Sia feel when the flowers stay up in the breeze?",
+        "options": [
+          "Angry that Milo touched the flowers",
+          "Bored because the garden is too small",
+          "Worried because Ava made a snail",
+          "Relieved that their plan has worked"
+        ],
+        "answer": "D",
+        "ref": "5",
+        "why": "She lets out a long breath and praises Milo's idea after the flowers stay up.",
+        "ko": "계획이 성공하자 긴 숨을 내쉬고 Milo의 아이디어를 칭찬하므로 안도한 마음입니다."
+      },
+      {
+        "n": 8,
+        "q": "Which message fits the whole story best?",
+        "options": [
+          "A garden is only good if it has real flowers.",
+          "It is better to finish every project alone.",
+          "Making room for others can improve an idea.",
+          "A good plan should never need any changes."
+        ],
+        "answer": "C",
+        "ref": "1-8",
+        "why": "Milo helps solve the wind problem, and Ava adds something new to Sia's garden.",
+        "ko": "친구들의 아이디어가 문제를 해결하고 정원을 더 풍성하게 만듭니다."
+      }
+    ],
+    "written": [
+      {
+        "n": 9,
+        "q": "How does Milo's plan solve the wind problem? Explain in 1-2 complete sentences.",
+        "sample": "Milo puts stones on the wide paper feet. The stones hold the flowers down so they do not blow away.",
+        "ko": "넓은 종이 받침에 돌을 올린 방법과, 바람에도 꽃을 지탱하는 효과를 연결합니다.",
+        "must": "돌과 종이 받침을 이용했다는 방법 + 꽃이 날아가거나 쓰러지지 않게 된 결과",
+        "accept": "\"The stones make the flowers heavier at the bottom.\"처럼 같은 원리를 설명해도 인정합니다.",
+        "ref": "4-5"
+      },
+      {
+        "n": 10,
+        "q": "How does Sia help Ava feel welcome? Use one action from the story in your answer. Write 1-2 complete sentences.",
+        "sample": "Sia asks Ava to add something to the garden. This gives Ava a way to join the friends and share her idea.",
+        "ko": "정원에 무언가를 보태 달라는 초대와, 함께 참여할 기회를 연결합니다.",
+        "must": "Sia가 한 구체적인 초대 행동 + Ava가 참여할 수 있게 된 점",
+        "accept": "상자를 들어 보여 주며 말을 건 점, 아이디어를 보탤 자리를 준 점도 근거를 설명하면 인정합니다.",
+        "ref": "6-8"
+      },
+      {
+        "n": 11,
+        "q": "Was the empty corner a good idea? Tell what you think and use a detail from the story. Write 2-3 complete sentences.",
+        "sample": "Yes, I think the empty corner was a good idea. Ava used it for her paper snail. Leaving space helped Sia include a new friend.",
+        "ko": "자기 의견과 본문의 구체적인 근거가 서로 연결되는지 봅니다.",
+        "must": "명확한 의견 + 본문 사실 1개 이상 + 그 사실이 의견을 뒷받침하는 설명",
+        "accept": "다른 의견도 가능합니다. 예: \"Sia could fill the corner first and move a flower later. Paper flowers can be moved, as we see when the wind blows them over.\" 사실과 논리가 맞으면 인정합니다.",
+        "ref": "2, 3, 7-8"
+      }
+    ],
+    "drawing": {
+      "number": 12,
+      "task": "Add one new thing to the tiny paper garden. Draw it, label at least two parts, and write two sentences explaining what it is and how it helps.",
+      "sample": "I added a paper umbrella to the garden. It gives the snail a shady place to rest."
+    }
+  },
+  {
+    "story_id": "the-moon-in-the-puddle",
+    "variant_id": "the-moon-in-the-puddle:8-9:L4",
+    "title": "The Moon in the Puddle",
+    "korean_title": "웅덩이 속의 달",
+    "story_number": 2,
+    "age_band": "8-9",
+    "level": 4,
+    "official_bl": null,
+    "word_count": 319,
+    "art_style": "투명 수채화와 연필 선",
+    "story": [
+      "The rain stopped just before bedtime. Sia put on her yellow boots and walked into the garden with Grandpa. A round moon shone above the gate. Then Sia looked down. Another moon was shining in a puddle beside her feet.",
+      "\"There are two moons!\" she said. She took a quick step closer. Her boot splashed the edge of the puddle, and the little moon broke into silver strips. Sia stood still. \"Oh no. Did I break the moon?\"",
+      "Grandpa did not answer at once. \"Look up,\" he said. Sia lifted her head. The moon above the gate was still round. Nothing was missing from it. She looked down again, then up. \"That one has not changed,\" she said.",
+      "They crouched beside the puddle. This time, Sia gently touched the water with one finger. Small ripples spread across it. The silver shape shook and stretched. \"The water is moving the picture,\" she said. \"Can we make it round again?\"",
+      "\"Let us wait and see,\" Grandpa said. They kept their hands and boots still. Slowly, the ripples faded. The bright circle appeared again. Grandpa explained that the puddle showed a reflection: a picture of something on its shiny surface.",
+      "A lamp beside the gate made a yellow line in the water. Sia moved to the other side of the puddle. From there, she could no longer see the moon in it. But the real moon was still above her.",
+      "Back inside, Sia drew two pictures in her notebook. In the first, the water was still and the reflection was round. In the second, ripples made it wavy. Under both pictures, she drew the same round moon in the sky.",
+      "\"Now I know which thing changed,\" she told Grandpa. Then she looked out of the window. A star had appeared beside the moon. Sia opened her notebook to a fresh page. \"Tomorrow, can we look for a star in the puddle, too?\""
+    ],
+    "multiple_choice": [
+      {
+        "n": 1,
+        "q": "Where does Sia see the second moon?",
+        "options": [
+          "In her notebook",
+          "Inside a yellow lamp",
+          "In a puddle by her feet",
+          "On the garden gate"
+        ],
+        "answer": "C",
+        "ref": "1",
+        "ko": "Sia가 발 옆 웅덩이에 비친 달을 봅니다.",
+        "skill": "사실 확인"
+      },
+      {
+        "n": 2,
+        "q": "What first makes the moon in the puddle change?",
+        "options": [
+          "Sia splashes the water with her boot.",
+          "Grandpa turns off the garden lamp.",
+          "A cloud moves across the real moon.",
+          "Sia drops her notebook into the water."
+        ],
+        "answer": "A",
+        "ref": "2",
+        "ko": "다가가다가 장화로 웅덩이 가장자리를 튀긴 것이 첫 변화의 원인입니다.",
+        "skill": "원인 찾기"
+      },
+      {
+        "n": 3,
+        "q": "What does Grandpa ask Sia to do first?",
+        "options": [
+          "Draw the puddle in her notebook",
+          "Touch the water with one finger",
+          "Walk to the other side of the gate",
+          "Look up at the moon in the sky"
+        ],
+        "answer": "D",
+        "ref": "3",
+        "ko": "Grandpa가 먼저 위를 보라고 하므로 하늘의 달을 확인합니다.",
+        "skill": "순서 확인"
+      },
+      {
+        "n": 4,
+        "q": "In paragraph 4, what are \"ripples\"?",
+        "options": [
+          "Small stones under the water",
+          "Small waves moving across water",
+          "Bright stars above the garden",
+          "Thin strips of silver paper"
+        ],
+        "answer": "B",
+        "ref": "4-5",
+        "ko": "물을 건드리자 퍼지고, 기다리자 사라지는 작은 물결입니다.",
+        "skill": "문맥 어휘"
+      },
+      {
+        "n": 5,
+        "q": "Why do Sia and Grandpa keep their boots and hands still?",
+        "options": [
+          "To let the water become calm again",
+          "To stop the real moon from moving",
+          "To make the lamp shine more brightly",
+          "To keep the notebook pages dry"
+        ],
+        "answer": "A",
+        "ref": "5",
+        "ko": "물을 더 움직이지 않고 기다리자 물결이 잦아들고 둥근 반사가 돌아옵니다.",
+        "skill": "원인과 결과"
+      },
+      {
+        "n": 6,
+        "q": "Which detail best shows that the real moon did not break?",
+        "options": [
+          "Sia wears boots after the rain.",
+          "A lamp makes a line in the puddle.",
+          "The moon in the sky is still round.",
+          "Grandpa walks beside the garden gate."
+        ],
+        "answer": "C",
+        "ref": "3",
+        "ko": "하늘의 달은 여전히 둥글고 빠진 부분이 없다는 관찰이 직접적인 근거입니다.",
+        "skill": "근거 찾기"
+      },
+      {
+        "n": 7,
+        "q": "How does Sia feel at the end of the story?",
+        "options": [
+          "Upset that her notebook is full",
+          "Afraid to look at the night sky",
+          "Bored with looking at reflections",
+          "Curious to find another reflection"
+        ],
+        "answer": "D",
+        "ref": "8",
+        "ko": "별도 웅덩이에서 찾을 수 있는지 묻고 새 페이지를 펼치므로 호기심이 이어집니다.",
+        "skill": "감정 추론"
+      },
+      {
+        "n": 8,
+        "q": "Which message fits the story best?",
+        "options": [
+          "Every puddle has a moon of its own.",
+          "Looking carefully can help answer a question.",
+          "It is best to stop asking after one answer.",
+          "A picture always looks the same as the real thing."
+        ],
+        "answer": "B",
+        "ref": "1-8",
+        "ko": "위를 보고, 물을 건드리고, 기다리고, 자리를 바꾸며 관찰해 궁금증을 해결합니다.",
+        "skill": "중심 생각"
+      }
+    ],
+    "written": [
+      {
+        "n": 9,
+        "q": "Why does the moon in the puddle become round again? Write 1-2 complete sentences.",
+        "sample": "The ripples fade when Sia and Grandpa stop moving the water. The calm water shows a round reflection again.",
+        "ref": "4-5",
+        "ko": "물의 상태와 반사된 모습의 변화를 연결합니다.",
+        "must": "물결이 잦아듦 + 둥근 반사가 돌아옴",
+        "accept": "\"They wait until the water is still.\"처럼 같은 원인과 결과를 설명하면 인정합니다."
+      },
+      {
+        "n": 10,
+        "q": "How do Sia's two notebook pictures show what she learned? Write 1-2 complete sentences.",
+        "sample": "Both pictures show the same round moon in the sky. Only the reflection changes when the water has ripples.",
+        "ref": "7",
+        "ko": "그림에서 같은 부분과 달라진 부분을 비교합니다.",
+        "must": "하늘의 달은 같음 + 물결에 따라 반사는 달라짐",
+        "accept": "물결 있는 그림과 없는 그림의 차이를 자기 말로 설명해도 인정합니다."
+      },
+      {
+        "n": 11,
+        "q": "Was \"Look up\" a helpful suggestion? Give your opinion and a story detail. Write 2-3 complete sentences.",
+        "sample": "Yes, it was helpful. Sia saw that the real moon was still round. That helped her notice that only the picture in the water had changed.",
+        "ref": "3-5",
+        "ko": "의견에 관찰 근거를 붙여 설명합니다.",
+        "must": "의견 + 본문 사실 + 도움이 된 이유 또는 한계",
+        "accept": "부분적으로만 도움 됐다는 의견도 가능합니다. 예: 위를 본 것만으로는 물결의 영향을 몰랐고, 물을 건드리고 기다린 뒤 배웠다고 설명할 수 있습니다."
+      }
+    ],
+    "drawing": {
+      "number": 12,
+      "title": "A new reflection",
+      "task": "Invent a place with a shiny surface. Draw one real object and its reflection. Label the object and the surface.",
+      "hint": "Your place can be real or imaginary. Make the two connected!",
+      "writing_task": "Write 2 sentences: What is reflected, and where do you see it?",
+      "box_label": "MY REFLECTION SCENE",
+      "name_label": "My scene is called",
+      "model_ko": "예시 그림: 밤하늘의 별과 잔잔한 작은 연못을 그립니다. 물속에는 별의 반사를 그리고, \"star\"와 \"pond\"라는 이름표를 붙입니다.",
+      "sample": "A bright star shines above my tiny pond. I can see its reflection in the still water.",
+      "alternatives": "거울에 비친 로봇, 반짝이는 바닥에 비친 풍선, 달빛 호수에 비친 상상 속 성도 가능합니다. 실제 물체와 비친 모습이 연결되는지 아이의 설명을 들어 주세요.",
+      "checks": [
+        "실제 물체와 비친 모습을 모두 그렸나요?",
+        "물체와 반사되는 표면에 이름을 붙였나요?",
+        "설명한 물체와 장소가 그림에 보이나요?",
+        "비친 모습이 어떻게 보이는지 자기 생각을 말했나요?"
+      ],
+      "questions": "\"무엇이 어디에 비친 걸까?\"  \"표면이 움직이면 모습이 어떻게 바뀔까?\""
+    },
+    "illustrations": [
+      "illustrations/scene-1.png",
+      "illustrations/scene-2.png"
+    ]
+  },
+  {
+    "story_id": "the-silent-dragon",
+    "variant_id": "the-silent-dragon:8-9:L4",
+    "title": "The Silent Dragon",
+    "korean_title": "소리 없는 용",
+    "story_number": 3,
+    "age_band": "8-9",
+    "level": 4,
+    "official_bl": null,
+    "word_count": 326,
+    "art_style": "굵은 잉크 선과 선명한 과슈 색면",
+    "story": [
+      "Sia and Leo made a dragon puppet from an old cereal box. They painted it green and gave it a long tail. On Friday evening, they planned a show for Sia's parents. Leo had been practicing a huge dragon roar.",
+      "Just before the show, Mom came into the room. \"The baby is asleep,\" she said. \"Please keep your show quiet.\" Leo lowered his puppet. \"A dragon without a roar?\" he asked. \"How will anyone know what it is doing?\"",
+      "Sia held up a tiny mouse puppet. She moved it toward the dragon. Then she made the dragon jump backward and hide its face behind its tail. Leo smiled. \"That great big dragon is afraid of a little mouse!\" he said.",
+      "\"You understood, and I did not say anything,\" Sia said. They hung a white sheet between two chairs. Dad placed a lamp behind it. The puppets made dark shadows on the sheet. Now even the tiny mouse was easy to see.",
+      "At first, Leo moved the dragon too quickly. Its shadow darted from side to side. Sia could not follow the action. They tried again with three slow movements: a sleepy nod, a sudden jump, and a long, careful look at the mouse.",
+      "Mom and Dad sat in the front row. The dragon nodded off. The mouse crept closer. Suddenly, the dragon jumped and hid behind its tail. Then the mouse offered it a paper flower. The dragon slowly came out and bowed.",
+      "Mom covered her mouth as she laughed. Dad lifted both hands and waved them instead of clapping. Behind the closed bedroom door, the baby kept sleeping. Leo looked at the quiet audience. Their smiles told him that the story had worked.",
+      "After the show, Sia asked whether Leo missed his roar. He shook his head and made the dragon give one tiny wave. \"I thought a big dragon needed a big noise,\" he whispered. \"But this one had plenty to say without it.\""
+    ],
+    "multiple_choice": [
+      {
+        "n": 1,
+        "q": "What do Sia and Leo use to make their dragon?",
+        "options": [
+          "An old cereal box",
+          "A green wool blanket",
+          "A large paper plate",
+          "A broken wooden chair"
+        ],
+        "answer": "A",
+        "ref": "1",
+        "ko": "오래된 시리얼 상자를 재료로 용 인형을 만듭니다.",
+        "skill": "사실 확인"
+      },
+      {
+        "n": 2,
+        "q": "Why does Mom ask for a quiet show?",
+        "options": [
+          "The lamp is not working.",
+          "Dad wants to read his book.",
+          "The dragon puppet is very small.",
+          "The baby is sleeping nearby."
+        ],
+        "answer": "D",
+        "ref": "2",
+        "ko": "아기가 잠들어 있어 공연을 조용히 해 달라고 요청합니다.",
+        "skill": "원인 찾기"
+      },
+      {
+        "n": 3,
+        "q": "How does Sia first show that the dragon is afraid?",
+        "options": [
+          "She paints the puppet a darker color.",
+          "She makes it jump back and hide its face.",
+          "She gives the mouse a much longer tail.",
+          "She asks Leo to make a louder roar."
+        ],
+        "answer": "B",
+        "ref": "3",
+        "ko": "뒤로 뛰고 꼬리로 얼굴을 숨기는 동작으로 두려움을 표현합니다.",
+        "skill": "사실 확인"
+      },
+      {
+        "n": 4,
+        "q": "In paragraph 5, what does \"darted\" mean?",
+        "options": [
+          "Stayed in one place",
+          "Became bright and clear",
+          "Moved suddenly and quickly",
+          "Fell slowly to the floor"
+        ],
+        "answer": "C",
+        "ref": "5",
+        "ko": "너무 빨리 좌우로 움직여 동작을 따라가기 어렵다는 문맥입니다.",
+        "skill": "문맥 어휘"
+      },
+      {
+        "n": 5,
+        "q": "Why do the children use slower movements?",
+        "options": [
+          "To make the show much longer",
+          "To make the story easier to follow",
+          "To make the sheet stop moving",
+          "To make the dragon seem smaller"
+        ],
+        "answer": "B",
+        "ref": "5",
+        "ko": "빠른 움직임은 이해하기 어려워, 느린 동작으로 이야기를 분명하게 전달합니다.",
+        "skill": "원인과 결과"
+      },
+      {
+        "n": 6,
+        "q": "What does the mouse do just before the dragon comes out?",
+        "options": [
+          "It hides behind the dragon's tail.",
+          "It sits down beside the lamp.",
+          "It bows to Mom and Dad.",
+          "It offers the dragon a paper flower."
+        ],
+        "answer": "D",
+        "ref": "6",
+        "ko": "생쥐가 종이꽃을 건넨 뒤 용이 천천히 나와 인사합니다.",
+        "skill": "순서 확인"
+      },
+      {
+        "n": 7,
+        "q": "How does Leo know the quiet show has worked?",
+        "options": [
+          "The baby opens the bedroom door.",
+          "The lamp makes a louder sound.",
+          "The audience smiles at the story.",
+          "The dragon gets a new paper tail."
+        ],
+        "answer": "C",
+        "ref": "7",
+        "ko": "조용한 관객들의 미소를 보고 이야기가 전달됐음을 알아차립니다.",
+        "skill": "근거와 추론"
+      },
+      {
+        "n": 8,
+        "q": "Which message fits the story best?",
+        "options": [
+          "Actions can tell a story without words.",
+          "A puppet show always needs a loud roar.",
+          "The smallest puppet should stay hidden.",
+          "A mistake means a show must be canceled."
+        ],
+        "answer": "A",
+        "ref": "3-8",
+        "ko": "동작과 표정에 해당하는 인형의 움직임으로 말 없이도 이야기를 전합니다.",
+        "skill": "중심 생각"
+      }
+    ],
+    "written": [
+      {
+        "n": 9,
+        "q": "Why do the slower puppet movements help the audience? Write 1-2 complete sentences.",
+        "sample": "The slower movements make each action clear. The audience has time to see what the dragon is doing.",
+        "ref": "5",
+        "ko": "움직임 속도와 이야기 이해를 연결합니다.",
+        "must": "천천히 움직임 + 동작을 보고 이해할 시간이 생김",
+        "accept": "잠든 척하기, 놀라기, 쳐다보기 중 하나를 예로 들어 설명해도 인정합니다."
+      },
+      {
+        "n": 10,
+        "q": "How does Dad show he enjoyed the show without making noise? Write 1-2 complete sentences.",
+        "sample": "Dad lifts his hands and waves them instead of clapping. This shows he likes the show without waking the baby.",
+        "ref": "7",
+        "ko": "박수 대신 한 행동과 그 이유를 설명합니다.",
+        "must": "손을 들어 흔듦 + 소리 없이 기쁨을 전하거나 아기를 깨우지 않음",
+        "accept": "\"He gives the children a silent cheer.\"도 손짓이라는 구체적 행동과 연결하면 인정합니다."
+      },
+      {
+        "n": 11,
+        "q": "Does Leo still think a dragon needs a loud roar at the end? Use a story detail. Write 2-3 complete sentences.",
+        "sample": "No, he changes his mind. The audience understands the quiet show and smiles. Leo says the dragon had plenty to say without a big noise.",
+        "ref": "2, 7-8",
+        "ko": "Leo의 처음 생각과 마지막 생각의 변화를 확인합니다.",
+        "must": "생각이 바뀜 + 관객 반응 또는 마지막 말의 근거",
+        "accept": "직접 인용은 필요 없습니다. 마지막에 고개를 젓고 작은 손짓을 시킨 점으로 설명해도 인정합니다."
+      }
+    ],
+    "drawing": {
+      "number": 12,
+      "title": "Let your puppet speak",
+      "task": "Invent a puppet that shows a feeling without words. Draw its pose and label two body parts that help show the feeling.",
+      "hint": "Try a surprised owl, a proud rabbit, or your own character!",
+      "writing_task": "Write 2 sentences: What does it feel, and how does its body show it?",
+      "box_label": "MY SILENT PUPPET",
+      "name_label": "My puppet is called",
+      "model_ko": "예시 그림: 겁먹은 작은 토끼가 귀를 낮추고 두 발을 뒤로 뺀 자세를 그립니다. \"ears\"와 \"feet\"를 표시합니다.",
+      "sample": "My rabbit feels afraid. Its ears droop and its feet step back when it sees a big shadow.",
+      "alternatives": "날개를 활짝 편 신난 새, 두 팔을 높이 든 자랑스러운 로봇, 몸을 웅크린 부끄러운 괴물도 가능합니다. 자세와 감정을 연결해 설명하면 인정합니다.",
+      "checks": [
+        "자기만의 인형과 자세를 만들었나요?",
+        "감정을 나타내는 몸의 두 부분에 이름을 붙였나요?",
+        "감정과 몸짓을 연결해 설명했나요?",
+        "말풍선 없이도 뜻을 전하려는 아이디어가 있나요?"
+      ],
+      "questions": "\"이 인형은 지금 어떤 기분일까?\"  \"그 기분을 몸의 어느 부분으로 보여 줬어?\""
+    },
+    "illustrations": [
+      "illustrations/scene-1.png",
+      "illustrations/scene-2.png"
+    ]
+  },
+  {
+    "story_id": "the-longer-way",
+    "variant_id": "the-longer-way:8-9:L4",
+    "title": "The Longer Way",
+    "korean_title": "돌아가는 길",
+    "story_number": 4,
+    "age_band": "8-9",
+    "level": 4,
+    "official_bl": null,
+    "word_count": 339,
+    "art_style": "부드러운 오일 파스텔과 크레용 질감",
+    "story": [
+      "Ben brought an old park map on their picnic walk. Sia carried apples, and Aunt May carried the sandwiches. Their picnic spot was an oak tree across the stream. Ben traced a short path with his finger. \"The wooden bridge is quickest,\" he said.",
+      "But a wooden barrier blocked the bridge. One board was missing from the middle. Aunt May stopped with the children well before the barrier. Ben stared at his map. \"There is no barrier here,\" he said, tapping the little bridge symbol.",
+      "\"The map shows how the park looked when it was printed,\" Aunt May said. \"The park can change.\" Ben folded his arms. He had wanted to lead the way. Now his neat plan seemed to end at a broken bridge.",
+      "Sia noticed a small hut near the path. A park worker stood outside. \"Could we ask about another way?\" she said. They walked over together. The worker pointed to a path beside the stream. It led to a stone bridge farther away.",
+      "Aunt May checked the route with the worker before they set off. Ben worried that the walk would take longer. \"It will,\" she said, \"but it is open and safe.\" Sia put the map beside his hand. \"You can still guide us.\"",
+      "Along the new path, they found tiny purple flowers. A duck slipped into the stream, leaving a wide trail in the water. Ben began marking these places on the map. Soon he was looking up at the park more often than down at the paper.",
+      "They crossed the stone bridge and reached the oak tree. At the picnic table, Sia drew their new route. Ben added a cross over the closed wooden bridge. \"We should write today's date,\" he said. \"It might be fixed next time.\"",
+      "The sandwiches tasted just as good after the longer walk. Ben spread the map beside his plate. His new line bent around the stream instead of going straight across. \"My first plan was shorter,\" he said, \"but it missed some of the best parts.\""
+    ],
+    "multiple_choice": [
+      {
+        "n": 1,
+        "q": "Where do the three walkers plan to have their picnic?",
+        "options": [
+          "At the small park hut",
+          "Beside the wooden barrier",
+          "Under an oak tree across the stream",
+          "In the middle of the stone bridge"
+        ],
+        "answer": "C",
+        "ref": "1",
+        "ko": "목적지는 시내 건너편의 참나무입니다.",
+        "skill": "사실 확인"
+      },
+      {
+        "n": 2,
+        "q": "Why can they not use the wooden bridge?",
+        "options": [
+          "The old map has been lost.",
+          "It is blocked and has a missing board.",
+          "The path beside it is too long.",
+          "The picnic basket is too heavy."
+        ],
+        "answer": "B",
+        "ref": "2",
+        "ko": "차단물이 있고 다리 가운데 판자 하나가 빠져 있어 이용할 수 없습니다.",
+        "skill": "원인 찾기"
+      },
+      {
+        "n": 3,
+        "q": "Who suggests asking about another way?",
+        "options": [
+          "Ben",
+          "Aunt May",
+          "The park worker",
+          "Sia"
+        ],
+        "answer": "D",
+        "ref": "4",
+        "ko": "Sia가 안내소 근처 직원을 보고 다른 길을 물어보자고 제안합니다.",
+        "skill": "사실 확인"
+      },
+      {
+        "n": 4,
+        "q": "In paragraph 5, what does \"route\" mean?",
+        "options": [
+          "A way to get from one place to another",
+          "A picture of a duck in the water",
+          "A kind of food for a picnic",
+          "A tool for fixing wooden boards"
+        ],
+        "answer": "A",
+        "ref": "4-5",
+        "ko": "직원에게 확인하고 출발하는 목적지까지의 길을 뜻합니다.",
+        "skill": "문맥 어휘"
+      },
+      {
+        "n": 5,
+        "q": "What does Aunt May do before they take the new path?",
+        "options": [
+          "She asks Ben to throw away the map.",
+          "She carries everyone over the stream.",
+          "She checks the way with the park worker.",
+          "She moves the wooden barrier aside."
+        ],
+        "answer": "C",
+        "ref": "5",
+        "ko": "새 길을 가기 전에 직원과 경로를 확인합니다.",
+        "skill": "순서 확인"
+      },
+      {
+        "n": 6,
+        "q": "Why does Ben want to put the date on the map?",
+        "options": [
+          "The bridge might be repaired later.",
+          "The sandwiches might need more time.",
+          "The stream might disappear at once.",
+          "The oak tree might change its name."
+        ],
+        "answer": "A",
+        "ref": "7",
+        "ko": "다음 방문 때 다리가 고쳐져 있을 수 있으므로 언제 확인한 정보인지 남기려 합니다.",
+        "skill": "원인과 추론"
+      },
+      {
+        "n": 7,
+        "q": "Which detail shows Ben becomes interested in the new path?",
+        "options": [
+          "He folds his arms near the barrier.",
+          "He first chooses the shortest path.",
+          "He worries about a longer walk.",
+          "He marks the flowers and duck on the map."
+        ],
+        "answer": "D",
+        "ref": "3, 5-6",
+        "ko": "불만을 보이던 처음과 달리 발견한 꽃과 오리를 지도에 기록합니다.",
+        "skill": "변화의 근거"
+      },
+      {
+        "n": 8,
+        "q": "Which message fits the whole story best?",
+        "options": [
+          "The shortest route is always the best.",
+          "A changed plan can lead to good discoveries.",
+          "An old map should never be used again.",
+          "A good leader never asks for help."
+        ],
+        "answer": "B",
+        "ref": "1-8",
+        "ko": "우회하면서 새 풍경을 발견하고 지도를 보완하므로 계획 변경의 좋은 면을 보여 줍니다.",
+        "skill": "중심 생각"
+      }
+    ],
+    "written": [
+      {
+        "n": 9,
+        "q": "Why is the map different from the park at the bridge? Write 1-2 complete sentences.",
+        "sample": "The map shows the park when it was printed. The wooden bridge has changed since then, so the old map does not show the barrier.",
+        "ref": "2-3",
+        "ko": "지도에 담긴 시점과 현재 상태를 구분합니다.",
+        "must": "지도는 과거 모습 + 현재 다리는 막혀 있음",
+        "accept": "\"The map is old and has not been updated.\"도 현재의 변화를 설명하면 인정합니다."
+      },
+      {
+        "n": 10,
+        "q": "How does Sia help Ben keep taking part after his first plan fails? Write 1-2 complete sentences.",
+        "sample": "Sia puts the map beside Ben's hand and tells him he can still guide them. She gives him a way to help with the new plan.",
+        "ref": "3, 5",
+        "ko": "Sia의 행동과 Ben의 역할을 연결합니다.",
+        "must": "지도를 건네거나 계속 안내할 수 있다고 말함 + 새 계획에도 참여하도록 도움",
+        "accept": "직원에게 다른 길을 물어보자고 한 행동도 Ben이 계속 안내할 길을 찾게 했다는 설명과 연결하면 인정합니다."
+      },
+      {
+        "n": 11,
+        "q": "Was the longer walk worth taking? Give your opinion and a story detail. Write 2-3 complete sentences.",
+        "sample": "Yes, it was worth taking. They used a safe bridge and saw flowers and a duck. Ben found interesting places he would have missed on the short path.",
+        "ref": "5-8",
+        "ko": "선택에 대한 의견을 본문 근거로 설명합니다.",
+        "must": "의견 + 안전·발견·소요 시간 중 본문 근거 + 이유",
+        "accept": "아쉬웠다는 의견도 인정합니다. 예: 더 오래 걸려 피곤할 것 같지만 열린 안전한 길을 택해야 했다고 설명할 수 있습니다. 차단된 다리를 건너는 해결책은 본문 조건과 맞지 않습니다."
+      }
+    ],
+    "drawing": {
+      "number": 12,
+      "title": "Draw another good route",
+      "task": "Invent a park map with a closed path and a different safe route to a picnic spot. Label at least two places.",
+      "hint": "Add one surprising thing to discover along your new route.",
+      "writing_task": "Write 2 sentences: Which way will you go, and what will you discover?",
+      "box_label": "MY PARK MAP",
+      "name_label": "My park is called",
+      "model_ko": "예시 그림: 막힌 산책로에는 X를 표시하고, 작은 연못을 돌아 피크닉 나무로 이어지는 길을 그립니다. \"pond\"와 \"picnic tree\"를 표시하고 길 옆에 나비를 그립니다.",
+      "sample": "I will take the open path around the pond to the picnic tree. On the way, I will discover butterflies near the flowers.",
+      "alternatives": "공사 중인 길 대신 조각상 정원을 지나는 길, 닫힌 문 대신 다른 입구를 이용하는 길도 가능합니다. 막힌 곳을 통과하지 않고 목적지에 이어지는지 확인합니다.",
+      "checks": [
+        "막힌 길과 다른 길을 구분했나요?",
+        "새 길이 피크닉 장소까지 이어지나요?",
+        "두 장소의 이름과 새로운 발견을 표시했나요?",
+        "두 설명 문장이 지도의 경로와 맞나요?"
+      ],
+      "questions": "\"여기가 막히면 어느 쪽으로 갈까?\"  \"새 길에서 무엇을 발견하게 될까?\""
+    },
+    "illustrations": [
+      "illustrations/scene-1.png",
+      "illustrations/scene-2.png"
+    ]
+  }
+]

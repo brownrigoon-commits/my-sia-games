@@ -9,7 +9,7 @@
   const route=location.hash.slice(1)||'home';
   const playMenu=route==='play'&&document.querySelector('#play-room > .play-world');
   if(!playMenu&&!['home','stories','library','companion'].includes(route))return false;
-  if(document.querySelector('.intro-screen,dialog[open],#reader:not([hidden]),#series-reader:not([hidden])'))return false;
+  if(document.querySelector('.intro-screen,dialog[open],#reader:not([hidden]),#series-reader:not([hidden]),#picture-reader'))return false;
   return !document.activeElement?.matches('input,textarea,select,[contenteditable="true"]');
  }
  function refreshWhenReady(){
