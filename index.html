@@ -18,6 +18,21 @@ a.card:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.15)}
 .card b{display:block;font-size:24px;margin-bottom:4px}
 .card span{display:block;font-size:15px;color:#5A6377;font-weight:700;line-height:1.4}
 .note{margin-top:26px;font-size:14px;color:#5A6377;font-weight:700;line-height:1.6}
+/* Game screenshots, shared with MY SIA's visual game picker. */
+main{max-width:1120px;padding:30px 24px 48px}
+p.sub{margin-bottom:24px;line-height:1.5}
+.grid{gap:24px;grid-template-columns:repeat(3,minmax(0,1fr))}
+a.card{position:relative;padding:0 0 16px;border:2px solid #fff;border-radius:24px;overflow:hidden;box-shadow:0 5px 0 #c5b991,0 10px 25px #74623c15;transition:transform .16s,box-shadow .16s}
+a.card:hover{transform:translateY(-3px);box-shadow:0 8px 0 #c5b991,0 14px 28px #74623c20}
+a.card:active{transform:translateY(3px);box-shadow:0 2px 0 #c5b991}
+a.card:focus-visible{outline:4px solid #2f6bff;outline-offset:4px}
+.card .scene{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;background:#d8e6dd}
+.card .tag{position:absolute;left:12px;top:12px;margin:0;border:2px solid #ffffffdc;font-style:normal;box-shadow:0 2px 6px #18263c20;font-size:12px;padding:4px 10px}
+.card b{font-size:21px;line-height:1.25;margin:16px 16px 7px}
+.card span{font-size:14px;line-height:1.5;margin:0 16px;color:#526779;font-weight:600}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
+@media(max-width:460px){main{padding:24px 14px 32px}h1{font-size:28px}p.sub{font-size:14px}.grid{gap:16px 12px}a.card{border-radius:18px}.card b{font-size:17px;margin:12px 10px 5px}.card span{font-size:12px;margin:0 10px}.card .tag{left:8px;top:8px;font-size:10px;padding:3px 7px}}
+@media(prefers-reduced-motion:reduce){a.card{transition:none}}
 </style>
 </head>
 <body>
@@ -25,16 +40,16 @@ a.card:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.15)}
 <h1>MY SIA 놀이</h1>
 <p class="sub">아이패드를 가로로 놓고, 게임을 고른 뒤 나이를 눌러 시작해요.</p>
 <div class="grid">
-<a class="card" href="games/letter-flight/index.html"><em class="tag" style="background:#3B559E">언어 · 3D</em><b>글자 비행</b><span>하늘의 글자 풍선을 순서대로 터뜨려 낱말을 완성해요.</span></a>
-<a class="card" href="games/fruit-orchard/index.html"><em class="tag" style="background:#E88F4D">수학 · 3D</em><b>열매 숲</b><span>주문만큼 열매를 따고 세기·덧셈·곱셈·분수를 풀어요.</span></a>
-<a class="card" href="games/float-lab/index.html"><em class="tag" style="background:#3F7D5B">과학 · 3D</em><b>뜰까 가라앉을까 실험실</b><span>먼저 예측하고 물통에 넣어 확인해요.</span></a>
-<a class="card" href="games/nature-explorer/index.html"><em class="tag" style="background:#8A4FBE">자연 · 3D</em><b>자연 탐험 사진가</b><span>사바나·숲·북극·남극·바다에서 동물을 찍고 답해요.</span></a>
-<a class="card" href="games/bubble-theater/index.html"><em class="tag" style="background:#3B559E">언어 · 3D</em><b>말풍선 극장</b><span>무대 위 인물의 마음과 상황에 맞는 대사를 골라요.</span></a>
-<a class="card" href="games/train-time/index.html"><em class="tag" style="background:#E88F4D">수학 · 3D</em><b>기차 시간표</b><span>시계를 맞춰 기차를 출발시키고 걸린 시간을 계산해요.</span></a>
-<a class="card" href="games/seed-garden/index.html"><em class="tag" style="background:#3F7D5B">과학 · 3D</em><b>씨앗 정원</b><span>물·빛·온도를 정하고 날마다 자라는 식물을 관찰해요.</span></a>
-<a class="card" href="games/deep-sea/index.html"><em class="tag" style="background:#8A4FBE">자연 · 3D</em><b>바다 탐험 잠수함</b><span>깊이 내려가며 바다 생물을 스캔하고 답해요.</span></a>
-<a class="card" href="games/fossil-dig/index.html"><em class="tag" style="background:#B98B5E">과학 · 수학</em><b>공룡 화석 발굴</b><span>칸을 파서 뼈를 찾고 공룡을 맞춰요.</span></a>
-<a class="card" href="games/fruit-stand/index.html"><em class="tag" style="background:#DB5F52">수학</em><b>과일 가게 계산대</b><span>손님 주문을 받고 값과 거스름돈을 계산해요.</span></a>
+<a class="card" href="games/letter-flight/index.html"><svg class="scene" viewBox="350 244 840 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/letter-flight-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3B559E">언어 · 3D</em><b>글자 비행</b><span>하늘의 글자 풍선을 순서대로 터뜨려 낱말을 완성해요.</span></a>
+<a class="card" href="games/fruit-orchard/index.html"><svg class="scene" viewBox="260 95 930 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/fruit-orchard-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#E88F4D">수학 · 3D</em><b>열매 숲</b><span>주문만큼 열매를 따고 세기·덧셈·곱셈·분수를 풀어요.</span></a>
+<a class="card" href="games/float-lab/index.html"><svg class="scene" viewBox="200 105 990 660" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/float-lab-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3F7D5B">과학 · 3D</em><b>뜰까 가라앉을까 실험실</b><span>먼저 예측하고 물통에 넣어 확인해요.</span></a>
+<a class="card" href="games/nature-explorer/index.html"><svg class="scene" viewBox="250 100 810 540" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/nature-explorer-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#8A4FBE">자연 · 3D</em><b>자연 탐험 사진가</b><span>사바나·숲·북극·남극·바다에서 동물을 찍고 답해요.</span></a>
+<a class="card" href="games/bubble-theater/index.html"><svg class="scene" viewBox="0 88 840 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/bubble-theater-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3B559E">언어 · 3D</em><b>말풍선 극장</b><span>무대 위 인물의 마음과 상황에 맞는 대사를 골라요.</span></a>
+<a class="card" href="games/train-time/index.html"><svg class="scene" viewBox="510 88 675 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/train-time-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#E88F4D">수학 · 3D</em><b>기차 시간표</b><span>시계를 맞춰 기차를 출발시키고 걸린 시간을 계산해요.</span></a>
+<a class="card" href="games/seed-garden/index.html"><svg class="scene" viewBox="0 150 810 540" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/seed-garden-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3F7D5B">과학 · 3D</em><b>씨앗 정원</b><span>물·빛·온도를 정하고 날마다 자라는 식물을 관찰해요.</span></a>
+<a class="card" href="games/deep-sea/index.html"><svg class="scene" viewBox="170 180 810 540" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/deep-sea-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#8A4FBE">자연 · 3D</em><b>바다 탐험 잠수함</b><span>깊이 내려가며 바다 생물을 스캔하고 답해요.</span></a>
+<a class="card" href="games/fossil-dig/index.html"><svg class="scene" viewBox="215 275 240 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/fossil-dig-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#B98B5E">과학 · 수학</em><b>공룡 화석 발굴</b><span>칸을 파서 뼈를 찾고 공룡을 맞춰요.</span></a>
+<a class="card" href="games/fruit-stand/index.html"><svg class="scene" viewBox="100 100 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/fruit-stand-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#DB5F52">수학</em><b>과일 가게 계산대</b><span>손님 주문을 받고 값과 거스름돈을 계산해요.</span></a>
 </div>
 <p class="note">모든 게임은 나이(5~13살)에 맞는 내용 안에서 레벨 1~5로 나뉘고, 끝나면 "어땠어?"로 다음 레벨이 정해져요. 소리는 첫 터치 뒤에 나와요.</p>
 </main>
