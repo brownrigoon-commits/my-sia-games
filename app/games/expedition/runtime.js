@@ -4,9 +4,10 @@
  let seed=Date.now(),world,journey,task,answer=[],round=0,phase='intro',mistakes=0,rows=[],tool='water',muted=false,audio,music,activeMs=0,last=performance.now(),felt=false,roundStarted=0;
  window.SiaGameProgress=()=>({mistakes});
  const subject=lang==='en'?meta.subjectEn:meta.subject;
- function say(text){if(!muted)window.SiaVoice?.speak(text,lang==='en'?'en-US':'ko-KR');}
+ const score=window.SiaJourneyMusic.create(id);
+ function say(text){if(!muted){score.duck(text);window.SiaVoice?.speak(text,lang==='en'?'en-US':'ko-KR');}}
  function tone(freq,at=0,volume=.025,duration=.65){if(!audio||muted)return;const o=audio.createOscillator(),g=audio.createGain(),start=audio.currentTime+at;o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(0,start);g.gain.linearRampToValueAtTime(volume,start+.025);g.gain.exponentialRampToValueAtTime(.001,start+duration);o.connect(g);g.connect(audio.destination);o.start(start);o.stop(start+duration+.1);}
- function soundStart(){try{audio??=new (window.AudioContext||window.webkitAudioContext)();audio.resume();if(music)return;const notes={'story-studio':[261.63,329.63,392,493.88],'balance-port':[220,277.18,329.63,440],'circuit-workshop':[293.66,369.99,440,587.33],'habitat-rangers':[196,246.94,293.66,392]}[id];let beat=0;music=setInterval(()=>{if(document.hidden||phase!=='play'||muted)return;tone(notes[beat%4],0,.012,1.1);if(beat%4===0)tone(notes[0]/2,0,.013,2.4);beat++;},900);}catch{}}
+ function soundStart(){score.start();try{audio??=new (window.AudioContext||window.webkitAudioContext)();audio.resume();}catch{}}
  function bandText(){return bands[band]+t('살 · 레벨 ',' years · Level ')+level;}
  function exit(){window.SiaVoice?.stop();if(embedded)parent.postMessage({type:'mysia-game-exit',game:id},location.origin);else location.href='../../#play';}
  document.documentElement.lang=lang;
@@ -25,6 +26,7 @@
   $('#workbench').innerHTML=tray+'<div class="toolbar"><span class="message">'+(id==='circuit-workshop'?t('전선 조각을 톡 누르면 돌아가요','Tap a wire tile to rotate it'):id==='habitat-rangers'?t('재료를 고른 뒤 땅을 톡 눌러요','Choose a material, then tap a tile'):id==='story-studio'?t('고른 장면은 무대 위에 차례로 놓여요','Your chosen scenes appear on the stage'):t('왼쪽 화물과 같은 무게를 만들어 봐요','Match the cargo on the left'))+'</span>'+(id==='story-studio'||id==='balance-port'?'<button class="secondary" data-action="undo">↶ '+t('되돌리기','Undo')+'</button>':'')+'<button class="primary" data-action="check">'+t('완성! 확인하기','Ready! Check')+' →</button></div>';
  }
  function pick(key){if(phase!=='play'||journey?.locked())return;const [kind,raw]=key.split(':'),n=Number(raw);if(kind==='tile')answer[n]=(answer[n]+1)%4;else if(kind==='cell')answer[n]=tool==='erase'?null:tool;else if(kind==='slot'&&answer[n])answer.splice(n,1);else return;tone(440,0,.014,.16);world.update({answer});paint();}
+ function activityResult(result){rows.push({id:id+'-act-'+round,...result,firstTry:result.correct,attempts:1,hinted:false,activeMs:Math.round(activeMs-roundStarted)});if(!result.correct){mistakes++;finish(false);return;}phase='solved';world.celebrate();[523,659,784].forEach((n,i)=>tone(n,i*.1,.035,.7));$('#mission').hidden=true;$('#workbench').hidden=false;$('#workbench').innerHTML='<div class="tray"><div style="flex:1;padding:3px 8px;line-height:1.5">'+E(result.explanation)+'</div><button class="primary" data-action="next">'+(round===2?t('모험 마치기','Finish'):t('다음 놀이로','Next activity'))+' →</button></div>';say(result.explanation);}
  function check(){
   if(phase!=='play'||journey?.locked())return;
   if(id==='story-studio'&&answer.length!==task.n||id==='balance-port'&&!answer.length){say(t('조각을 먼저 놓아 줘.','Place the pieces first.'));return;}
@@ -38,7 +40,7 @@
  function post(feel=null){const m=payload(feel);if(embedded)parent.postMessage(m,location.origin);return m;}
  function finish(passed){journey.close();phase=passed?'complete':'failed';$('#workbench').hidden=true;$('#mission').hidden=true;$('#feedback').hidden=false;const m=post();$('#feedback').innerHTML='<div class="feedback-card"><div class="stars">'+(passed?'★★★':'↻')+'</div><h1>'+t(passed?'레벨을 통과했어!':'다시 도전해 볼까?',passed?'Level complete!':'Let’s try a fresh round')+'</h1><p>'+t(passed?'생각을 작품으로 만들었어. 멋진 발견이야!':'이번에는 통과하지 못했어. 같은 레벨에서 다시 생각해 보자.',passed?'You turned your ideas into a discovery!':'This round is not passed yet. Try again at the same level.')+'</p><h2>'+t('어땠어?','How was it?')+'</h2><div id="sk-feels" class="faces">'+[['hard','😅','어려웠어','Too hard'],['good','🙂','딱 좋아','Just right'],['easy','😎','쉬웠어','Too easy']].map(([v,f,ko,en])=>'<button class="sk-feel" data-feel="'+v+'"><span>'+f+'</span>'+t(ko,en)+'</button>').join('')+'</div><p id="sk-feel-msg">'+t('느낌을 알려 줘.','Tell me how it felt.')+'</p><div class="end-actions"><button class="primary" id="sk-again" disabled>'+t('다시 도전','Play again')+'</button><button class="secondary" id="sk-home" disabled>'+t('놀이 고르기','Choose game')+'</button></div></div>';}
  document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  if(b.id==='exit'||b.id==='sk-home')return exit();if(b.id==='sk-start'||b.id==='sk-again')return start();if(b.id==='sound'){muted=!muted;$('#sound').textContent=muted?'×':'♫';$('#sound').setAttribute('aria-label',muted?t('소리 켜기','Unmute'):t('소리 끄기','Mute'));if(muted)window.SiaVoice?.stop();return;}
+  if(b.id==='exit'||b.id==='sk-home')return exit();if(b.id==='sk-start'||b.id==='sk-again')return start();if(b.id==='sound'){muted=!muted;score.mute(muted);$('#sound').textContent=muted?'×':'♫';$('#sound').setAttribute('aria-label',muted?t('소리 켜기','Unmute'):t('소리 끄기','Mute'));if(muted)window.SiaVoice?.stop();return;}
   if(b.dataset.feel&&!felt){felt=true;post(b.dataset.feel);document.querySelectorAll('.sk-feel').forEach(x=>x.disabled=true);$('#sk-again').disabled=false;$('#sk-home').disabled=false;$('#sk-feel-msg').textContent=t('알려 줘서 고마워!','Thanks for telling me!');return;}
   if(b.dataset.action==='speak')return say(task.prompt);
   if(b.dataset.action==='next'&&phase==='solved'){if(round===2)return finish(true);round++;phase='play';prepare();paint();journey.begin({...task,lang},round,seed);return;}
@@ -46,5 +48,5 @@
  });
  const clock=setInterval(()=>{const now=performance.now();if(!document.hidden&&['play','review'].includes(phase)&&now-last<2000)activeMs+=now-last;last=now;},500);
  window.addEventListener('pagehide',()=>{clearInterval(clock);clearInterval(music);journey?.dispose();audio?.close();world?.dispose();window.SiaVoice?.stop();});
- try{world=window.ExpeditionWorld.create($('#world'),id,pick);journey=window.SiaJourneyUI.create({game:id,world,lang,makeTask:r=>({...C.make(id,band,level,lang,r,seed),lang}),say,panels:['#mission','#workbench']});prepare();$('#loading').remove();}catch(e){console.error(e);$('#loading').textContent=t('입체 화면을 열지 못했어요. 브라우저를 다시 열어 주세요.','The 3D world could not open. Please reopen the browser.');}
+ try{world=window.ExpeditionWorld.create($('#world'),id,pick);journey=window.SiaJourneyUI.create({game:id,world,lang,makeTask:r=>({...C.make(id,band,level,lang,r,seed),lang}),say,onActivity:activityResult,onCue:i=>score.cue(i),panels:['#mission','#workbench']});prepare();$('#loading').remove();}catch(e){console.error(e);$('#loading').textContent=t('입체 화면을 열지 못했어요. 브라우저를 다시 열어 주세요.','The 3D world could not open. Please reopen the browser.');}
 })();

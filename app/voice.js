@@ -25,7 +25,7 @@
  // Use Claude's public voice API without changing game files, timing promises or mute controls.
  function attach(view){const core=view?.SiaVoiceCore;if(!core||attached.has(core))return false;attached.add(core);const say=core.say.bind(core);
   core.get=lang=>choose(lang,view);core.best=lang=>choose(lang,view,null);
-  core.say=(text,lang,options={})=>{const tone=delivery(lang);return say(text,lang,{...options,rate:tone.rate,pitch:tone.pitch,clips:false});};
+  core.say=(text,lang,options={})=>{const tone=delivery(lang);return say(text,lang,{...options,rate:tone.rate,pitch:tone.pitch,clips:options.clips!==false&&!selected(lang)});};
   return true;
  }
  function onVoices(fn){watchers.add(fn);return ()=>watchers.delete(fn);}
