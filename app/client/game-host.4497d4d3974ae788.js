@@ -9,7 +9,7 @@
  function init(bridge){api=bridge;root.addEventListener('message',receive);document.addEventListener('fullscreenchange',fullscreenChanged);document.addEventListener('webkitfullscreenchange',fullscreenChanged);}
  function isOpen(){return !!host;}
  // 2D games draw a 1024×768 stage that is scaled to the viewport; the 3D games size themselves to the frame.
- function fit(){if(!frame||!host)return;const area=host.querySelector('.game-viewport'),scale=Math.min(area.clientWidth/1024,area.clientHeight/768);frame.style.transform='translate(-50%,-50%) scale('+scale+')';}
+ function fit(){if(!frame||!host||frame.classList.contains('is-fluid'))return;const area=host.querySelector('.game-viewport'),scale=Math.min(area.clientWidth/1024,area.clientHeight/768);frame.style.transform='translate(-50%,-50%) scale('+scale+')';}
  function tryLandscape(){if(host&&document.fullscreenElement===host)root.screen.orientation?.lock?.('landscape').catch(()=>{});}
  function fullscreenChanged(){if(!host)return;const full=(document.fullscreenElement||document.webkitFullscreenElement)===host;host.querySelector('.game-fullscreen')?.setAttribute('aria-label',ko()?(full?'전체 화면 종료':'전체 화면'):(full?'Exit full screen':'Full screen'));if(!full&&ownsFullscreen){try{root.screen.orientation?.unlock?.();}catch{}ownsFullscreen=false;}fit();}
  function fullscreen(){
@@ -87,7 +87,7 @@
   host.querySelector('.game-close').addEventListener('click',()=>{const id=run.game;close();api.onClose(id);});
   host.querySelector('.game-fullscreen').addEventListener('click',fullscreen);
   const area=host.querySelector('.game-viewport');
-  frame=document.createElement('iframe');frame.className='game-frame';frame.title=title;
+  frame=document.createElement('iframe');frame.className='game-frame'+(game.astra?' is-fluid':'');frame.title=title;
   frame.allow='autoplay; fullscreen';frame.allowFullscreen=true;frame.referrerPolicy='same-origin';
   frame.src=B.gameUrl(document.baseURI,run,root.SIA_GAMES_RELEASE?.games?.[game.id]?.sha256?.slice(0,16));
   const current=frame;
@@ -119,9 +119,9 @@
  function parentRecord(r){
   const g=B.meta(r.gameId),date=new Date(r.completedAt).toLocaleDateString('ko-KR'),lang=r.lang==='en'?'영어':'한글',level=r.learning?.level||r.tier||r.level||1,stars=Math.max(0,Math.min(3,Number(r.stars)||0));
   const detail=r.gameId==='fossil-dig'?'<span class="game-record-name">'+E(B.DINOS[r.dino]?.ko||'')+'</span>':'';
-  const extra=r.gameId==='fossil-dig'?'퀴즈 '+(r.quizRight?'정답':'다시 생각해 보기'):r.gameId==='fruit-stand'?'실수 '+(r.mistakes||0)+'번':'';
+  const extra=r.gameId==='fossil-dig'?'퀴즈 '+(r.quizRight?'정답':'다시 생각해 보기'):r.gameId==='fruit-stand'?'실수 '+(r.mistakes||0)+'번':g.astra?'첫 시도 '+r.firstTry+'/'+r.questions+' · 힌트 '+r.hints+'번 · 실제 놀이 '+Math.round(r.activeMs/1000)+'초':'';
   const feedback=r.learning?.feedback?E(L.core.MOODS[r.learning.feedback])+' · 다음 레벨 '+r.learning.adjustment.to+(r.learning.adjustment.reason==='band-up'?' · 다음 묶음 제안':''):'';
-  return '<div class="game-record"><span aria-hidden="true">'+g.icon+'</span><div><strong>'+E(g.title)+'</strong><small>'+date+' · '+lang+' · '+(r.band?L.core.BAND_LABEL[r.band]+' · ':'')+'레벨 '+level+(r.child?.name?' · '+E(r.child.name):'')+'</small>'+detail+'</div><p><span class="game-stars" aria-label="별 '+stars+'개 / 3개">'+'★'.repeat(stars)+'☆'.repeat(3-stars)+'</span>'+(extra?'<br><small>'+E(extra)+'</small>':'')+(feedback?'<br><small>'+feedback+'</small>':'')+'</p></div>';
+  return '<div class="game-record"><span aria-hidden="true">'+g.icon+'</span><div><strong>'+E(g.title)+'</strong><small>'+date+' · '+lang+' · '+(r.band?L.core.BAND_LABEL[r.band]+' · ':'')+'레벨 '+level+(r.child?.name?' · '+E(r.child.name):'')+'</small>'+detail+(g.astra?'<details class="astra-parent-answers"><summary>문제와 배운 내용 보기</summary>'+r.answers.map(a=>'<p><b>'+E(a.prompt)+'</b><br>아이의 답: '+E(a.answer)+'<br>예시 답: '+E(a.expected)+'<br>'+E(a.explanation)+'<br><small>'+(a.firstTry?'첫 시도에 해결':'함께 연습')+' · '+a.attempts+'번 시도 · '+Math.round(a.activeMs/1000)+'초</small></p>').join('')+'</details>':'')+'</div><p><span class="game-stars" aria-label="별 '+stars+'개 / 3개">'+'★'.repeat(stars)+'☆'.repeat(3-stars)+'</span>'+(extra?'<br><small>'+E(extra)+'</small>':'')+(feedback?'<br><small>'+feedback+'</small>':'')+'</p></div>';
  }
  root.SiaGameHost={games,has:B.has,meta:B.meta,init,isOpen,open,close,parentRecord};
 })(window);

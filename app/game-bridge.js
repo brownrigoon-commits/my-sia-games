@@ -13,13 +13,18 @@
   {id:'fruit-orchard',title:'열매 숲',en:'Fruit Orchard',icon:'🍎',subject:'수학',subjectEn:'Math',skill:'수 세기 · 덧셈 · 곱셈 · 분수',skillEn:'Counting, adding, multiplying, fractions',three:true},
   {id:'float-lab',title:'뜰까 가라앉을까 실험실',en:'Float Lab',icon:'🧪',subject:'과학',subjectEn:'Science',skill:'예측 · 실험 · 뜨고 가라앉는 이유',skillEn:'Predict, test, floating and sinking',three:true},
   {id:'nature-explorer',title:'자연 탐험 사진가',en:'Nature Explorer',icon:'📷',subject:'자연',subjectEn:'Nature',skill:'동물 관찰 · 사는 곳 · 먹이',skillEn:'Animals, habitats and food',three:true},
-  {id:'fruit-stand',title:'과일 가게 계산대',en:'Fruit Stand',icon:'🧺',subject:'수학',subjectEn:'Math',skill:'수 세기 · 덧셈 · 돈과 거스름돈',skillEn:'Counting, adding, prices and change'}
+  {id:'fruit-stand',title:'과일 가게 계산대',en:'Fruit Stand',icon:'🧺',subject:'수학',subjectEn:'Math',skill:'수 세기 · 덧셈 · 돈과 거스름돈',skillEn:'Counting, adding, prices and change'},
+  {id:'star-mail',title:'별빛 문장 우체국',en:'Star Mail',icon:'✉️',subject:'언어',subjectEn:'Language',skill:'낱말 · 문장 · 맥락',skillEn:'Words, sentences and context',three:true,astra:true},
+  {id:'cloud-bridge',title:'구름 다리 건축가',en:'Cloud Bridge',icon:'🚂',subject:'수학',subjectEn:'Math',skill:'수 감각 · 연산 · 비율',skillEn:'Number sense, operations and ratios',three:true,astra:true},
+  {id:'prism-lab',title:'무지개 빛 연구소',en:'Prism Lab',icon:'💎',subject:'과학',subjectEn:'Science',skill:'빛의 혼합 · 필터 · 실험',skillEn:'Light mixing, filters and experiments',three:true,astra:true},
+  {id:'living-forest',title:'숲의 연결 탐험대',en:'Living Forest',icon:'🌿',subject:'자연',subjectEn:'Nature',skill:'관찰 · 먹이 관계 · 순환',skillEn:'Observation, food chains and cycles',three:true,astra:true}
  ];
  // RULE v2 (LEVELS.md §1): band = the child's age band, level 1–5 inside it, d = BASE[band] + level − 1 (1..20, no overlap).
  const BANDS=['K','E1','E2','E3'],BASE={K:1,E1:6,E2:11,E3:16};
  const DINOS={trex:{ko:'티라노사우루스',en:'T. rex'},tri:{ko:'트리케라톱스',en:'Triceratops'},steg:{ko:'스테고사우루스',en:'Stegosaurus'}};
  // Game-specific result fields (LEVELS.md §4): validated and copied into the parent record.
  const FIELDS={'fossil-dig':{keys:['dino','quizRight','quizItem'],valid:v=>Object.hasOwn(DINOS,v.dino)&&typeof v.quizRight==='boolean'},'fruit-stand':{keys:['mistakes'],valid:v=>Number.isInteger(v.mistakes)&&v.mistakes>=0}};
+ for(const g of GAMES.filter(g=>g.astra))FIELDS[g.id]={keys:['firstTry','questions','mistakes','hints','activeMs','answers'],valid:v=>Number.isInteger(v.firstTry)&&v.firstTry>=0&&v.firstTry<=3&&v.questions===3&&v.stars===v.firstTry&&Number.isInteger(v.mistakes)&&v.mistakes>=0&&Number.isInteger(v.hints)&&v.hints>=0&&v.hints<=3&&Number.isFinite(v.activeMs)&&v.activeMs>=0&&Array.isArray(v.answers)&&v.answers.length===3&&v.answers.every(a=>a&&['id','prompt','answer','expected','explanation'].every(k=>typeof a[k]==='string'&&a[k].length<=3000)&&typeof a.firstTry==='boolean'&&typeof a.hinted==='boolean'&&Number.isInteger(a.attempts)&&a.attempts>=1&&Number.isFinite(a.activeMs)&&a.activeMs>=0)};
  const meta=id=>GAMES.find(g=>g.id===id);
  const has=id=>!!meta(id);
  const language=value=>value==='en'?'en':'ko';
@@ -54,7 +59,7 @@
   const fields=FIELDS[value.game];return !fields||fields.valid(value);
  }
  function validMessage(value){return validResult(value)&&BANDS.includes(value.band)&&level(value.level)&&level(value.nextLevel)&&['ko','en'].includes(value.lang)&&[null,'hard','good','easy'].includes(value.feel)&&(value.suggestBandUp===undefined||typeof value.suggestBandUp==='boolean');}
- const sameRound=(a,b)=>['band','d','stars','dino','quizRight','mistakes'].every(key=>a[key]===b[key]);
+ const sameRound=(a,b)=>['band','d','stars','dino','quizRight','mistakes','firstTry','questions','hints','activeMs'].every(key=>a[key]===b[key])&&JSON.stringify(a.answers)===JSON.stringify(b.answers);
  function receive(event,source,origin,run,now=Date.now()){
   if(!run||!source||event.source!==source||event.origin!==origin||!validMessage(event.data))return null;
   const data=event.data;

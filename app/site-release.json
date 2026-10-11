@@ -1,9 +1,9 @@
 {
-  "version": "af83d492bb4cefec",
+  "version": "8c7f08055284c94d",
   "assets": {
     "voice.js": "client/voice.aa532cd48554cca5.js",
-    "learning-core.js": "client/learning-core.0f419ca5b8f94d3e.js",
-    "learning-mode.js": "client/learning-mode.b502680d1496a7d5.js",
+    "learning-core.js": "client/learning-core.7ab4c7adacfa3924.js",
+    "learning-mode.js": "client/learning-mode.2ba58b2b1c0a2336.js",
     "styles.css": "client/styles.02dfa91e2e921f61.css",
     "simple.css": "client/simple.0331b516015d7d63.css",
     "onboarding.css": "client/onboarding.f0f5bbbe6b2cc148.css",
@@ -12,18 +12,18 @@
     "profile.js": "client/profile.884c93e5ef0bafd0.js",
     "story-core.js": "client/story-core.d160f109bf53c1b8.js",
     "story-store.js": "client/story-store.9e95d11c347e600a.js",
-    "story-release.js": "client/story-release.75abe81fbca83607.js",
+    "story-release.js": "client/story-release.5318b231bb9c88d8.js",
     "story-art.js": "client/story-art.3175af3adc18c512.js",
     "story-mode.js": "client/story-mode.ab467570092753f7.js",
-    "game-release.js": "client/game-release.3239b41a917ee239.js",
-    "game-bridge.js": "client/game-bridge.e3d3d1ce52ee8725.js",
-    "game-host.js": "client/game-host.7c0867ccc47faaf2.js",
+    "game-release.js": "client/game-release.550d778b9cf34c42.js",
+    "game-bridge.js": "client/game-bridge.8a9c2452bff4fc57.js",
+    "game-host.js": "client/game-host.4497d4d3974ae788.js",
     "play-core.js": "client/play-core.2b3de28da8330aa0.js",
-    "play-mode.js": "client/play-mode.f52298e35decd066.js",
-    "app.js": "client/app.a6909a40a7a722eb.js",
+    "play-mode.js": "client/play-mode.58645e67ab3418ea.js",
+    "app.js": "client/app.854f6c2f96fa3545.js",
     "site-update.js": "client/site-update.6b84facfcc3d5ce2.js",
     "play-mode.css": "client/play-mode.9d700d02c5f05572.css",
-    "game-host.css": "client/game-host.186e9fb1db9beaf2.css",
+    "game-host.css": "client/game-host.a14e59a81e76f1ea.css",
     "learning-mode.css": "client/learning-mode.55711a34496a4d2a.css"
   }
 }

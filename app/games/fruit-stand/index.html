@@ -29,7 +29,7 @@ button{font:inherit;color:var(--ink);cursor:pointer;border:0;background:none;pad
 #btnClose{left:18px;top:18px}
 #btnSound{right:18px;top:18px;font-size:26px}
 #btnLang{right:96px;top:18px;font-size:20px}
-#logo{position:absolute;left:0;right:0;top:40px;text-align:center;font-size:74px;font-weight:900;color:#fff;-webkit-text-stroke:2px var(--ink);text-shadow:0 6px 0 var(--ink),0 10px 24px rgba(0,0,0,.25);animation:bob 3s ease-in-out infinite}
+#logo{position:absolute;left:0;right:0;top:40px;pointer-events:none;text-align:center;font-size:74px;font-weight:900;color:#fff;-webkit-text-stroke:2px var(--ink);text-shadow:0 6px 0 var(--ink),0 10px 24px rgba(0,0,0,.25);animation:bob 3s ease-in-out infinite}
 #logo small{display:block;font-size:26px;-webkit-text-stroke:0;text-shadow:none;color:var(--ink);font-weight:700;margin-top:6px}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 #bands{position:absolute;left:0;right:0;top:392px;display:flex;justify-content:center;gap:12px}
@@ -115,6 +115,26 @@ button{font:inherit;color:var(--ink);cursor:pointer;border:0;background:none;pad
 #feel .faces button.on{background:#FFF3C4;border-color:var(--orange);transform:scale(1.06)}
 #feelMsg{font-size:20px;font-weight:800;color:var(--blue);min-height:26px}
 #doneCard .row{display:flex;gap:16px;justify-content:center}
+/* sound menu (🔊 on the title screen) and the parent voice hint */
+#voiceMenu.hidden,#voiceHint.hidden,#vmVoiceRow.hidden{display:none!important}
+#voiceMenu{position:absolute;inset:0;z-index:5}
+#vmCard{position:absolute;right:18px;top:96px;width:400px;background:#fff;border:5px solid var(--ink);border-radius:26px;box-shadow:0 10px 0 rgba(0,0,0,.2);padding:16px 18px 18px;box-sizing:border-box;display:flex;flex-direction:column;gap:10px;text-align:left;animation:vmin .3s cubic-bezier(.2,1.4,.4,1)}
+@keyframes vmin{0%{transform:translateX(40px) scale(.9);opacity:0}100%{transform:none;opacity:1}}
+#vmCard > b{font-size:19px;color:#5A6377}
+.vmb{display:flex;align-items:center;gap:10px;width:100%;padding:12px 16px;border-radius:18px;border:4px solid var(--ink);background:linear-gradient(#fff,#EEF3FC);box-shadow:0 4px 0 var(--ink);font-size:22px;font-weight:900;color:var(--ink);text-align:left;cursor:pointer}
+.vmb span{flex:1;word-break:keep-all}.vmb.on{background:linear-gradient(#FFE36B,#FFC22E)}.vmb.sm{font-size:19px;padding:10px 14px}.vmb.cl{background:#fff;color:#5A6377}
+.vmb:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.vmrow{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:800;color:#5A6377}
+.vmrow select{flex:1;min-width:0;font-size:17px;font-weight:800;border:4px solid var(--ink);border-radius:14px;padding:8px 10px;background:#F2F6FD;color:var(--ink)}
+.vmnew{display:inline-block;width:10px;height:10px;border-radius:50%;background:#FF5D5D;margin-left:8px;vertical-align:middle;box-shadow:0 0 0 2px #fff}
+#voiceHint{position:absolute;inset:0;z-index:6}
+#vhCard{width:660px;padding:22px 28px 24px;box-sizing:border-box;text-align:left;font-size:19px;font-weight:700;line-height:1.5;word-break:keep-all}
+#vhCard #vhWho{display:inline-block;padding:4px 12px;border-radius:999px;background:#EEF3FC;border:3px solid var(--ink);font-size:15px;font-weight:900;color:#5A6377}
+#vhCard h2{margin:8px 0 6px;font-size:32px}
+#vhCard #vhNow{margin:0 0 8px;padding:8px 12px;border-radius:14px;background:#FFF6D9;border:3px solid #F0D48A;color:#6B4A12;font-size:18px}
+#vhCard p{margin:6px 0}#vhCard ol{margin:6px 0 6px 26px;padding:0;font-weight:800}#vhCard li{margin:4px 0}
+#vhCard small{display:block;color:#5A6377;font-size:16px;margin-top:6px;line-height:1.45}
+#vhCard .big{margin-top:14px;width:100%}
 </style>
 </head>
 <body>
@@ -124,6 +144,15 @@ button{font:inherit;color:var(--ink);cursor:pointer;border:0;background:none;pad
   <div id="s-title" class="screen">
     <button class="rbtn" id="btnSound">🔊</button>
     <button class="rbtn" id="btnLang">EN</button>
+    <div id="voiceMenu" class="hidden"><div id="vmCard">
+      <b id="vmTitle">소리</b>
+      <button id="vmMute" class="vmb on">🔊<span>소리 켜짐</span></button>
+      <div id="vmVoiceRow" class="vmrow hidden"><span id="vmVoiceL">목소리</span><select id="vmVoice"></select></div>
+      <button id="vmSample" class="vmb sm">▶<span>들어보기</span></button>
+      <button id="vmHint" class="vmb sm">💡<span>더 자연스러운 목소리 받기</span></button>
+      <button id="vmClose" class="vmb sm cl">✕<span>닫기</span></button>
+    </div></div>
+    <div id="voiceHint" class="hidden"><div class="dim"></div><div class="card" id="vhCard"><span id="vhWho">부모님께</span><h2 id="vhTitle">더 자연스러운 목소리</h2><p id="vhNow"></p><p id="vhIntro"></p><ol id="vhSteps"></ol><p id="vhAfter"></p><small id="vhOther"></small><button class="big blue" id="vhOk">알겠어요</button></div></div>
     <div id="logo">과일 가게 계산대<small>손님이 원하는 만큼 담고, 돈을 계산해 봐!</small></div>
     <div id="bands"><button data-b="K">5–7살</button><button data-b="E1">8–9살</button><button data-b="E2">10–11살</button><button data-b="E3">12–13살</button></div>
     <div id="levels"><span id="lvlLabel">레벨</span><button>1</button><button>2</button><button>3</button><button>4</button><button>5</button></div>
@@ -644,6 +673,286 @@ const AU={ctx:null,on:true,init(){if(this.ctx)return;try{this.ctx=new (window.Au
  ok(){[523,659,784].forEach((f,i)=>this.tone(f,0.2,'triangle',0.18,0,i*0.08))},wrong(){this.tone(300,0.18,'triangle',0.15,220)},
  bell(){this.tone(1568,0.5,'sine',0.15);this.tone(2093,0.6,'sine',0.1,0,0.02)},
  fanfare(){[523,659,784,1047,1319].forEach((f,i)=>this.tone(f,0.35,'triangle',0.2,0,i*0.11))},star(i){this.tone(880+i*220,0.3,'triangle',0.18)}};
+/* SIA-VOICE-CORE v1 — one voice module for every MY SIA game. Canonical copy: games/_kit/kit.js; the 2D games carry the same
+ * block (node games/_kit/voice-sync.mjs copies it). No dependencies, one global: window.SiaVoiceCore.
+ *  • voices: picks the most natural installed voice per language (Apple Premium/Enhanced › Microsoft Online Natural › Google › any)
+ *  • delivery: splits a line into sentences, queues them with a short pause, rate 1.0 ko / 0.95 en, pitch 1.0
+ *  • clips: plays pre-recorded voice/<lang>/<sha1-8>.mp3 (manifest voice/manifest.json) before falling back to speechSynthesis */
+var SiaVoiceCore = window.SiaVoiceCore = (function () {
+  var V = { version: 1 }, S = null, U = null;
+  try { S = window.speechSynthesis || null; U = window.SpeechSynthesisUtterance || null; } catch (e) { S = null; }
+  var st = { get: function (k, d) { try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set: function (k, v) { try { if (v === null || v === undefined) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* ignore */ } } };
+  var voices = [], chosen = {}, watchers = [], lastSig = '';
+  function load() {   // notifies only when the list really changed (Edge fires voiceschanged again and again)
+    try { var l = S ? S.getVoices() : []; if (l && l.length) { var sig = l.map(function (v) { return v.voiceURI + '|' + v.name + '|' + v.lang; }).join(';'); if (sig !== lastSig) { lastSig = sig; voices = l.slice(); chosen = {}; watchers.slice().forEach(function (f) { try { f(voices); } catch (e) { /* ignore */ } }); } } } catch (e) { /* ignore */ }
+    return voices;
+  }
+  load();
+  if (S) { try { S.addEventListener('voiceschanged', load); } catch (e) { try { S.onvoiceschanged = load; } catch (e2) { /* ignore */ } } }
+  /** onVoices(fn) — fn(list) whenever the voice list arrives or changes (iOS fills it only after the first tap). */
+  V.onVoices = function (fn) { watchers.push(fn); if (voices.length) fn(voices); return function () { var i = watchers.indexOf(fn); if (i >= 0) watchers.splice(i, 1); }; };
+  function langOf(v) { return String(v.lang || '').replace('_', '-').toLowerCase(); }
+  function nm(v) { return (v.name || '') + ' ' + (v.voiceURI || ''); }
+  var PREMIUM = /premium|enhanced|프리미엄|향상|고품질/i, NATURAL = /natural|online|neural/i;
+  // quality order per language: the first rule that matches any voice wins (ties: en-US / local / default first)
+  var RANK = {
+    ko: [
+      function (v) { return /yuna|유나/i.test(nm(v)) && PREMIUM.test(nm(v)); },          // Apple 유나 (프리미엄 / 향상)
+      function (v) { return PREMIUM.test(nm(v)); },                                        // any other Apple enhanced Korean voice
+      function (v) { return /sunhi|선히/i.test(nm(v)) && NATURAL.test(nm(v)); },            // Microsoft SunHi Online (Natural) — Edge / Windows
+      function (v) { return /injoon|인준/i.test(nm(v)) && NATURAL.test(nm(v)); },           // Microsoft InJoon Online (Natural)
+      function (v) { return /hyunsu|현수|bongjin|gookmin|jimin|seoyeon|soonbok|yujin/i.test(nm(v)) && NATURAL.test(nm(v)); },
+      function (v) { return NATURAL.test(nm(v)); },
+      function (v) { return /google/i.test(nm(v)); },                                      // Google 한국의 (Chrome desktop / Android)
+      function (v) { return /yuna|유나/i.test(nm(v)); },                                   // Apple 유나 (기본 품질)
+      function (v) { return /sunhi|heami|injoon/i.test(nm(v)); },                           // Windows desktop voices
+    ],
+    en: [
+      function (v) { return /samantha|ava|zoe|allison|evan|nathan|joelle/i.test(nm(v)) && PREMIUM.test(nm(v)); },   // Apple Premium / Enhanced
+      function (v) { return PREMIUM.test(nm(v)); },
+      function (v) { return /\baria\b/i.test(nm(v)) && NATURAL.test(nm(v)) && !/multilingual/i.test(nm(v)); },   // Microsoft Aria Online (Natural)
+      function (v) { return /\bjenny\b/i.test(nm(v)) && NATURAL.test(nm(v)) && !/multilingual/i.test(nm(v)); },  // Microsoft Jenny Online (Natural)
+      function (v) { return /ava|emma|michelle|andrew|brian|guy/i.test(nm(v)) && NATURAL.test(nm(v)) && /^en-us/.test(langOf(v)); },
+      function (v) { return NATURAL.test(nm(v)); },
+      function (v) { return /google us english/i.test(nm(v)); },
+      function (v) { return /google/i.test(nm(v)) && /^en-us/.test(langOf(v)); },
+      function (v) { return /samantha|ava|zoe/i.test(nm(v)); },
+    ],
+  };
+  function score(a, lang) { return (lang === 'en' && /^en-us/.test(langOf(a)) ? 4 : 0) + (a.localService ? 2 : 0) + (a['default'] ? 1 : 0); }
+  function byTie(lang) { return function (a, b) { return score(b, lang) - score(a, lang); }; }
+  /** list(lang) → installed voices for 'ko' | 'en' (never another language). */
+  V.list = function (lang) { var want = lang === 'en' ? 'en' : 'ko'; return voices.filter(function (v) { return langOf(v).indexOf(want) === 0; }); };
+  /** best(lang) → the highest-ranked installed voice for the language, or null when none. */
+  V.best = function (lang) {
+    var list = V.list(lang); if (!list.length) return null;
+    var rules = RANK[lang === 'en' ? 'en' : 'ko'];
+    for (var i = 0; i < rules.length; i++) { var hit = list.filter(rules[i]); if (hit.length) return hit.sort(byTie(lang))[0]; }
+    return list.sort(byTie(lang))[0];
+  };
+  /** get(lang) → the voice that will speak: the saved choice when it is installed, else best(lang). Cached until the list changes. */
+  V.get = function (lang) {
+    lang = lang === 'en' ? 'en' : 'ko'; if (chosen[lang] !== undefined) return chosen[lang];
+    var want = st.get('mysia-voice-' + lang, null), list = V.list(lang), v = null;
+    if (want) v = list.filter(function (x) { return x.voiceURI === want || x.name === want; })[0] || null;
+    chosen[lang] = v || V.best(lang); return chosen[lang];
+  };
+  /** set(lang, voiceURI | name | null) — null returns to the automatic best voice. */
+  V.set = function (lang, uri) { lang = lang === 'en' ? 'en' : 'ko'; st.set('mysia-voice-' + lang, uri || null); chosen = {}; return V.get(lang); };
+  /** a short label for menus: "유나 (프리미엄)", "SunHi (Natural)", "Google 한국의" */
+  V.label = function (v) {
+    var n = String(v && v.name || '').replace(/^Microsoft\s+/i, '').replace(/\s*-\s*(Korean|English)\b.*$/i, '').replace(/\s*Online\s*\((Natural)\)/i, ' (Natural)').replace(/\s*\(Korea\)|\s*\(South Korea\)/i, '').trim();
+    return n || (v && v.voiceURI) || '?';
+  };
+  /** names(lang) → plain objects for tests and menus. */
+  V.names = function (lang) {
+    var best = V.best(lang), cur = V.get(lang);
+    return V.list(lang).map(function (v) { return { name: v.name, label: V.label(v), uri: v.voiceURI, lang: v.lang, local: !!v.localService, best: v === best, picked: v === cur }; });
+  };
+  V.ready = function () { return voices.length > 0; };
+
+  // sentences ------------------------------------------------------------------------
+  /** sentences('하나. 둘! 셋?') → ['하나.', '둘!', '셋?'] — splits after . ! ? … 。 followed by a space or the end, and at new lines; "1.5 kg" stays whole. */
+  V.sentences = function (text) {
+    var t = String(text == null ? '' : text).trim(), out = [], re = /[^\n]*?(?:[.!?…。]+["'”’)]*(?=\s|$)|\n|$)/g, m, last = -1;
+    while ((m = re.exec(t)) !== null) {
+      if (re.lastIndex === last) { re.lastIndex++; if (re.lastIndex > t.length) break; continue; }
+      last = re.lastIndex; var s = m[0].trim(); if (s) out.push(s); if (re.lastIndex >= t.length) break;
+    }
+    // a bit with no real word in it ("…", a lone quote or number) joins the sentence before it so the pause does not chop the line
+    var joined = [];
+    out.forEach(function (s) { var core = s.replace(/[\s\d.,!?…。"'”’()[\]~♪]/g, ''); if (joined.length && !core.length) joined[joined.length - 1] += ' ' + s; else joined.push(s); });
+    return joined.length ? joined : (t ? [t] : []);
+  };
+
+  // speaking -----------------------------------------------------------------------------
+  var PAUSE = 250, q = [], busy = false, token = 0, cur = null, curItem = null, timers = [];
+  function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+  function later(fn, ms) { var id = setTimeout(fn, ms); timers.push(id); return id; }
+  function est(text, lang) { return Math.max(0.8, String(text).length * (lang === 'en' ? 0.065 : 0.13)); }
+  function pump() {
+    if (busy) return; var it = q.shift(); if (!it) return;
+    busy = true; curItem = it; var my = token, done = false;
+    function fin() { if (done) return; done = true; if (my !== token) return; busy = false; curItem = null; cur = null; if (it.last) it.resolve(); if (q.length) later(pump, PAUSE); }
+    try {
+      var u = new U(it.text); cur = u;
+      u.lang = it.lang === 'en' ? 'en-US' : 'ko-KR'; var v = V.get(it.lang); if (v) u.voice = v;
+      u.rate = it.rate; u.pitch = it.pitch; u.volume = 1;
+      u.onend = fin; u.onerror = fin;
+      S.speak(u);
+      later(fin, est(it.text, it.lang) * 1000 / Math.max(0.5, it.rate) + 2500);   // never hang if the engine stays silent
+      if (!voices.length) later(fin, est(it.text, it.lang) * 1000);               // no voice list yet: trust the estimate
+    } catch (e) { later(fin, est(it.text, it.lang) * 1000); }
+  }
+  /**
+   * say(text, lang, {rate, pitch, queue, clips, key}) → Promise that resolves when the line has been spoken (or after an estimate without an engine).
+   * A new line cancels what is still being spoken unless queue is true. Pre-recorded clips are tried first when the page has them.
+   */
+  var chain = Promise.resolve();
+  V.say = function (text, lang, o) {
+    o = o || {}; lang = lang === 'en' ? 'en' : 'ko'; text = String(text == null ? '' : text).trim();
+    var e = est(text, lang);
+    if (!text) return V.delay(0.1);
+    if (!o.queue) { V.stop(); chain = Promise.resolve(); }
+    var my = token;
+    var run = function () {
+      if (my !== token) return;                                   // cancelled while waiting in the queue
+      var urls = o.clips === false ? null : CLIPS.lookup(text, lang, o.key);
+      if (urls) { var ct = clipToken; return CLIPS.play(urls, ct).then(function (ok) { if (ok || ct !== clipToken || my !== token) return; return tts(text, lang, o, e); }); }
+      return tts(text, lang, o, e);
+    };
+    var p = o.queue ? chain.then(function () { return my === token ? V.delay(PAUSE / 1000) : null; }).then(run) : run();
+    chain = p.then(null, function () { /* ignore */ });
+    return p;
+  };
+  function tts(text, lang, o, e) {
+    if (!S || !U) return V.delay(e);
+    return new Promise(function (resolve) {
+      var parts = V.sentences(text), rate = o.rate || (lang === 'en' ? 0.95 : 1.0), pitch = o.pitch || 1.0;
+      parts.forEach(function (p, i) { q.push({ text: p, lang: lang, rate: rate, pitch: pitch, last: i === parts.length - 1, resolve: resolve }); });
+      if (!parts.length) return resolve();
+      pump();
+    });
+  }
+  /** stop() — cancel everything that is queued or being spoken (lines being awaited resolve at once). */
+  V.stop = function () {
+    token++; clearTimers(); var old = q, c = curItem; q = []; busy = false; cur = null; curItem = null; clipToken++;
+    try { if (S) S.cancel(); } catch (e) { /* ignore */ }
+    CLIPS.stop(); if (c && c.last) c.resolve(); old.forEach(function (it) { if (it.last) it.resolve(); });
+  };
+  V.speaking = function () { return busy || q.length > 0 || CLIPS.busy(); };
+  V.delay = function (s) { return new Promise(function (r) { setTimeout(r, s * 1000); }); };
+  /** unlock() — call from the first user gesture: wakes the engine on iOS, loads the voice list, primes the clip player. */
+  var unlocked = false;
+  V.unlock = function () {
+    load();
+    if (unlocked) return; unlocked = true;
+    try { if (S && U) { var u = new U(' '); u.volume = 0; S.speak(u); } } catch (e) { /* ignore */ }
+    CLIPS.unlock();
+  };
+
+  // pre-recorded clips ---------------------------------------------------------------------
+  // layout next to the game page: voice/manifest.json, voice/<lang>/<sha1-8 of the exact line>.mp3, voice/<lang>/num/<word>.mp3
+  // manifest: { "ko": { "ids": ["a1b2c3d4", …], "numbers": ["0", …, "100", "이백", …, "천", "만", "원", "n1", …], "names": ["<id8>"],
+  //                     "templates": [{ "re": "^바구니에 (\\d+) 개가 있어\\.$", "parts": ["<id8 of fixed part>", {"slot": "number"}, "<id8>"] }] }, "en": {…} }
+  var clipToken = 0;
+  var CLIPS = V.clips = { base: 'voice/', manifest: null, loaded: false, audio: null, misses: 0, hits: 0, probe: true, _busy: false };
+  CLIPS.enabled = (function () { try { return /^https?:$/.test(location.protocol); } catch (e) { return false; } })();
+  CLIPS.load = function (url) {
+    if (!CLIPS.enabled || typeof fetch !== 'function') { CLIPS.loaded = true; return Promise.resolve(null); }
+    return fetch(url || (CLIPS.base + 'manifest.json'), { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+      .then(function (m) {
+        if (m) { ['ko', 'en'].forEach(function (l) { var x = m[l]; if (!x) return; ['ids', 'numbers', 'names'].forEach(function (k) { if (Array.isArray(x[k])) { var o = {}; x[k].forEach(function (id) { o[id] = true; }); x[k] = o; } x[k] = x[k] || {}; }); x.templates = x.templates || []; }); CLIPS.probe = false; }
+        CLIPS.manifest = m; CLIPS.loaded = true; return m;
+      });
+  };
+  if (CLIPS.enabled) CLIPS.load();
+  // Korean number reading for clips: 0–100 whole words, then X천 / X백 chunks + the rest, 만; native counting (한·두·세…) for 개/마리/송이
+  var SINO = ['영', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+  function numKo(n, style) {
+    if (style === 'native') { if (n < 1 || n > 99) return null; if (n === 20) return ['n20a']; /* 스무 개, 스물한 개 */ if (n < 20) return ['n' + n]; var t = Math.floor(n / 10) * 10, o = n % 10; return o ? ['n' + t, 'n' + o] : ['n' + t]; }
+    if (n <= 100) return [String(n)];
+    if (n > 10000) return null;
+    if (n === 10000) return ['만'];
+    var out = [], k = Math.floor(n / 1000), h = Math.floor(n % 1000 / 100), r = n % 100;
+    if (k) out.push(k === 1 ? '천' : SINO[k] + '천');
+    if (h) out.push(h === 1 ? '백' : SINO[h] + '백');
+    if (r) out.push(String(r));
+    return out;
+  }
+  function numEn(n) {
+    if (n <= 100) return [String(n)]; if (n > 10000) return null; if (n === 10000) return ['10000'];
+    var out = [], k = Math.floor(n / 1000), h = Math.floor(n % 1000 / 100), r = n % 100;
+    if (k) out.push(String(k * 1000)); if (h) out.push(String(h * 100)); if (r) out.push(String(r)); return out;
+  }
+  /** numberWords('3450', 'ko') → ['삼천', '사백', '50'] — clip names under voice/<lang>/num/ (null when not representable). */
+  V.numberWords = function (val, lang, style) {
+    var s = String(val).replace(/[,\s]/g, ''); if (!/^\d+$/.test(s)) return null; var n = parseInt(s, 10);
+    return lang === 'en' ? numEn(n) : numKo(n, style);
+  };
+  /** lookup(text, lang, key) → clip urls for the line (key: the exact text the id was made from; default text) or null. */
+  CLIPS.lookup = function (text, lang, key) {
+    if (!CLIPS.enabled) return null;
+    var id = V.id(key || text), m = CLIPS.manifest && CLIPS.manifest[lang], base = CLIPS.base + lang + '/';
+    if (!m) { if (CLIPS.loaded && CLIPS.probe && CLIPS.misses < 3) return [base + id + '.mp3']; return null; }   // no manifest: probe a few times
+    if (m.ids[id]) return [base + id + '.mp3'];
+    for (var i = 0; i < m.templates.length; i++) {
+      var t = m.templates[i]; try { t._re = t._re || new RegExp(t.re); } catch (e) { continue; }
+      var mm = t._re.exec(key || text); if (!mm) continue;   // templates are cut from the exact source line, not the rewritten one
+      var urls = [], gi = 1, ok = true;
+      for (var p = 0; p < t.parts.length && ok; p++) {
+        var part = t.parts[p];
+        if (typeof part === 'string') { if (!m.ids[part]) ok = false; else urls.push(base + part + '.mp3'); continue; }
+        var val = mm[gi++], words = null;
+        if (part.slot === 'number' || part.slot === 'won') words = V.numberWords(val, lang, part.style);
+        if (part.slot === 'won' && words) words.push(lang === 'en' ? 'won' : '원');
+        if (part.slot === 'name') { var nid = V.id(String(val).trim()); if (m.names[nid]) { urls.push(base + 'name/' + nid + '.mp3'); continue; } ok = false; continue; }
+        if (!words) { ok = false; break; }
+        for (var w = 0; w < words.length; w++) { if (!m.numbers[words[w]]) { ok = false; break; } urls.push(base + 'num/' + words[w] + '.mp3'); }
+      }
+      if (ok && urls.length) return urls;
+    }
+    return null;
+  };
+  function silentWav() {
+    var n = 44 + 2 * 8, b = new Uint8Array(n), dv = new DataView(b.buffer), w = function (o, s) { for (var i = 0; i < s.length; i++) b[o + i] = s.charCodeAt(i); };
+    w(0, 'RIFF'); dv.setUint32(4, n - 8, true); w(8, 'WAVEfmt '); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true); dv.setUint32(24, 8000, true); dv.setUint32(28, 16000, true); dv.setUint16(32, 2, true); dv.setUint16(34, 16, true); w(36, 'data'); dv.setUint32(40, 16, true);
+    var s = ''; for (var i = 0; i < n; i++) s += String.fromCharCode(b[i]); return 'data:audio/wav;base64,' + btoa(s);
+  }
+  CLIPS.unlock = function () {
+    if (!CLIPS.enabled || CLIPS.audio) return;
+    try { var a = new Audio(); a.preload = 'auto'; a.src = silentWav(); var p = a.play(); if (p && p.catch) p.catch(function () { /* ignore */ }); CLIPS.audio = a; } catch (e) { CLIPS.audio = null; }
+  };
+  CLIPS.busy = function () { return CLIPS._busy; };
+  // stop() settles the line being played (its say() promise resolves, like an interrupted engine line) — it never falls back to speech
+  CLIPS.stop = function () { var fin = CLIPS._end; CLIPS._end = null; CLIPS._busy = false; var a = CLIPS.audio; if (a) { try { a.onended = a.onerror = null; a.pause(); } catch (e) { /* ignore */ } } if (fin) fin(null); };
+  /** play([url, …], token) → Promise<boolean> — true when every clip played; false (fall back to TTS) on a missing file. */
+  CLIPS.play = function (urls, my) {
+    var a = CLIPS.audio; if (!a) { try { a = CLIPS.audio = new Audio(); } catch (e) { return Promise.resolve(false); } }
+    CLIPS._busy = true;
+    return new Promise(function (resolve) {
+      var i = 0, dog = 0, done = false;
+      // ok: true played · false missing/failed (→ speech) · null stopped by a newer line
+      function end(ok) { if (done) return; done = true; clearTimeout(dog); if (CLIPS._end === end) CLIPS._end = null; CLIPS._busy = false; a.onended = a.onerror = null; if (ok === true) { CLIPS.hits++; CLIPS.misses = 0; } else if (ok === false && !CLIPS.hits) CLIPS.misses++; resolve(ok !== false); }
+      CLIPS._end = end;
+      function next() {
+        clearTimeout(dog);
+        if (my !== clipToken) return end(true);
+        if (i >= urls.length) return end(true);
+        a.onended = function () { setTimeout(next, i < urls.length ? 60 : 0); }; a.onerror = function () { end(false); };
+        dog = setTimeout(function () { end(false); }, 20000);   // a clip that never ends (stalled network) falls back to speech
+        try { a.src = urls[i++]; var p = a.play(); if (p && p.catch) p.catch(function () { end(false); }); } catch (e) { end(false); }
+      }
+      next();
+    });
+  };
+
+  // sha1-8 of the exact text: the clip file name ---------------------------------------------
+  function rotl(x, n) { return (x << n) | (x >>> (32 - n)); }
+  /** id('안녕!') → first 8 hex chars of SHA-1 over the UTF-8 text (same as Node: createHash('sha1').update(t).digest('hex').slice(0, 8)). */
+  V.id = function (str) {
+    var m = unescape(encodeURIComponent(String(str))), n = m.length, W = [], i, t;
+    for (i = 0; i < n; i++) W[i >> 2] = (W[i >> 2] || 0) | (m.charCodeAt(i) << (24 - (i % 4) * 8));
+    W[n >> 2] = (W[n >> 2] || 0) | (0x80 << (24 - (n % 4) * 8));
+    var blocks = ((n + 8) >> 6) + 1; W[blocks * 16 - 1] = n * 8; W[blocks * 16 - 2] = Math.floor(n / 0x20000000);
+    var h0 = 0x67452301, h1 = 0xEFCDAB89, h2 = 0x98BADCFE, h3 = 0x10325476, h4 = 0xC3D2E1F0;
+    for (var b = 0; b < blocks * 16; b += 16) {
+      var w = [], a = h0, bb = h1, c = h2, d = h3, e = h4;
+      for (t = 0; t < 80; t++) {
+        w[t] = t < 16 ? (W[b + t] | 0) : rotl(w[t - 3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16], 1);
+        var f = t < 20 ? ((bb & c) | (~bb & d)) + 0x5A827999 : t < 40 ? (bb ^ c ^ d) + 0x6ED9EBA1 : t < 60 ? ((bb & c) | (bb & d) | (c & d)) + 0x8F1BBCDC : (bb ^ c ^ d) + 0xCA62C1D6;
+        var tmp = (rotl(a, 5) + f + e + w[t]) | 0; e = d; d = c; c = rotl(bb, 30); bb = a; a = tmp;
+      }
+      h0 = (h0 + a) | 0; h1 = (h1 + bb) | 0; h2 = (h2 + c) | 0; h3 = (h3 + d) | 0; h4 = (h4 + e) | 0;
+    }
+    return ('00000000' + (h0 >>> 0).toString(16)).slice(-8);
+  };
+  // parent hint (iPad premium voice) seen once?
+  V.hintSeen = function (set) { if (set !== undefined) st.set('mysia-voice-hint-seen', !!set); return !!st.get('mysia-voice-hint-seen', false); };
+  return V;
+})();
+/* /SIA-VOICE-CORE */
 let voiceOn=true;
 // read aloud (LEVELS.md §4): fractions, %, units, ×, ÷ and ratios are rewritten so a voice never reads "1/4" as a date
 const EN_NUM=['zero','one','two','three','four','five','six','seven','eight','nine','ten'],EN_DEN={2:['half','halves'],3:['third','thirds'],4:['quarter','quarters'],5:['fifth','fifths'],6:['sixth','sixths'],7:['seventh','sevenths'],8:['eighth','eighths'],9:['ninth','ninths'],10:['tenth','tenths']};
@@ -653,7 +962,45 @@ function sayText(t){let s=String(t).replace(/[🍎~]/g,'');
   .replace(/₩([\d,]+)/g,'$1 won').replace(/(\d)\s*:\s*(\d)(?!\d)/g,'$1 to $2').replace(/%/g,' percent').replace(/cm²/g,' square centimeters').replace(/m²/g,' square meters')
   .replace(/per kg\b/g,'per kilogram').replace(/\b1 kg\b/g,'1 kilogram').replace(/\s*kg\b/g,' kilograms').replace(/(\d)\s*cm\b/g,'$1 centimeters').replace(/(\d)\s*g\b/g,'$1 grams').replace(/\s*×\s*/g,' times ').replace(/\s*÷\s*/g,' divided by ').replace(/\s*−\s*/g,' minus ').replace(/ {2,}/g,' ');}
 // queue=true adds to what is already being read (a question after the order)
-function speak(t,queue){if(!voiceOn||!t||!('speechSynthesis' in window))return;try{if(!queue)speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(sayText(t));u.lang=LANG==='ko'?'ko-KR':'en-US';u.rate=LANG==='ko'?1:0.95;speechSynthesis.speak(u);}catch(e){}}
+// speak(t, queue): the shared voice core reads sayText(t) sentence by sentence with the best installed voice; queue=true adds the line after what is being read
+function speak(t,queue){if(!voiceOn||!t)return;SiaVoiceCore.say(sayText(t),LANG,{queue:!!queue,key:String(t).trim()});}
+/* sound menu on the title screen: sound on/off, the voice (only when more than one is installed), the parent hint (iPad premium voice) */
+const VM_T={ko:{title:'소리',on:'소리 켜짐',off:'소리 꺼짐',voice:'목소리',auto:'자동',best:'추천',sample:'들어보기',hint:'더 자연스러운 목소리 받기',close:'닫기',sampleLine:'안녕! 나는 하루야. 같이 놀자!',
+  who:'부모님께',htitle:'더 자연스러운 목소리',now:'지금 목소리',n:k=>`설치된 한국어 목소리 ${k}개`,intro:'아이패드·아이폰은 한 번만 받아 두면 이 게임이 자동으로 그 목소리로 읽어 줘요.',
+  steps:['설정 → 손쉬운 사용 → 콘텐츠 말하기','음성 → 한국어','유나 (프리미엄) 다운로드 — Wi-Fi 권장, 몇 분 걸려요'],
+  after:'다운로드가 끝나면 게임을 다시 열어 주세요. 따로 고르지 않아도 가장 좋은 목소리를 골라요. 영어는 같은 자리에서 Ava · Samantha (프리미엄)을 받으면 돼요.',
+  other:'윈도우 PC는 엣지 브라우저가 가장 자연스럽고(SunHi · InJoon), 안드로이드는 설정 → 시스템 → 언어 → 텍스트 음성 변환에서 한국어 음성 데이터를 설치해요.',ok:'알겠어요'},
+ en:{title:'Sound',on:'Sound on',off:'Sound off',voice:'Voice',auto:'Automatic',best:'best',sample:'Listen',hint:'Get a more natural voice',close:'Close',sampleLine:'Hi! I am Haru. Let’s play together!',
+  who:'For parents',htitle:'A more natural voice',now:'Current voice',n:k=>`${k} Korean voices installed`,intro:'On iPad and iPhone a one-time download gives this game a much more natural voice; it is picked up automatically.',
+  steps:['Settings → Accessibility → Spoken Content','Voices → Korean','Download Yuna (Premium) — Wi-Fi recommended, a few minutes'],
+  after:'When the download finishes, open the game again. The best voice is chosen for you. For English, download Ava or Samantha (Premium) in the same place.',
+  other:'On a Windows PC the Edge browser sounds best (SunHi · InJoon); on Android install Korean voice data under Settings → System → Languages → Text-to-speech.',ok:'Got it'}};
+function setSound(on){AU.init();AU.on=on;voiceOn=on;$('btnSound').textContent=on?'🔊':'🔇';if(!on)SiaVoiceCore.stop();if(!$('voiceMenu').classList.contains('hidden'))VM.render();}
+const VM={
+ open(){$('voiceMenu').classList.remove('hidden');VM.render();},
+ close(){$('voiceMenu').classList.add('hidden');},
+ toggle(){if($('voiceMenu').classList.contains('hidden'))VM.open();else VM.close();},
+ render(){const t=VM_T[LANG];$('vmTitle').textContent=t.title;const m=$('vmMute');m.classList.toggle('on',AU.on);m.innerHTML=(AU.on?'🔊':'🔇')+'<span>'+(AU.on?t.on:t.off)+'</span>';
+  const list=SiaVoiceCore.names(LANG),row=$('vmVoiceRow');row.classList.toggle('hidden',list.length<2);
+  if(list.length>1){$('vmVoiceL').textContent=t.voice;const sel=$('vmVoice');sel.innerHTML='';let saved=null;try{saved=JSON.parse(localStorage.getItem('mysia-voice-'+LANG));}catch(e){}
+   const best=SiaVoiceCore.best(LANG),oa=document.createElement('option');oa.value='';oa.textContent=t.auto+(best?' · '+SiaVoiceCore.label(best):'');sel.appendChild(oa);
+   list.forEach(v=>{const o=document.createElement('option');o.value=v.uri;o.textContent=v.label+(v.best?' ★ '+t.best:'');if(saved&&(v.uri===saved||v.name===saved))o.selected=true;sel.appendChild(o);});}
+  $('vmSample').innerHTML='▶<span>'+t.sample+'</span>';$('vmHint').innerHTML='💡<span>'+t.hint+(SiaVoiceCore.hintSeen()?'':'<i class="vmnew"></i>')+'</span>';$('vmClose').innerHTML='✕<span>'+t.close+'</span>';},
+ sample(){if(!AU.on)setSound(true);SiaVoiceCore.say(VM_T[LANG].sampleLine,LANG);},
+ hint(){VM.close();const t=VM_T[LANG],cur=SiaVoiceCore.get('ko');$('vhWho').textContent=t.who;$('vhTitle').textContent=t.htitle;$('vhNow').innerHTML=t.now+': <b>'+(cur?SiaVoiceCore.label(cur):'—')+'</b> · '+t.n(SiaVoiceCore.list('ko').length);
+  $('vhIntro').textContent=t.intro;$('vhSteps').innerHTML='';t.steps.forEach(s=>{const li=document.createElement('li');li.textContent=s;$('vhSteps').appendChild(li);});$('vhAfter').textContent=t.after;$('vhOther').textContent=t.other;$('vhOk').textContent=t.ok;$('voiceHint').classList.remove('hidden');},
+ hintClose(){SiaVoiceCore.hintSeen(true);$('voiceHint').classList.add('hidden');}};
+$('vmMute').addEventListener('click',()=>setSound(!AU.on));
+$('vmVoice').addEventListener('change',e=>{SiaVoiceCore.set(LANG,e.target.value||null);VM.sample();VM.render();});
+$('vmSample').addEventListener('click',()=>VM.sample());
+$('vmHint').addEventListener('click',()=>VM.hint());
+$('vmClose').addEventListener('click',()=>VM.close());
+$('voiceMenu').addEventListener('pointerdown',e=>{if(e.target===$('voiceMenu'))VM.close();});
+$('vhOk').addEventListener('click',()=>VM.hintClose());
+$('voiceHint').querySelector('.dim').addEventListener('pointerdown',()=>VM.hintClose());
+addEventListener('pointerdown',()=>SiaVoiceCore.unlock(),{capture:true,passive:true});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)SiaVoiceCore.stop();});
+
 
 /* ── stage / tween / particles ──────────── */
 const stage=$('stage'),cv=$('game'),ctx=cv.getContext('2d');let scale=1,dpr=Math.min(window.devicePixelRatio||1,2);
@@ -909,7 +1256,7 @@ $('btnAgain').addEventListener('click',()=>{AU.tap();startPlay();});
 $('btnTitle').addEventListener('click',()=>{AU.tap();gotoTitle();});
 $('btnStart').addEventListener('click',()=>{if($('btnStart').disabled)return;AU.init();AU.resume();AU.tap();startPlay();});
 $('btnClose').addEventListener('click',()=>{AU.tap();gotoTitle();});
-$('btnSound').addEventListener('click',()=>{AU.init();AU.on=!AU.on;voiceOn=AU.on;$('btnSound').textContent=AU.on?'🔊':'🔇';if(!AU.on&&'speechSynthesis' in window)speechSynthesis.cancel();});
+$('btnSound').addEventListener('click',()=>{AU.init();AU.resume();VM.toggle();});   // sound menu (sound on/off lives inside it)
 $('btnLang').addEventListener('click',()=>{LANG=LANG==='ko'?'en':'ko';applyLang();haru('haruT','hello',titleHello(),true);});
 document.querySelectorAll('.haru').forEach(h=>h.addEventListener('click',()=>{const b=h.querySelector('.bubble');if(b&&b.textContent)speak(b.textContent);}));
 
@@ -1014,6 +1361,7 @@ window.__fruit={get scene(){return scene},get band(){return band},get level(){re
  get mistakes(){return mistakes},get cust(){return cust},get stars(){return stars},get save(){return save},get suggestBandUp(){return suggestBandUp},get played(){return played},get lastPost(){return lastPost},get embedded(){return EMBED},get override(){return isOverride()},get sold(){return ctxR.sold},get parentOpen(){return parentOpen},get gateShown(){return $('gateWrap').classList.contains('on')},
  crateXY,bagXY,coinXY,clrXY,bagRect,setLevel,setBand,startPlay,STAND,LEVELS:STAND,BASE,ageBand,planFor,makePrices,simRound,exFor,dealTrue,hintFor,speechText:s=>sayText(s),
  gen:(dd,b,kind,PP,c)=>gen(dd,b,kind,PP||makePrices(dd),c),genGraph:(dd,c)=>genGraph(dd,c||newCtx(dd)),bubble:()=>$('bubbleP').textContent};
+window.__fruit.voice=SiaVoiceCore;window.__fruit.voiceMenu=VM;window.__fruit.speak=speak;   // voice core + sound menu + the game's own speak() for tests
 })();
 </script>
 </body>
