@@ -24,12 +24,17 @@
  function levelText(level,next){return (ko()?L.core.BAND_LABEL[run.band]:'Ages '+L.core.BAND_LABEL[run.band].replace('살',''))+(ko()?' · 레벨 ':' · Level ')+level+(next&&next!==level?' → '+next:'')+(run.overridden?(ko()?' · 부모님이 고른 묶음':' · chosen by a parent'):'');}
  function receive(event){
   if(!host?.isConnected||!frame||event.source!==frame.contentWindow||event.origin!==root.location.origin)return;
-  if(run.failed)return;
+  if(run.failed){
+   // The first-error guard can run before the iframe's queued result message.
+   // Keep its bounded answer evidence without reopening or passing the failed attempt.
+   const m=event.data;if(B.validMessage(m)&&m.game===run.game&&m.band===run.band&&m.level===run.level&&m.lang===run.lang&&!result.answers){const answers=B.reviewAnswers(m.answers);if(answers){result.answers=answers;api.onResult(result);}}
+   return;
+  }
   if(event.data?.type==='mysia-game-exit'&&event.data.game===run.game){const id=run.game;close();api.onClose(id);return;}
   const record=B.receive(event,frame.contentWindow,root.location.origin,run);
   if(!record)return;
   record.assessment=A.outcome(record,A.snapshot(frame.contentWindow,run.game));
-  if(!record.assessment.passed){failAttempt(A.snapshot(frame.contentWindow,run.game));return;}
+  if(!record.assessment.passed){failAttempt(A.snapshot(frame.contentWindow,run.game),record);return;}
   record.learning??={...run.learning,id:record.id,completedAt:record.completedAt};record.learning.lang=record.lang;result=record;
   if(record.feel){
    // The app's respond() is authoritative (LEVELS.md §3); the game's nextLevel is advisory.
@@ -41,9 +46,9 @@
   syncFeedback();
  }
  function inspectScore(){if(!run||run.failed||!frame||result)return;const score=A.snapshot(frame.contentWindow,run.game);if(score?.mistakes>0)failAttempt(score);}
- function failAttempt(score){
+ function failAttempt(score,record=null){
   if(!host||!run||run.failed)return;clearInterval(scoreTimer);run.failed=true;
-  result=B.failed(run,score);result.learning={...run.learning,id:result.id,completedAt:result.completedAt};
+  result=B.failed(run,score);result.learning={...run.learning,id:result.id,completedAt:result.completedAt};const answers=B.reviewAnswers(record?.answers);if(answers)result.answers=answers;
   frame.inert=true;frame.style.pointerEvents='none';try{frame.contentWindow.speechSynthesis?.cancel();frame.contentWindow.SiaVoice?.stop();}catch{}
   api.onResult(result);paintRetry();
  }

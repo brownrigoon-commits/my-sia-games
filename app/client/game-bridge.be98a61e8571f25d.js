@@ -38,7 +38,7 @@
  // The second Claude batch can include these metrics; keep optional fields without inventing them.
  for(const id of ['bubble-theater','train-time','seed-garden','deep-sea'])FIELDS[id]={keys:['mistakes','firstTry','questions'],valid:v=>['mistakes','firstTry','questions'].every(k=>v[k]===undefined||(Number.isSafeInteger(v[k])&&v[k]>=0))&&(v.firstTry===undefined||v.questions===undefined||v.firstTry<=v.questions)};
  for(const g of GAMES.filter(g=>g.expedition))FIELDS[g.id]={keys:['mistakes','firstTry','questions','activeMs','answers'],valid:v=>Number.isInteger(v.mistakes)&&v.mistakes>=0&&Number.isInteger(v.firstTry)&&v.firstTry>=0&&v.firstTry<=3&&v.questions===3&&v.stars===v.firstTry&&Array.isArray(v.answers)&&v.answers.length<=3};
- for(const g of GAMES.filter(g=>g.astra))FIELDS[g.id]={keys:['firstTry','questions','mistakes','hints','activeMs','answers'],valid:v=>Number.isInteger(v.firstTry)&&v.firstTry>=0&&v.firstTry<=3&&v.questions===3&&v.stars===v.firstTry&&Number.isInteger(v.mistakes)&&v.mistakes>=0&&Number.isInteger(v.hints)&&v.hints>=0&&v.hints<=3&&Number.isFinite(v.activeMs)&&v.activeMs>=0&&Array.isArray(v.answers)&&v.answers.length===3&&v.answers.every(a=>a&&['id','prompt','answer','expected','explanation'].every(k=>typeof a[k]==='string'&&a[k].length<=3000)&&typeof a.firstTry==='boolean'&&typeof a.hinted==='boolean'&&Number.isInteger(a.attempts)&&a.attempts>=1&&Number.isFinite(a.activeMs)&&a.activeMs>=0)};
+ for(const g of GAMES.filter(g=>g.astra))FIELDS[g.id]={keys:['firstTry','questions','mistakes','hints','activeMs','answers'],valid:v=>Number.isInteger(v.firstTry)&&v.firstTry>=0&&v.firstTry<=3&&(v.questions===3||v.mistakes>0&&Number.isInteger(v.questions)&&v.questions>=1&&v.questions<3)&&v.stars===v.firstTry&&Number.isInteger(v.mistakes)&&v.mistakes>=0&&Number.isInteger(v.hints)&&v.hints>=0&&v.hints<=3&&Number.isFinite(v.activeMs)&&v.activeMs>=0&&Array.isArray(v.answers)&&v.answers.length===v.questions&&v.answers.every(a=>a&&['id','prompt','answer','expected','explanation'].every(k=>typeof a[k]==='string'&&a[k].length<=3000)&&typeof a.firstTry==='boolean'&&typeof a.hinted==='boolean'&&Number.isInteger(a.attempts)&&a.attempts>=1&&Number.isFinite(a.activeMs)&&a.activeMs>=0)};
  const meta=id=>GAMES.find(g=>g.id===id);
  const has=id=>!!meta(id);
  const language=value=>value==='en'?'en':'ko';
@@ -98,9 +98,13 @@
   const assessment={policy:1,verified:!!evidence,passed:false,completed:false,mistakes:evidence?.mistakes??null};
   return {id:run.id+':'+run.count,type:'mysia-game-attempt',game:run.game,gameId:run.game,band:run.band,d:difficulty(run.band,run.level),level:run.level,tier:run.level,age:run.child.age,child:{...run.child},lang:run.lang,stars:0,startedAt:run.startedAt,completedAt:new Date(now).toISOString(),assessment,feel:null,messages:[]};
  }
+ function reviewAnswers(value){
+  if(!Array.isArray(value)||value.length<1||value.length>3||!value.every(a=>a&&['id','prompt','answer','expected','explanation'].every(k=>typeof a[k]==='string'&&a[k].length<=3000)&&typeof a.firstTry==='boolean'&&typeof a.hinted==='boolean'&&Number.isInteger(a.attempts)&&a.attempts>=1&&Number.isFinite(a.activeMs)&&a.activeMs>=0))return null;
+  return value.map(a=>Object.fromEntries(['id','prompt','answer','expected','explanation','firstTry','hinted','attempts','activeMs'].map(k=>[k,a[k]])));
+ }
  function validRecord(record){
   if(record?.type==='mysia-game-attempt')return has(record.game)&&record.gameId===record.game&&BANDS.includes(record.band)&&level(record.level)&&record.d===difficulty(record.band,record.level)&&['ko','en'].includes(record.lang)&&record.assessment?.policy===1&&record.assessment.passed===false&&record.assessment.completed===false&&(record.assessment.mistakes===null||Number.isSafeInteger(record.assessment.mistakes)&&record.assessment.mistakes>=0)&&typeof record.id==='string'&&Number.isFinite(Date.parse(record.completedAt));
   return validResult(record)&&record.gameId===record.game&&typeof record.id==='string'&&Number.isFinite(Date.parse(record.completedAt));
  }
- return {GAMES,BANDS,BASE,DINOS,meta,has,ageBand,difficulty,session,begin,gameUrl,validResult,validMessage,receive,validRecord,failed};
+ return {GAMES,BANDS,BASE,DINOS,meta,has,ageBand,difficulty,session,begin,gameUrl,validResult,validMessage,receive,validRecord,failed,reviewAnswers};
 });

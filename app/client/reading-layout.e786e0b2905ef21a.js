@@ -3,8 +3,8 @@
  const profiles={K:{font:38,words:18,chars:42,sentences:2},E1:{font:34,words:32,chars:68,sentences:3},E2:{font:30,words:48,chars:100,sentences:4},E3:{font:28,words:64,chars:140,sentences:5}};
  function profile(band='E1',level=1){const b=profiles[band]||profiles.E1,n=Math.max(1,Math.min(5,Number(level)||1));return {font:b.font-(n-1),words:b.words+(n-1)*5,chars:b.chars+(n-1)*12,sentences:b.sentences+(n>=4&&['E2','E3'].includes(band)?1:0),band,level:n};}
  function sentences(text,lang='en'){
-  if(typeof Intl.Segmenter==='function')return [...new Intl.Segmenter(lang,{granularity:'sentence'}).segment(text)].map(s=>s.segment);
-  return String(text).match(/[^.!?。！？]+[.!?。！？]+["'”’]*\s*|[^.!?。！？]+$/gu)||[String(text)];
+  const parts=typeof Intl.Segmenter==='function'?[...new Intl.Segmenter(lang,{granularity:'sentence'}).segment(text)].map(s=>s.segment):String(text).match(/[^.!?。！？]+[.!?。！？]+["'”’]*\s*|[^.!?。！？]+$/gu)||[String(text)];
+  const joined=[];for(const part of parts){if(lang==='en'&&joined.length&&/\b(?:Mr|Mrs|Ms|Dr|Prof)\.\s*$/i.test(joined.at(-1)))joined[joined.length-1]+=part;else joined.push(part);}return joined;
  }
  function paginate(paragraphs,band='E1',level=1,lang='en'){
   const cfg=profile(band,level),budget=lang==='ko'?cfg.chars:cfg.words,pages=[];let items=[],size=0,serial=0;

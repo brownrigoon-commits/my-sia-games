@@ -426,6 +426,7 @@
     var motes=new T.Points(moteGeo,moteMat);world.add(motes);
     var confetti=[];
     for(var ci=0;ci<(mobile?32:52);ci++){var conf=mesh(world,geo('confetti',function(){return new T.BoxGeometry(.075,.13,.025);}),mat(['#f7d777','#8dcccd','#d9b0c9','#a5c995','#f2b39a'][ci%5]),[0,0,0]);conf.visible=false;conf.castShadow=false;conf.userData.seed=ci;confetti.push(conf);}
+    var journey=window.SiaJourneyWorld?.create({scene,camera,renderer,canvas,game:game,onInspect:id=>window.dispatchEvent(new CustomEvent('sia-journey-inspect',{detail:id}))});
     var raycaster=new T.Raycaster(),pointer=new T.Vector2();
     function hit(e) {
       var rect=canvas.getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);
@@ -442,7 +443,7 @@
     function frame(now){if(!alive||document.hidden){raf=0;return;}var dt=Math.min(.05,last?(now-last)/1000:.016);last=now;elapsed+=dt*(reducedMotion?.08:1);
       ticks.forEach(function(fn){fn(elapsed,dt);});motes.rotation.y=elapsed*.012;
       if(celebration>0){celebration=Math.max(0,celebration-dt);var t=(reducedMotion?.65:2.6)-celebration;confetti.forEach(function(c,i){var a=i*2.399,velocity=1.8+(i%7)*.3;c.visible=celebration>0&&(!reducedMotion||i<16);if(reducedMotion){c.position.set(Math.cos(a)*(1.6+i%3*.4),1.7+Math.sin(a)*.6+t*.25,Math.sin(a)*1.1);c.rotation.set(0,a,0);}else{c.position.set(Math.cos(a)*velocity*t,1.1+(3.6+(i%5)*.6)*t-2.6*t*t,Math.sin(a)*velocity*t*.7);c.rotation.set(t*(i%5+1),a+t*2,t*3);}});if(haruFigure&&!reducedMotion)haruFigure.scale.y=haruFigure.scale.x*(1+Math.sin(t*10)*Math.exp(-t*1.5)*.12);}
-      renderer.render(scene,camera);raf=requestAnimationFrame(frame);}
+      journey?.frame(dt);renderer.render(scene,camera);raf=requestAnimationFrame(frame);}
     function visibility(){last=0;if(!document.hidden&&!raf&&alive)raf=requestAnimationFrame(frame);}
     function motionPreference(e){reducedMotion=e.matches;}
     if(motionQuery){if(motionQuery.addEventListener)motionQuery.addEventListener('change',motionPreference);else if(motionQuery.addListener)motionQuery.addListener(motionPreference);}
@@ -450,11 +451,12 @@
     var observer=typeof ResizeObserver!=='undefined'?new ResizeObserver(resize):null;if(observer)observer.observe(canvas);
     resize();update();raf=requestAnimationFrame(frame);
     return {
+      journey:journey,
       setTask:function(next){task=next||{};state.progress=0;update();},
       setState:function(next){state=Object.assign({},state,next||{});update();},
       celebrate:function(){celebration=reducedMotion?.65:2.6;},
       resize:resize,
-      dispose:function(){if(!alive)return;alive=false;cancelAnimationFrame(raf);if(observer)observer.disconnect();if(motionQuery){if(motionQuery.removeEventListener)motionQuery.removeEventListener('change',motionPreference);else if(motionQuery.removeListener)motionQuery.removeListener(motionPreference);}window.removeEventListener('resize',resize);document.removeEventListener('visibilitychange',visibility);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointerup',up);canvas.style.cursor='';geometries.forEach(function(g){g.dispose();});materials.forEach(function(m){m.dispose();});disposables.forEach(function(d){d.dispose();});environment.dispose();if(key.shadow.map)key.shadow.map.dispose();renderer.dispose();ticks.length=interactives.length=0;}
+      dispose:function(){if(!alive)return;journey?.dispose();alive=false;cancelAnimationFrame(raf);if(observer)observer.disconnect();if(motionQuery){if(motionQuery.removeEventListener)motionQuery.removeEventListener('change',motionPreference);else if(motionQuery.removeListener)motionQuery.removeListener(motionPreference);}window.removeEventListener('resize',resize);document.removeEventListener('visibilitychange',visibility);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointerup',up);canvas.style.cursor='';geometries.forEach(function(g){g.dispose();});materials.forEach(function(m){m.dispose();});disposables.forEach(function(d){d.dispose();});environment.dispose();if(key.shadow.map)key.shadow.map.dispose();renderer.dispose();ticks.length=interactives.length=0;}
     };
   }
   window.AstraWorld={create:create};

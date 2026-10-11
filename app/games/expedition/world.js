@@ -91,12 +91,13 @@
    }
   }
   function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.position.set(10,12,14).multiplyScalar(w/h<1.2?1.3:1);camera.lookAt(0,.7,0);camera.updateProjectionMatrix();}
+  const journey=window.SiaJourneyWorld?.create({scene,camera,renderer,canvas,game:id,onInspect:id=>window.dispatchEvent(new CustomEvent('sia-journey-inspect',{detail:id}))});
   const ray=new T.Raycaster(),pointer=new T.Vector2();let down;
   function pick(e){if(!down||Math.hypot(down.x-e.clientX,down.y-e.clientY)>14)return;const r=canvas.getBoundingClientRect();pointer.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(pointer,camera);const hit=ray.intersectObjects(targets)[0];if(hit)onPick(hit.object.userData.pick);}
   canvas.addEventListener('pointerdown',e=>down={x:e.clientX,y:e.clientY});canvas.addEventListener('pointerup',pick);const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(canvas);resize();
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,clock=new T.Clock();
-  function animate(){if(!alive)return;frame=requestAnimationFrame(animate);if(document.hidden)return;const t=clock.getElapsedTime();if(!reduce){moving.forEach((m,i)=>{m.g.position.y=m.base+Math.sin(t*.8+i)*.05;});fireflies.forEach((f,i)=>{f.position.y=1.4+Math.sin(t*.5+i)*.6;});}if(balanceBeam)balanceBeam.rotation.z=T.MathUtils.lerp(balanceBeam.rotation.z,balanceBeam.userData.angle,.06);if(celebrate>0){celebrate-=.015;rim.intensity=.8+Math.sin(celebrate*10)*.6;}content.scale.lerp(new T.Vector3(1,1,1),.14);renderer.render(scene,camera);}
-  animate();return {set(next,values={}){task=next;state=values;draw();},update(values){state={...state,...values};draw();},celebrate(){celebrate=3;},dispose(){alive=false;cancelAnimationFrame(frame);resizeObserver.disconnect();scene.traverse(o=>o.geometry?.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());renderer.dispose();}};
+  function animate(){if(!alive)return;frame=requestAnimationFrame(animate);if(document.hidden)return;const t=clock.getElapsedTime();if(!reduce){moving.forEach((m,i)=>{m.g.position.y=m.base+Math.sin(t*.8+i)*.05;});fireflies.forEach((f,i)=>{f.position.y=1.4+Math.sin(t*.5+i)*.6;});}if(balanceBeam)balanceBeam.rotation.z=T.MathUtils.lerp(balanceBeam.rotation.z,balanceBeam.userData.angle,.06);if(celebrate>0){celebrate-=.015;rim.intensity=.8+Math.sin(celebrate*10)*.6;}content.scale.lerp(new T.Vector3(1,1,1),.14);journey?.frame(.016);renderer.render(scene,camera);}
+  animate();return {journey,set(next,values={}){task=next;state=values;draw();},update(values){state={...state,...values};draw();},celebrate(){celebrate=3;},dispose(){journey?.dispose();alive=false;cancelAnimationFrame(frame);resizeObserver.disconnect();scene.traverse(o=>o.geometry?.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());renderer.dispose();}};
  }
  window.ExpeditionWorld={create};
 })();

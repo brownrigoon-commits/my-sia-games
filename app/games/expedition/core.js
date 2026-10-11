@@ -22,7 +22,7 @@
   if(!META[id]||!BANDS.includes(band)||!Number.isInteger(level)||level<1||level>5)throw Error('Invalid expedition');
   const b=BANDS.indexOf(band),d=b*5+level,r=random(seed+round*97),t=(ko,en)=>text(lang,ko,en);
   if(id==='story-studio'){
-   const story=STORIES[(Math.floor(r()*STORIES.length)+round)%STORIES.length],n=Math.min(6,3+Math.floor((d-1)/4)),indices=n===3?[0,3,5]:n===4?[0,1,3,5]:n===5?[0,1,2,4,5]:[0,1,2,3,4,5];
+   const story=shuffle(STORIES,random(seed))[round%STORIES.length],n=Math.min(6,3+Math.floor((d-1)/4)),indices=n===3?[0,3,5]:n===4?[0,1,3,5]:n===5?[0,1,2,4,5]:[0,1,2,3,4,5];
    const cards=indices.map((v,i)=>({id:'scene-'+v,order:i,text:story[lang][v],step:v,scene:story.scene}));
    if(b>=2)cards.push({id:'extra',order:-1,text:story.extra[lang==='en'?1:0],step:-1,scene:story.scene});
    return {id,band,level,round,scene:story.scene,n,cards:shuffle(cards,r),answer:indices.map(v=>'scene-'+v),prompt:t('이야기가 이어지도록 장면 '+n+'개를 골라 차례로 놓아 줘.', 'Choose '+n+' scenes and place them in story order.'),explanation:t('앞에서 일어난 일이 다음 장면의 이유가 돼. 원인과 결과를 이어 읽어 보자.','Earlier events explain what happens next. Read the causes and effects together.')};
@@ -41,7 +41,7 @@
    if(checkCircuit({size,tiles,path},tiles.map(x=>x.turns)))tiles[path[0]].turns=(tiles[path[0]].turns+1)%4;
    return {id,band,level,round,size,tiles,path,answer:tiles.map(()=>0),prompt:t('전선 조각을 돌려 전지에서 전구까지 모두 이어 줘.','Turn the wire tiles. Connect the battery to the lamp.'),explanation:t('전기가 계속 흐르려면 전지로 돌아오는 길까지 끊김 없이 이어져야 해. 아래의 고정된 선이 돌아오는 길이야.','Electricity needs an unbroken loop back to the battery. The fixed lower wire is the return path.')};
   }
-  const total=5+b*3+Math.min(2,Math.floor(level/2)),water=1+(b>0?1:0),forest=1+Math.min(3,b+Math.floor(level/3)),rock=b>=2?1:0,meadow=total-water-forest-rock;
+  const total=5+b*3+Math.min(2,Math.floor(level/2))+Math.floor(r()*2),water=1+(b>0?1:0),forest=1+Math.min(3,b+Math.floor(level/3)),rock=b>=2?1:0,meadow=total-water-forest-rock;
   const counts={water,forest,meadow,rock},labels={water:t('연못','Ponds'),forest:t('숲','Woods'),meadow:t('꽃밭','Flowers'),rock:t('바위 쉼터','Rock shelters')};
   return {id,band,level,round,total,counts,labels,adjacent:b>=2,answer:[...Array(water).fill('water'),...Array(forest).fill('forest'),...Array(meadow).fill('meadow'),...Array(rock).fill('rock')],prompt:t('개구리와 벌, 새가 함께 살 작은 지구를 만들어 줘.','Build a little home for frogs, bees and birds.'),explanation:t('연못은 개구리에게, 꽃은 벌에게, 숲은 새에게 필요해. 서로 이웃한 서식지는 동물들이 이동하는 데도 도움이 돼.','Frogs need water, bees need flowers, and birds need woodland. Neighbouring habitats also help animals move between them.')};
  }

@@ -1,7 +1,7 @@
 {
-  "version": "966c22dd6c2a0c37",
+  "version": "e6fd3951602ac402",
   "assets": {
-    "reading-layout.js": "client/reading-layout.29338ed337d26b73.js",
+    "reading-layout.js": "client/reading-layout.e786e0b2905ef21a.js",
     "voice.js": "client/voice.7e1d077d7b84bed9.js",
     "learning-core.js": "client/learning-core.ad39c61b161b05ee.js",
     "learning-mode.js": "client/learning-mode.8a09117912eb79c9.js",
@@ -9,8 +9,9 @@
     "voice-settings.css": "client/voice-settings.f144d83534fc95ea.css",
     "story-narration.js": "client/story-narration.5711b09621fd990e.js",
     "story-narration.css": "client/story-narration.dd4e748e50803f10.css",
-    "picture-books.js": "client/picture-books.663a0e3608516073.js",
+    "picture-books.js": "client/picture-books.85b31372a5fedcb4.js",
     "picture-books.css": "client/picture-books.d831918e479ce538.css",
+    "story-book-format.js": "client/story-book-format.5044119231e2cb4b.js",
     "styles.css": "client/styles.02dfa91e2e921f61.css",
     "simple.css": "client/simple.0331b516015d7d63.css",
     "onboarding.css": "client/onboarding.f0f5bbbe6b2cc148.css",
@@ -21,18 +22,18 @@
     "story-store.js": "client/story-store.9e95d11c347e600a.js",
     "story-release.js": "client/story-release.5318b231bb9c88d8.js",
     "story-art.js": "client/story-art.3175af3adc18c512.js",
-    "story-mode.js": "client/story-mode.a6b658e667dceab1.js",
-    "game-release.js": "client/game-release.d09bcbba9cb74891.js",
-    "game-bridge.js": "client/game-bridge.f94dbc537c4b4823.js",
+    "story-mode.js": "client/story-mode.1625399e9fdd1bae.js",
+    "game-release.js": "client/game-release.9de927ca582cbc62.js",
+    "game-bridge.js": "client/game-bridge.be98a61e8571f25d.js",
     "game-assessment.js": "client/game-assessment.dbbc73dba07b14f1.js",
-    "game-host.js": "client/game-host.adf34f17367b08c6.js",
+    "game-host.js": "client/game-host.5161f2f4986137ca.js",
     "play-core.js": "client/play-core.2b3de28da8330aa0.js",
     "play-mode.js": "client/play-mode.8a3f46f079e2f2c0.js",
     "app.js": "client/app.36b48255f41a81a4.js",
     "site-update.js": "client/site-update.39753c25aca4fe6a.js",
     "play-mode.css": "client/play-mode.9d700d02c5f05572.css",
-    "game-host.css": "client/game-host.a1cbbb8f201c1155.css",
+    "game-host.css": "client/game-host.0c41e0c20e987bb9.css",
     "learning-mode.css": "client/learning-mode.55711a34496a4d2a.css",
-    "reading-layout.css": "client/reading-layout.dd48d275474e5f82.css"
+    "reading-layout.css": "client/reading-layout.97bc5d90324b1837.css"
   }
 }
