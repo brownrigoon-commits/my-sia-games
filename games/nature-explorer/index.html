@@ -315,6 +315,23 @@ html.sk-mature { --sk-line: .16rem; }
 .sk-voicehint .sk-btn { margin-top: .9rem; width: 100%; }
 .sk-mature .sk-mbtn, .sk-mature .sk-menu select { border-radius: .7rem; }
 
+/* ---------- narration (SiaKit.narrate defaults; games may draw their own through setup({visual})) ---------- */
+html.sk-langlock #sk-lang { display: none !important; }   /* ?locklang=1: a one-language version */
+.sk-hand { position: absolute; z-index: 6; transform: translate(-30%, -6%); font-size: 3.3rem; line-height: 1; pointer-events: none; filter: drop-shadow(0 .22rem 0 rgba(34,48,92,.45)) drop-shadow(0 0 .5rem rgba(255,255,255,.9)); animation: sk-hand-bob .9s ease-in-out infinite; }
+.sk-hand span { display: block; transition: transform .12s; }
+.sk-hand.sk-hand-demo { animation: none; }
+.sk-hand.sk-press span { transform: scale(.8) translateY(.25rem); }
+@keyframes sk-hand-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 .6rem; } }
+.sk-n-pulse { animation: sk-n-pulse 1.2s ease-in-out 1; }
+@keyframes sk-n-pulse { 0%, 100% { scale: 1; } 30% { scale: 1.12; filter: brightness(1.1) drop-shadow(0 0 .6rem #FFE36B); } 60% { scale: .98; } }
+.sk-n-glow { outline: .3rem solid #FFD23F; outline-offset: .15rem; box-shadow: 0 0 1.3rem .45rem rgba(255,210,63,.8) !important; animation: sk-n-glow 1s ease-in-out infinite alternate; }
+.sk-n-glow.sk-n-answer { outline-color: #63D85A; box-shadow: 0 0 1.3rem .45rem rgba(99,216,90,.8) !important; }
+@keyframes sk-n-glow { from { filter: brightness(1); } to { filter: brightness(1.13); } }
+.sk-wordpill { position: absolute; transform: translate(-50%, -100%); padding: .35rem 1.15rem .42rem; background: #fff; border: .2rem solid var(--sk-ink); border-radius: 999px; box-shadow: 0 .24rem 0 var(--sk-ink); font: 900 1.7rem/1.1 var(--sk-font); color: var(--sk-ink); white-space: nowrap; pointer-events: none; animation: sk-pill 1.5s ease forwards; }
+@keyframes sk-pill { 0% { opacity: 0; translate: 0 .6rem; scale: .8; } 14%, 82% { opacity: 1; translate: 0 0; scale: 1; } 100% { opacity: 0; translate: 0 -.4rem; } }
+.sk-mature .sk-hand { animation-duration: 1.25s; }
+.sk-mature .sk-wordpill { font-weight: 800; border-width: .16rem; box-shadow: 0 .16rem 0 var(--sk-ink); }
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" crossorigin="anonymous"></script>
 <script id="sia-kit-js">
@@ -326,10 +343,13 @@ html.sk-mature { --sk-line: .16rem; }
  *      results card with a cheering 2D Haru (SiaKit.haruSvg) and confetti centred on the card (fx.celebrate);
  *      josa reads numbers (레벨 1로, 3을, 10을) and ㄹ+로; ui.theme('mature'|'auto') for E2/E3; batched particles,
  *      SiaKit.cache / textTex / textMat / world.merge / world.balloon for sharing; st.stats() for draw calls.
+ * 1.3: SiaKit.narrate (spoken + sounded feedback by the MY SIA narration spec: NARRATION.md, NARRATION-REFERENCE.md §10–11);
+ *      new sound IDs (chime, chimeLast, hmm, womp, reveal, sparkleRun, fanfareEnd …), SND.duck / hush (music under the voice),
+ *      speak(text, {style, band}) with the §8 voice settings, ?locklang=1 (one-language versions: no 한/EN toggle), ?grade=.
  */
 (function () {
   'use strict';
-  var SK = window.SiaKit = { version: '1.2.0' };
+  var SK = window.SiaKit = { version: '1.3.0' };
   var T = window.THREE;
 
   // ======================================================================
@@ -393,8 +413,12 @@ html.sk-mature { --sk-line: .16rem; }
     set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
   };
 
-  // language: ?lang=ko|en, otherwise saved, otherwise ko
-  SK.lang = (function () { var l = SK.param('lang', '') || SK.store.get('mysia-lang', '') || 'ko'; return l === 'en' ? 'en' : 'ko'; })();
+  // language: ?lang=ko|en, otherwise saved, otherwise ko.
+  // ?lang=ko&locklang=1 / ?lang=en&locklang=1 → a one-language version (the launcher lists 한국어 and English as separate games):
+  // SiaKit.lang is fixed, setLang() does nothing, the 한/EN toggle is not shown, and the saved choice is left alone.
+  SK.langLocked = SK.param('locklang', '') === '1' && /^(ko|en)$/.test(SK.param('lang', ''));
+  SK.lang = (function () { var l = SK.param('lang', '') || (SK.langLocked ? '' : SK.store.get('mysia-lang', '')) || 'ko'; return l === 'en' ? 'en' : 'ko'; })();
+  if (SK.langLocked) document.documentElement.classList.add('sk-langlock');
   /** t({ko,en}) | t('한국어','English') | t(fn) → string in the current language. */
   SK.t = function (a, b) {
     if (a == null) return '';
@@ -403,7 +427,7 @@ html.sk-mature { --sk-line: .16rem; }
     if (typeof a === 'object') return a[SK.lang] != null ? a[SK.lang] : (a.ko != null ? a.ko : a.en);
     return String(a);
   };
-  SK.setLang = function (l) { l = l === 'en' ? 'en' : 'ko'; if (l === SK.lang) return; SK.lang = l; SK.store.set('mysia-lang', l); SK.emit('lang', l); syncGame(); };
+  SK.setLang = function (l) { l = l === 'en' ? 'en' : 'ko'; if (l === SK.lang || SK.langLocked) return; SK.lang = l; SK.store.set('mysia-lang', l); SK.emit('lang', l); syncGame(); };
   SK.name = (SK.param('name', '') || '').slice(0, 12);
   /** "시아야" / "민준아" / "Sia" — vocative form of the child's name (empty string if no name). */
   SK.nameCall = function () {
@@ -459,7 +483,7 @@ html.sk-mature { --sk-line: .16rem; }
   G.kit = SK; G.ready = false; G.state = 'boot';
   function syncGame() {
     var L = SK.learn && SK.learn.state;
-    G.lang = SK.lang;
+    G.lang = SK.lang; G.langLocked = SK.langLocked;
     if (L) { G.band = L.band; G.level = L.level; G.d = L.d; G.game = L.game; }
   }
   /** merge fields/functions into window.__game (for automated tests). */
@@ -1649,14 +1673,17 @@ html.sk-mature { --sk-line: .16rem; }
       if (name === 'nod') { SK.anim(0.8, function (e, k) { A.nod = Math.sin(k * Math.PI * 3) * 0.16 * (1 - k); }).then(function () { A.nod = 0; }); }
       return SK.wait(dur).then(function () { if (my === actionId) { A.action = null; A.expr = A.base; setFace(A.base); applyPose(A.base); } return true; });
     };
-    /** speak a line with the bubble + voice + talking mouth. o: {speak:true, hold:seconds after speech, bubble:true} */
+    /**
+     * speak a line with the bubble + voice + talking mouth. o: {speak:true, hold:seconds after speech, bubble:true, keep:false,
+     * voice: fn → Promise (does the speaking instead of sound.speak; SiaKit.narrate uses it for its segment playback), style, band}
+     */
     haru.say = function (text, o) {
       o = o || {}; var src = text; text = SK.t(text);
       var my = ++actionId; A.action = 'talk'; A.expr = 'talk'; setFace('talk'); applyPose('talk'); A.talk = 1;
       var anchor = function () { return st.screenOf(group, V3(0, H + 0.25, 0)); };
       // the bubble keeps {ko, en} so it follows a language switch mid-line
-      var bub = o.bubble !== false ? SK.ui.say(src, { anchor: anchor }) : null;
-      var p = o.speak === false ? SK.wait(Math.max(1.4, text.length * (SK.lang === 'en' ? 0.055 : 0.11))) : SK.sound.speak(text);
+      var bub = o.bubble !== false ? SK.ui.say(src, { anchor: anchor, replay: o.replay }) : null;
+      var p = typeof o.voice === 'function' ? Promise.resolve(o.voice()) : o.speak === false ? SK.wait(Math.max(1.4, text.length * (SK.lang === 'en' ? 0.055 : 0.11))) : SK.sound.speak(text, { style: o.style, band: o.band });
       return p.then(function () { A.talk = 0; if (my === actionId) { A.action = null; A.expr = A.base; setFace(A.base); applyPose(A.base); } return SK.wait(o.hold != null ? o.hold : 0.5); }).then(function () {
         if (o.keep === true) return true;
         // this line's own bubble goes away even if Haru played an action meanwhile (a newer line replaces it anyway)
@@ -2109,17 +2136,27 @@ html.sk-mature { --sk-line: .16rem; }
       sb.addEventListener('contextmenu', function (e) { e.preventDefault(); });
       SK.on('mute', function (m) { sb.innerHTML = ICON[m ? 'mute' : 'sound']; }); right.appendChild(sb);
     }
-    if (o.lang) {
+    if (o.lang && !SK.langLocked) {   // a one-language version (?locklang=1) has no toggle
       var lb = UI.iconButton('lang', { id: 'sk-lang', text: SK.lang === 'ko' ? 'EN' : '한' , onTap: function () { SK.setLang(SK.lang === 'ko' ? 'en' : 'ko'); } });
       SK.on('lang', function (l) { lb.innerHTML = '<span>' + (l === 'ko' ? 'EN' : '한') + '</span>'; }); right.appendChild(lb);
     }
     UI.bar = api; return api;
   };
-  /** leave the game: tell the parent app, else go back. */
+  /** leave the game: tell the parent app, else go back. With SiaKit.narrate in a round, one short goodbye line comes first (≤ 2.6 s). */
+  var exiting = false;
   UI.exit = function () {
-    SK.sound.stopSpeech();
-    try { if (window.parent !== window) { window.parent.postMessage({ type: 'mysia-game-exit', game: SK.learn.state && SK.learn.state.game }, '*'); return; } } catch (e) { /* ignore */ }
-    if (history.length > 1) history.back();
+    if (exiting) return;
+    var gone = false, go = function () {
+      if (gone) return; gone = true; exiting = false; SK.sound.stopSpeech();
+      try { if (window.parent !== window) { window.parent.postMessage({ type: 'mysia-game-exit', game: SK.learn.state && SK.learn.state.game }, '*'); return; } } catch (e) { /* ignore */ }
+      if (history.length > 1) history.back();
+    };
+    if (SK.narrate && SK.narrate.inRound && SK.narrate.inRound() && !SK.sound.muted) {
+      exiting = true; var t = setTimeout(go, 2600);
+      SK.narrate.goodbye().then(function () { clearTimeout(t); go(); });
+      return;
+    }
+    go();
   };
   /** progress chip at the top centre: progress({icon:'🌼', total:5, value:0, label}) → {set(n), el, icon} */
   UI.progress = function (o) {
@@ -2140,13 +2177,13 @@ html.sk-mature { --sk-line: .16rem; }
   // speech bubble ---------------------------------------------------------
   var anchored = [];
   var bubble = null;
-  /** say(text, {anchor: fn→{x,y} | Object3D, who}) shows Haru's speech bubble (tap it to hear again). */
+  /** say(text, {anchor: fn→{x,y} | Object3D, who, replay: fn}) shows Haru's speech bubble (tap it to hear again; replay replaces the plain re-read). */
   UI.say = function (text, o) {
     o = o || {}; UI.hideSay(true);
     var b = el('div', 'sk-bubble sk-hit', null, UI.layer('world')); b.id = 'sk-bubble';
     if (o.who !== false) { var wh = el('div', 'sk-who', null, b); tx(wh, o.who || { ko: '하루', en: 'Haru' }, function (s) { return ICON.speaker + '<span>' + esc(s) + '</span>'; }); }
     tx(el('div', 'sk-say', null, b), text);   // follows a language switch
-    b.addEventListener('pointerdown', function (e) { e.stopPropagation(); SK.sound.speak(SK.t(text)); UI.bump(b); });
+    b.addEventListener('pointerdown', function (e) { e.stopPropagation(); if (typeof o.replay === 'function') o.replay(); else SK.sound.speak(SK.t(text)); UI.bump(b); });
     var a = { el: b, place: function () {
       var p = typeof o.anchor === 'function' ? o.anchor() : o.anchor && o.anchor.isObject3D ? SK.main.screenOf(o.anchor) : (o.anchor || null);
       var w = b.offsetWidth, h = b.offsetHeight, vw = innerWidth, m = 12 * UI.u;
@@ -2188,7 +2225,7 @@ html.sk-mature { --sk-line: .16rem; }
     var tray = el('div', 'sk-tray sk-in', null, wrap); tray.style.animationDelay = '.08s';
     var api = { el: wrap, buttons: [], locked: false };
     o.options.forEach(function (op, i) {
-      var label = typeof op === 'object' && !op.ko && !op.en ? op.label : op, icon = op && op.icon, sub = op && op.sub;
+      var obj = op && typeof op === 'object', label = obj && !op.ko && !op.en ? op.label : op, icon = obj ? op.icon : null, sub = obj ? op.sub : null;   // a plain string has a .sub() method
       var b = el('button', 'sk-choice sk-k' + (i % 4), null, tray); b.dataset.i = i;
       var long = SK.t(label).length > 6; if (long) b.classList.add('sk-long');
       tx(b, label, function (s) { return (icon ? '<span class="sk-ci">' + icon + '</span>' : '') + '<span>' + esc(s) + '</span>' + (sub ? '<small>' + esc(SK.t(sub)) + '</small>' : ''); });
@@ -2417,13 +2454,16 @@ html.sk-mature { --sk-line: .16rem; }
   // ======================================================================
   var BASE = { K: 1, E1: 6, E2: 11, E3: 16 }, BANDS = ['K', 'E1', 'E2', 'E3'];
   var LEARN = SK.learn = { BASE: BASE, BANDS: BANDS, state: null };
+  /** bandForAge(age) — age is the KOREAN age (세는 나이), as the band labels show it: 5–7 → K, 8–9 → E1, 10–11 → E2, 12–13 → E3. ?age=8 → E1. */
   LEARN.bandForAge = function (age) { age = +age; if (!(age >= 5)) return null; return age <= 7 ? 'K' : age <= 9 ? 'E1' : age <= 11 ? 'E2' : 'E3'; };
+  /** bandForGrade(grade) — school grade: 0 (or 'K', 유치원) → K, 1–2 → E1, 3–4 → E2, 5–6 → E3. ?grade=1 → E1 (시아, a first grader). */
+  LEARN.bandForGrade = function (g) { if (g === 'K' || g === 'k') return 'K'; if (g === '' || g == null) return null; g = +g; if (!(g >= 0) || g > 6) return null; return g < 1 ? 'K' : g <= 2 ? 'E1' : g <= 4 ? 'E2' : 'E3'; };
   LEARN.d = function (band, level) { return BASE[band] + clamp(level, 1, 5) - 1; };
   /** init({game:'id'}) → state {game, band, level, d, lang, name, bandLocked}. Call once at start. */
   LEARN.init = function (o) {
     o = o || {}; var id = o.game || 'game', key = 'mysia-game-' + id, saved = SK.store.get(key, {}) || {};
     var urlBand = (SK.param('band', '') || '').toUpperCase(); if (BANDS.indexOf(urlBand) < 0) urlBand = null;
-    var ageBand = LEARN.bandForAge(SK.param('age', ''));
+    var ageBand = LEARN.bandForGrade(SK.param('grade', '')) || LEARN.bandForAge(SK.param('age', ''));
     var band = urlBand || ageBand || (BANDS.indexOf(saved.band) >= 0 ? saved.band : null);
     var lv = parseInt(SK.param('level', ''), 10);
     var levels = saved.levels || {};
@@ -2525,10 +2565,13 @@ html.sk-mature { --sk-line: .16rem; }
     var v = o.vol != null ? o.vol : 0.3; g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(v, t0 + (o.a || 0.01)); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
     s.connect(f); f.connect(g); g.connect(master); s.start(t0, Math.random() * 0.5); s.stop(t0 + dur + 0.05);
   }
+  // pseudo-random but fixed offsets (feedback sounds never vary: NARRATION-REFERENCE §10.5.3)
+  var JIT = [0.31, -0.62, 0.84, -0.17, 0.55, -0.93, 0.08, 0.71, -0.44, 0.26, -0.78, 0.49];
   var SFX = {
     tap: function (t, p, v) { tone(1100 * p, t, 0.06, { type: 'sine', vol: 0.16 * v, to: 1500 * p }); },
     pop: function (t, p, v) { tone(420 * p, t, 0.13, { type: 'sine', vol: 0.35 * v, to: 980 * p, slide: 0.07 }); tone(840 * p, t, 0.08, { type: 'triangle', vol: 0.08 * v, to: 1800 * p }); },
-    whoosh: function (t, p, v) { noise(t, 0.38, { f: 400 * p, to: 2600 * p, q: 1.2, vol: 0.32 * v, a: 0.12 }); },
+    // scene change: a rising noise sweep, ≈0.8 → 5 kHz over 0.4 s (§9; wider than the 1.2 sweep of 400 → 2600 Hz)
+    whoosh: function (t, p, v) { noise(t, 0.4, { f: 800 * p, to: 5000 * p, q: 1.1, vol: 0.25 * v, a: 0.15 }); },
     splash: function (t, p, v) { noise(t, 0.5, { filter: 'lowpass', f: 2600 * p, to: 500, vol: 0.45 * v, a: 0.005 }); for (var i = 0; i < 4; i++) tone((500 + Math.random() * 700) * p, t + 0.05 + i * 0.06, 0.08, { vol: 0.12 * v, to: 1600 * p }); },
     correct: function (t, p, v) { [659, 831, 988, 1319].forEach(function (f, i) { tone(f * p, t + i * 0.075, 0.24, { type: 'triangle', vol: 0.2 * v }); tone(f * 2 * p, t + i * 0.075, 0.12, { vol: 0.05 * v }); }); },
     wrong: function (t, p, v) { tone(392 * p, t, 0.2, { type: 'sine', vol: 0.18 * v, a: 0.02 }); tone(330 * p, t + 0.16, 0.3, { type: 'sine', vol: 0.16 * v, a: 0.02, to: 300 * p }); },
@@ -2538,8 +2581,58 @@ html.sk-mature { --sk-line: .16rem; }
     bounce: function (t, p, v) { tone(330 * p, t, 0.22, { type: 'sine', vol: 0.3 * v, to: 140 * p, slide: 0.2, vib: 18 }); },
     sparkle: function (t, p, v) { for (var i = 0; i < 5; i++) tone((1800 + Math.random() * 1600) * p, t + i * 0.04, 0.18, { vol: 0.06 * v }); },
     collect: function (t, p, v) { tone(880 * p, t, 0.1, { type: 'triangle', vol: 0.2 * v }); tone(1320 * p, t + 0.08, 0.18, { type: 'triangle', vol: 0.2 * v }); },
+
+    // ---- narration sounds (NARRATION-REFERENCE §9): one fixed sound per event type, used by SiaKit.narrate and the games.
+    // Loudness order: fanfareEnd > voice > chime (≈ −2 dB) > wrong sounds (peak ≤ 60 % of chime) > pick / land (≈ −10 dB) > tap.
+    /** correct item: rising C-major arpeggio G5–C6–E6–G6–C7, 55 ms per note, the top note rings */
+    chime: function (t, p, v) { [784, 1047, 1319, 1568, 2093].forEach(function (f, i) { tone(f * p, t + i * 0.055, 0.28, { type: 'triangle', vol: 0.15 * v }); tone(f * 2 * p, t + i * 0.055, 0.12, { vol: 0.04 * v }); }); tone(2093 * p, t + 0.22, 0.5, { vol: 0.05 * v }); },
+    /** correct, bell variant (calm / care games): shimmer, then a B♭ bell chord */
+    chimeBell: function (t, p, v) { noise(t, 0.06, { filter: 'highpass', f: 5000, vol: 0.06 * v, a: 0.004 }); [932, 1245, 1397, 1864].forEach(function (f) { tone(f * p, t + 0.05, 0.75, { vol: 0.09 * v, a: 0.004 }); }); tone(3731 * p, t + 0.05, 0.35, { vol: 0.025 * v }); },
+    /** last item of a round: a fuller C-major chord, then a sparkle */
+    chimeLast: function (t, p, v) { [523, 1047, 1319, 1568, 2093].forEach(function (f, i) { tone(f * p, t + i * 0.003, 0.65, { type: 'triangle', vol: 0.12 * v }); }); SFX.sparkle(t + 0.15, p, v); },
+    /** collect (runner pick-up) */
+    ting: function (t, p, v) { tone(1568 * p, t, 0.5, { vol: 0.14 * v }); tone(2093 * p, t, 0.35, { vol: 0.06 * v }); tone(3136 * p, t, 0.2, { vol: 0.025 * v }); },
+    /** a counted item: a very high C-major bell */
+    count: function (t, p, v) { [2637, 3136, 4186].forEach(function (f) { tone(f * p, t, 0.22, { vol: 0.06 * v }); }); },
+    /** a process finished (oven, machine) — used for nothing else */
+    ding: function (t, p, v) { tone(2794 * p, t, 0.85, { vol: 0.12 * v, a: 0.003 }); tone(5588 * p, t, 0.3, { vol: 0.02 * v }); },
+    /** the answer is shown after the last wrong try: a gentle "look here", quieter than chime, unlike ding */
+    reveal: function (t, p, v) { tone(1047 * p, t, 0.45, { vol: 0.06 * v, a: 0.02 }); tone(1568 * p, t + 0.08, 0.45, { vol: 0.06 * v, a: 0.02 }); },
+    /** wrong answer in a quiz: a soft hummed "mm-mm?" glide G5 → B5 → F♯5 (peak ≤ 60 % of chime) */
+    hmm: function (t, p, v) { tone(784 * p, t, 0.37, { vol: 0.10 * v, a: 0.04, to: 988 * p, slide: 0.35 }); tone(1568 * p, t, 0.37, { vol: 0.025 * v, a: 0.04, to: 1976 * p, slide: 0.35 }); tone(988 * p, t + 0.33, 0.6, { vol: 0.09 * v, a: 0.03, to: 740 * p }); tone(1976 * p, t + 0.33, 0.6, { vol: 0.0225 * v, a: 0.03, to: 1480 * p }); },
+    /** wrong item / comic fail: a noise puff and a soft "womp" (peak ≤ 60 % of chime) */
+    womp: function (t, p, v) { noise(t, 0.09, { f: 3000, q: 2, vol: 0.07 * v, a: 0.005 }); tone(400 * p, t, 0.22, { type: 'triangle', vol: 0.10 * v, to: 570 * p, slide: 0.2 }); tone(570 * p, t + 0.2, 0.45, { type: 'triangle', vol: 0.09 * v, to: 350 * p }); },
+    /** a missed drop: the item glides home (almost silent) */
+    'return': function (t, p, v) { noise(t, 0.16, { f: 900 * p, to: 500 * p, q: 1, vol: 0.05 * v, a: 0.02 }); },
+    /** neutral landing / snap */
+    land: function (t, p, v) { tone(640 * p, t, 0.1, { vol: 0.16 * v, to: 430 * p }); noise(t, 0.06, { f: 1400, q: 1.5, vol: 0.07 * v, a: 0.004 }); },
+    /** pick-up of a thing (and the sound of a touched word, label) */
+    pick: function (t, p, v) { tone(700 * p, t, 0.08, { vol: 0.10 * v, to: 1100 * p }); },
+    /** a new tool appears */
+    appear: function (t, p, v) { tone(1300 * p, t, 0.2, { vol: 0.08 * v, to: 1900 * p }); },
+    /** a friend pops in: slide whistle up and down */
+    whistle: function (t, p, v) { tone(600 * p, t, 0.32, { vol: 0.07 * v, to: 2400 * p }); tone(2400 * p, t + 0.32, 0.25, { vol: 0.05 * v, to: 900 * p }); },
+    /** "well done" sparkle: a falling cascade 4 → 1.3 kHz */
+    sparkleFall: function (t, p, v) { for (var i = 0; i < 10; i++) tone((4000 - i * 300 + JIT[i] * 150) * p, t + i * 0.12, 0.3, { vol: 0.045 * v }); },
+    /** round end: a stepped rising pentatonic run */
+    sparkleRun: function (t, p, v) { [784, 880, 1047, 1175, 1319, 1568, 1760, 2093, 2349, 2637, 3136, 4186].forEach(function (f, i) { tone(f * p, t + i * 0.065, 0.25, { vol: 0.06 * v }); }); },
+    /** the end of an activity: IV–V–I cadence on bright brass, then a cheer (the loudest moment) */
+    fanfareEnd: function (t, p, v) {
+      [[[415, 523, 622], 0, 0.5], [[466, 587, 698], 0.45, 0.5], [[311, 392, 466, 622, 784], 0.9, 1.1]].forEach(function (c) {
+        c[0].forEach(function (f) { tone(f * p, t + c[1], c[2], { type: 'triangle', vol: 0.11 * v }); tone(f * p, t + c[1], c[2], { type: 'square', vol: 0.02 * v }); });
+      });
+      SFX.cheer(t + 0.95, p, v);
+    },
+    /** a crowd "yaaay" (approximation) */
+    cheer: function (t, p, v) { noise(t, 1.8, { f: 2500, q: 0.7, vol: 0.12 * v, a: 0.15 }); for (var i = 0; i < 6; i++) { var f0 = (850 + JIT[i] * 250) * p, t0 = t + Math.abs(JIT[i + 6]) * 0.4; tone(f0, t0, 0.5, { type: 'triangle', vol: 0.02 * v, to: f0 * 1.5 }); } },
+    /** one tally tick (play every 35 ms while a counter counts up; ting when it locks) */
+    tick: function (t, p, v) { tone(1760 * p, t, 0.03, { vol: 0.05 * v }); },
   };
-  /** play('tap'|'pop'|'whoosh'|'splash'|'correct'|'wrong'|'star'|'fanfare'|'shutter'|'bounce'|'sparkle'|'collect', {vol, pitch}) */
+  /**
+   * play(name, {vol, pitch}) — older names: tap pop whoosh splash correct wrong star fanfare shutter bounce sparkle collect.
+   * Narration IDs (§9): chime chimeBell chimeLast ting count ding reveal hmm womp return land pick appear whistle sparkleFall
+   * sparkleRun star fanfareEnd cheer tick.
+   */
   SND.play = function (name, o) {
     if (SND.muted) return; var c = ctx(); if (!c || c.state !== 'running' || !SFX[name]) return; o = o || {};
     try { SFX[name](c.currentTime + 0.005, o.pitch || 1, o.vol != null ? o.vol : 1); } catch (e) { /* ignore */ }
@@ -2573,13 +2666,54 @@ html.sk-mature { --sk-line: .16rem; }
     var c = ctx(); if (!c) return;
     if (!mus.gain) { mus.gain = c.createGain(); mus.gain.gain.value = 0; mus.gain.connect(master); }
     var now = c.currentTime; mus.gain.gain.cancelScheduledValues(now); mus.gain.gain.setValueAtTime(mus.gain.gain.value, now);
-    mus.gain.gain.linearRampToValueAtTime(mus.on ? mus.vol : 0, now + (mus.on ? 1.2 : 0.5));
+    mus.gain.gain.linearRampToValueAtTime(musTarget(), now + (mus.on ? 1.2 : 0.5));
     if (mus.on) { if (mus.next < now) mus.next = now + 0.1; if (!mus.timer) mus.timer = setInterval(musicTick, 90); }
     else if (mus.timer) { var tm = mus.timer; mus.timer = 0; setTimeout(function () { if (!mus.on) clearInterval(tm); else mus.timer = tm; }, 600); }
   };
   /** for tests: peak level of the sound output over ms milliseconds (0 = silent). */
   SND.level = function (ms) { var c = ctx(); if (!c) return Promise.resolve(0); var an = c.createAnalyser(); an.fftSize = 2048; master.connect(an); var buf = new Float32Array(an.fftSize), peak = 0, t0 = performance.now(); return new Promise(function (res) { (function poll() { an.getFloatTimeDomainData(buf); for (var i = 0; i < buf.length; i++) peak = Math.max(peak, Math.abs(buf[i])); if (performance.now() - t0 < (ms || 500)) setTimeout(poll, 30); else { try { master.disconnect(an); } catch (e) { /* ignore */ } res(+peak.toFixed(3)); } })(); }); };
   SND.musicVolume = function (v) { mus.vol = v; if (mus.on) SND.music(true); };
+  // music under the voice (§9, §10.11): duck −10 dB while a line plays, hush for a fail or a word card. Both move mus.gain with
+  // setTargetAtTime, so they work in tens of milliseconds (music()'s own ramp takes 1.2 s).
+  var duck = { n: 0, db: -10, hushUntil: 0, hushTimer: 0 };
+  function musTarget() {
+    if (!mus.on) return 0;
+    if (performance.now() < duck.hushUntil) return 0;
+    return mus.vol * (duck.n > 0 ? Math.pow(10, duck.db / 20) : 1);
+  }
+  function musSet(tc) {
+    if (!ac || !mus.gain) return;
+    try { var now = ac.currentTime, g = mus.gain.gain; g.cancelScheduledValues(now); g.setValueAtTime(g.value, now); g.setTargetAtTime(musTarget(), now, Math.max(0.005, tc)); } catch (e) { /* ignore */ }
+  }
+  /** duck(db = −10, attackMs = 80, releaseMs = 300) → release(): lowers the music while a voice plays (counted: the last release brings it back). */
+  SND.duck = function (db, attackMs, releaseMs) {
+    duck.n++; duck.db = db != null ? db : -10; musSet((attackMs != null ? attackMs : 80) / 3000);
+    var done = false;
+    return function () { if (done) return; done = true; duck.n = Math.max(0, duck.n - 1); if (!duck.n) musSet((releaseMs != null ? releaseMs : 300) / 3000); };
+  };
+  /** hush(ms = 1000): the music drops out (≈0.15 s), holds, and comes back over 0.4 s — around a calm "try again" or under a word card (1500). */
+  SND.hush = function (ms) {
+    ms = ms || 1000; duck.hushUntil = Math.max(duck.hushUntil, performance.now() + ms); musSet(0.05);
+    clearTimeout(duck.hushTimer); duck.hushTimer = setTimeout(function () { duck.hushUntil = 0; musSet(0.4 / 3); }, Math.max(0, duck.hushUntil - performance.now()));
+  };
+  /** for tests: {ducked, hushed, target, gain} of the music bus. */
+  SND.musicState = function () { return { on: mus.on, ducked: duck.n > 0, hushed: performance.now() < duck.hushUntil, target: +musTarget().toFixed(4), gain: mus.gain ? +mus.gain.gain.value.toFixed(4) : null }; };
+  /**
+   * for tests: measure(name, {pitch, vol, dur}) → Promise<{peak, rms, len}> — renders one sound offline (no compressor) and
+   * measures it, so the loudness order of §10.11 can be checked (a wrong sound peaks at ≤ 60 % of chime).
+   */
+  SND.measure = function (name, o) {
+    o = o || {}; var OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext; if (!OAC || !SFX[name]) return Promise.resolve(null);
+    var sr = 44100, off = new OAC(1, Math.round(sr * (o.dur || 3.5)), sr), keep = [ac, master, noiseBuf];
+    ac = off; master = off.createGain(); master.connect(off.destination);
+    noiseBuf = off.createBuffer(1, sr, sr); var nd = noiseBuf.getChannelData(0); for (var i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+    try { SFX[name](0.01, o.pitch || 1, o.vol != null ? o.vol : 1); } finally { ac = keep[0]; master = keep[1]; noiseBuf = keep[2]; }
+    return off.startRendering().then(function (buf) {
+      var d = buf.getChannelData(0), peak = 0, win = Math.round(sr * 0.05), best = 0, acc = 0, last = 0;
+      for (var k = 0; k < d.length; k++) { var a = Math.abs(d[k]); if (a > peak) peak = a; if (a > 0.001) last = k; acc += d[k] * d[k]; if (k >= win) acc -= d[k - win] * d[k - win]; if (k >= win && acc > best) best = acc; }
+      return { peak: +peak.toFixed(4), rms: +Math.sqrt(best / win).toFixed(4), len: +(last / sr).toFixed(2) };
+    });
+  };
   /* SIA-VOICE-CORE v1 — one voice module for every MY SIA game. Canonical copy: games/_kit/kit.js; the 2D games carry the same
    * block (node games/_kit/voice-sync.mjs copies it). No dependencies, one global: window.SiaVoiceCore.
    *  • voices: picks the most natural installed voice per language (Apple Premium/Enhanced › Microsoft Online Natural › Google › any)
@@ -2681,7 +2815,7 @@ html.sk-mature { --sk-line: .16rem; }
     function pump() {
       if (busy) return; var it = q.shift(); if (!it) return;
       busy = true; curItem = it; var my = token, done = false;
-      function fin() { if (done) return; done = true; if (my !== token) return; busy = false; curItem = null; cur = null; if (it.last) it.resolve(); if (q.length) later(pump, PAUSE); }
+      function fin() { if (done) return; done = true; if (my !== token) return; busy = false; curItem = null; cur = null; if (it.last) it.resolve(); if (q.length) later(pump, it.pause != null ? it.pause : PAUSE); }
       try {
         var u = new U(it.text); cur = u;
         u.lang = it.lang === 'en' ? 'en-US' : 'ko-KR'; var v = V.get(it.lang); if (v) u.voice = v;
@@ -2693,8 +2827,10 @@ html.sk-mature { --sk-line: .16rem; }
       } catch (e) { later(fin, est(it.text, it.lang) * 1000); }
     }
     /**
-     * say(text, lang, {rate, pitch, queue, clips, key}) → Promise that resolves when the line has been spoken (or after an estimate without an engine).
+     * say(text, lang, {rate, pitch, pause, queue, clips, key, word}) → Promise that resolves when the line has been spoken (or after an estimate without an engine).
      * A new line cancels what is still being spoken unless queue is true. Pre-recorded clips are tried first when the page has them.
+     * key: the text the clip id was made from (default text), or a list of keys tried in order (['E1|맞았어!', '맞았어!']).
+     * word: true → a target-word clip (voice/<lang>/word/<id>.mp3, manifest "words"). pause: ms between sentences (default 250).
      */
     var chain = Promise.resolve();
     V.say = function (text, lang, o) {
@@ -2705,11 +2841,11 @@ html.sk-mature { --sk-line: .16rem; }
       var my = token;
       var run = function () {
         if (my !== token) return;                                   // cancelled while waiting in the queue
-        var urls = o.clips === false ? null : CLIPS.lookup(text, lang, o.key);
+        var urls = o.clips === false ? null : CLIPS.lookup(text, lang, o.key, o.word);
         if (urls) { var ct = clipToken; return CLIPS.play(urls, ct).then(function (ok) { if (ok || ct !== clipToken || my !== token) return; return tts(text, lang, o, e); }); }
         return tts(text, lang, o, e);
       };
-      var p = o.queue ? chain.then(function () { return my === token ? V.delay(PAUSE / 1000) : null; }).then(run) : run();
+      var p = o.queue ? chain.then(function () { return my === token ? V.delay((o.pause != null ? o.pause : PAUSE) / 1000) : null; }).then(run) : run();
       chain = p.then(null, function () { /* ignore */ });
       return p;
     };
@@ -2717,7 +2853,7 @@ html.sk-mature { --sk-line: .16rem; }
       if (!S || !U) return V.delay(e);
       return new Promise(function (resolve) {
         var parts = V.sentences(text), rate = o.rate || (lang === 'en' ? 0.95 : 1.0), pitch = o.pitch || 1.0;
-        parts.forEach(function (p, i) { q.push({ text: p, lang: lang, rate: rate, pitch: pitch, last: i === parts.length - 1, resolve: resolve }); });
+        parts.forEach(function (p, i) { q.push({ text: p, lang: lang, rate: rate, pitch: pitch, pause: o.pause, last: i === parts.length - 1, resolve: resolve }); });
         if (!parts.length) return resolve();
         pump();
       });
@@ -2750,7 +2886,7 @@ html.sk-mature { --sk-line: .16rem; }
       if (!CLIPS.enabled || typeof fetch !== 'function') { CLIPS.loaded = true; return Promise.resolve(null); }
       return fetch(url || (CLIPS.base + 'manifest.json'), { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
         .then(function (m) {
-          if (m) { ['ko', 'en'].forEach(function (l) { var x = m[l]; if (!x) return; ['ids', 'numbers', 'names'].forEach(function (k) { if (Array.isArray(x[k])) { var o = {}; x[k].forEach(function (id) { o[id] = true; }); x[k] = o; } x[k] = x[k] || {}; }); x.templates = x.templates || []; }); CLIPS.probe = false; }
+          if (m) { ['ko', 'en'].forEach(function (l) { var x = m[l]; if (!x) return; ['ids', 'numbers', 'names', 'words'].forEach(function (k) { if (Array.isArray(x[k])) { var o = {}; x[k].forEach(function (id) { o[id] = true; }); x[k] = o; } x[k] = x[k] || {}; }); x.templates = x.templates || []; }); CLIPS.probe = false; }
           CLIPS.manifest = m; CLIPS.loaded = true; return m;
         });
     };
@@ -2758,6 +2894,7 @@ html.sk-mature { --sk-line: .16rem; }
     // Korean number reading for clips: 0–100 whole words, then X천 / X백 chunks + the rest, 만; native counting (한·두·세…) for 개/마리/송이
     var SINO = ['영', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
     function numKo(n, style) {
+      if (style === 'one') return n >= 1 && n <= 20 ? ['s' + n] : null;   /* 하나, 둘, 셋 … counted aloud (voice/ko/num/s1…s20) */
       if (style === 'native') { if (n < 1 || n > 99) return null; if (n === 20) return ['n20a']; /* 스무 개, 스물한 개 */ if (n < 20) return ['n' + n]; var t = Math.floor(n / 10) * 10, o = n % 10; return o ? ['n' + t, 'n' + o] : ['n' + t]; }
       if (n <= 100) return [String(n)];
       if (n > 10000) return null;
@@ -2778,15 +2915,21 @@ html.sk-mature { --sk-line: .16rem; }
       var s = String(val).replace(/[,\s]/g, ''); if (!/^\d+$/.test(s)) return null; var n = parseInt(s, 10);
       return lang === 'en' ? numEn(n) : numKo(n, style);
     };
-    /** lookup(text, lang, key) → clip urls for the line (key: the exact text the id was made from; default text) or null. */
-    CLIPS.lookup = function (text, lang, key) {
+    /**
+     * lookup(text, lang, key, word) → clip urls for the line or null. key: the exact text the id was made from (default text), or a
+     * list of such keys tried in order. word: a target-word clip under word/ (manifest "words"; never probed without a manifest).
+     */
+    CLIPS.lookup = function (text, lang, key, word) {
       if (!CLIPS.enabled) return null;
-      var id = V.id(key || text), m = CLIPS.manifest && CLIPS.manifest[lang], base = CLIPS.base + lang + '/';
+      var keys = Array.isArray(key) ? key.filter(Boolean) : [key || text]; if (!keys.length) keys = [text];
+      var id = V.id(keys[keys.length - 1]), m = CLIPS.manifest && CLIPS.manifest[lang], base = CLIPS.base + lang + '/';
+      if (word) { if (!m || !m.words) return null; for (var w0 = 0; w0 < keys.length; w0++) { var wid = V.id(keys[w0]); if (m.words[wid]) return [base + 'word/' + wid + '.mp3']; } return null; }
       if (!m) { if (CLIPS.loaded && CLIPS.probe && CLIPS.misses < 3) return [base + id + '.mp3']; return null; }   // no manifest: probe a few times
-      if (m.ids[id]) return [base + id + '.mp3'];
+      for (var k0 = 0; k0 < keys.length; k0++) { var kid = V.id(keys[k0]); if (m.ids[kid]) return [base + kid + '.mp3']; }
+      var src = keys[keys.length - 1];
       for (var i = 0; i < m.templates.length; i++) {
         var t = m.templates[i]; try { t._re = t._re || new RegExp(t.re); } catch (e) { continue; }
-        var mm = t._re.exec(key || text); if (!mm) continue;   // templates are cut from the exact source line, not the rewritten one
+        var mm = t._re.exec(src); if (!mm) continue;   // templates are cut from the exact source line, not the rewritten one
         var urls = [], gi = 1, ok = true;
         for (var p = 0; p < t.parts.length && ok; p++) {
           var part = t.parts[p];
@@ -2886,16 +3029,46 @@ html.sk-mature { --sk-line: .16rem; }
       .replace(/(\d)\s*kg(?![a-z])/g, '$1 킬로그램').replace(/(\d)\s*cm(?![a-z])/g, '$1 센티미터').replace(/(\d)\s*mL(?![a-z])/gi, '$1 밀리리터').replace(/(\d)\s*L(?![a-z])/g, '$1 리터').replace(/(\d)\s*g(?![a-z])/g, '$1 그램').replace(/(\d)\s*m(?![a-z])/g, '$1 미터');
   };
   /**
-   * speak(text, {lang, rate, pitch, queue}) → Promise that resolves when the line ends (or after an estimate when muted / no voice).
-   * Sentences are queued with a short pause; a new line cancels the one before unless queue is true. A pre-recorded clip
-   * (voice/<lang>/<sha1-8 of the exact text>.mp3 next to the page) plays instead of the engine when the page has one.
+   * Voice settings per narration style and band (NARRATION-REFERENCE §8). They apply to the speechSynthesis fallback only:
+   * a pre-recorded clip carries its pace in the recording (voice-gen.mjs sends the matching direction per style).
+   * rate per band [K, E1, E2, E3] for en and ko, pitch per band, pause = ms between the sentences of one line.
+   */
+  var VOICE_STYLE = {
+    instruction: { en: [0.82, 0.88, 0.92, 0.95], ko: [0.92, 0.96, 1.0, 1.0], pitch: [1.12, 1.08, 1.0, 1.0], pause: 350 },   // also intro, retry, idle
+    story: { en: [0.82, 0.88, 0.92, 0.95], ko: [0.92, 0.96, 1.0, 1.0], pitch: [1.12, 1.08, 1.0, 1.0], pause: 350 },
+    word: { en: [0.78, 0.82, 0.88, 0.9], ko: [0.88, 0.92, 0.96, 1.0], pitch: [1.12, 1.1, 1.0, 1.0], pause: 250 },          // a target word said alone
+    praise: { en: [1, 1, 1, 1], ko: [1, 1, 1, 1], pitch: [1.25, 1.18, 1.05, 1.05], pause: 200 },                           // also streak, level up
+    gentle: { en: [0.85, 0.88, 0.92, 0.95], ko: [0.92, 0.95, 1.0, 1.0], pitch: [1.0, 1.0, 0.98, 0.98], pause: 300 },       // wrong, hint, encourage
+    reveal: { en: [0.8, 0.85, 0.9, 0.92], ko: [0.9, 0.92, 0.96, 0.98], pitch: [1.05, 1.0, 0.98, 0.98], pause: 450 },       // answer → why: 450 ms
+    character: { en: [1, 1, 1, 1], ko: [1, 1, 1, 1], pitch: [1.25, 1.2, 1.1, 1.1], pause: 200 },
+    system: { en: [1, 1, 1, 1], ko: [1, 1, 1, 1], pitch: [0.95, 0.95, 0.95, 0.95], pause: 250 },
+  };
+  var BAND_I = { K: 0, E1: 1, E2: 2, E3: 3 };
+  /** voiceStyle(style, band, lang) → {rate, pitch, pause} for speechSynthesis (null for an unknown style). Pitch never goes above 1.3. */
+  SND.voiceStyle = function (style, band, lang) {
+    var s = VOICE_STYLE[style]; if (!s) return null;
+    var b = BAND_I[band || (LEARN.state && LEARN.state.band) || 'E1']; if (b == null) b = 1;
+    return { rate: s[lang === 'en' ? 'en' : 'ko'][b], pitch: Math.min(1.3, s.pitch[b]), pause: s.pause };
+  };
+  SND.VOICE_STYLE = VOICE_STYLE;
+  /**
+   * speak(text, {lang, rate, pitch, queue, style, band, pause, key, word}) → Promise that resolves when the line ends (or after an
+   * estimate when muted / no voice). Sentences are queued with a short pause; a new line cancels the one before unless queue is
+   * true. A pre-recorded clip (voice/<lang>/<sha1-8 of the exact text>.mp3 next to the page) plays instead of the engine when the
+   * page has one. style ('instruction' | 'word' | 'praise' | 'gentle' | 'reveal' | 'character' | 'story' | 'system') picks the
+   * §8 rate, pitch and pause for the band (default: the child's band); without a style the voice keeps its plain settings.
+   * The music ducks −10 dB while the line plays.
    */
   SND.speak = function (text, o) {
-    o = o || {}; text = SK.t(text); var lang = o.lang || SK.lang;
-    var est = Math.max(1.2, text.length * (lang === 'en' ? 0.065 : 0.13));
+    o = o || {}; text = SK.t(text); var lang = o.lang || SK.lang, vs = o.style ? SND.voiceStyle(o.style, o.band, lang) : null;
+    var rate = o.rate != null ? o.rate : vs ? vs.rate : undefined, pitch = o.pitch != null ? o.pitch : vs ? vs.pitch : undefined;
+    var est = Math.max(o.word ? 0.6 : 1.2, text.length * (lang === 'en' ? 0.065 : 0.13) / (rate || 1));
     G.lastSpoken = text;
     if (SND.muted || !text) return SK.wait(est);
-    return VC.say(SND.readable(text, lang), lang, { key: String(text).trim(), rate: o.rate, pitch: o.pitch, queue: !!o.queue });
+    var release = SND.duck(-10, 80, 300);
+    var p = VC.say(SND.readable(text, lang), lang, { key: o.key || String(text).trim(), rate: rate, pitch: pitch, pause: o.pause != null ? o.pause : vs ? vs.pause : undefined, queue: !!o.queue, word: !!o.word });
+    p.then(release, release);
+    return p;
   };
   SND.stopSpeech = function () { VC.stop(); };
   SND.speaking = function () { return VC.speaking(); };
@@ -2968,6 +3141,795 @@ html.sk-mature { --sk-line: .16rem; }
     UI.button(T2.ok, { color: 'green', id: 'sk-voicehint-ok', parent: card, onTap: api.close });
     wrap.firstChild.addEventListener('pointerdown', function (e) { e.stopPropagation(); api.close(); });
     return api;
+  };
+
+  // ======================================================================
+  // NARRATION: SiaKit.narrate(event, ctx) — what Haru says, which sound plays and when, by the MY SIA narration spec
+  // (games/_kit/NARRATION-REFERENCE.md §10 is binding; how to use it: games/_kit/NARRATION.md)
+  // ======================================================================
+  /* NARRATE-POOLS — generated from NARRATION-REFERENCE.md §11 by narrate-pools.mjs; do not edit here. JSON between the markers. */
+  var NARR_POOLS = {
+    "K": {
+      "correct": {"ko":["딩동댕!","맞았어!","바로 그거야!","우와, 찾았다!","척척 잘하네!","좋아, 정확해!","눈이 반짝반짝하네!","짝짝짝, 멋지다!","맞아, 딱이야!","오, 잘 골랐다!","어떻게 알았어?","와, 금방 찾았네!","그렇지, 그거야!","만세!"],"en":["Yes! That's it!","You got it!","That's the one!","Ooh, you found it!","You did it!","That's right!","Sharp eyes!","Clap, clap, clap!","Bingo!","Nice pick!","How did you know?","Wow, that was quick!","Yes, yes, yes!","Hooray!"]},
+      "correctSlot": {"ko":["{word}! 딩동댕!","맞아, {word}!","찾았다… {word}!","{count}개 다 모았네!","{what}, 딱 맞아!","이건… {word}!","잘 골랐어… {word}!","{num}! 맞게 셌어!","{word}, 바로 그거야!","우와, {what} 완성!","{word}! 따라 해 볼래… {word}!","{what} 쏙 들어갔다!","좋아! {word}!"],"en":["Yes! {word}!","You found it… {word}!","That's the {word}!","{count}! You counted them all!","Look, {what}!","This one is… {word}!","Nice pick… {word}!","{count} {plural}! All there!","{word}! That's right!","{what}, all done!","{word}! Say it with me… {word}!","It fits! {what}!","Here's the {word}!"]},
+      "wrong1.word": {"ko":["찾는 건… {word}!","잘 들어 봐… {word}!","{word}, 어디 있을까?","다시 들어 봐… {word}!","{word}, 어디 숨었지?","다른 데 있어… {word}!","{word}! 다시 찾아볼까?"],"en":["We need the {word}!","Listen… {word}!","Where's the {word}?","Hear it again… {word}!","Hmm… which one is the {word}?","Look again for the… {word}!","{word}! Can you find it?"]},
+      "wrong1.plain": {"ko":["앗, 아까워!","음, 다른 거 같아.","괜찮아, 다시 보자.","오, 거의 맞을 뻔했다!","어디 보자, 한 번 더!","다시 골라 볼까?","앗, 살짝 빗나갔다!","아깝다, 한 번 더!","흠, 다른 데 있나 봐!"],"en":["So close!","Hmm, try a different one.","Let's look again.","Ooh, nearly!","Let's look one more time!","Pick another one?","Almost! Look again.","That's a different one!","Hmm, it's somewhere else!"]},
+      "wrong2": {"ko":["괜찮아, 같이 찾자.","이번엔 같이 해 보자!","이번엔 귀 기울여 봐… {word}!","반짝이는 거 보여?","하루가 도와줄게!","천천히, 하나씩 보자.","어렵지? 같이 하자.","힌트 줄게, 잘 봐!","{word}… 귀를 쫑긋!","이쪽을 한번 볼까?","괜찮아, 금방 찾을 거야.","같이 보면 쉬워!","내가 알려 줄게!"],"en":["That's okay. Let's look together.","Let's do it together!","Listen closely… {word}!","See the shiny one?","I'll help you!","One at a time.","It's tricky, right? I'm here.","Here's a clue. Watch!","Listen to this word… {word}!","Look over here.","We'll find it together.","It's easier together!","Let me show you!"]},
+      "hint1": {"ko":["잘 찾아봐… {word}!","귀 쫑긋… {word}!","어디 있을까… {word}?","눈 크게 뜨고… {word}!","우리가 찾는 건… {word}!","하나씩 살펴보자… {word}!","위아래도 봐 봐… {word}!","잘 보면 보여… {word}!","소리 잘 들어 봐… {word}!","천천히 둘러보자… {word}!","가까이 있을지도 몰라… {word}!","그림 속에서 찾아봐… {word}!"],"en":["Look for it… {word}!","Find the {word}.","Can you see the… {word}?","Look carefully for the… {word}!","Open your eyes wide… {word}!","Check each picture for the… {word}!","Look up and down… {word}!","Take a good look… {word}!","Hear it? {word}!","It's somewhere here… {word}!","Look at the pictures… {word}!","One more time… {word}!"]},
+      "hint2": {"ko":["힌트! {clue}","{place} 쪽을 봐!","잘 들어 봐. {clue}","이 근처에 있어!","{color} 거 찾아봐!","첫소리는… {sound}!","{place}에 숨어 있대!","이 줄에 있어!","반짝이는 쪽을 봐!","작은 힌트! {clue}","둘 중 하나야!","거의 다 왔어, 이쪽!"],"en":["Clue! {clue}","Look near the {place}.","Listen: {clue}","It's close by!","Find the {color} one!","It starts with… {sound}!","It's hiding by the {place}.","Check this row.","Look where it sparkles!","Little clue: {clue}","It's one of these two!","You're so close. Over here!"]},
+      "hint3": {"ko":["반짝이는 거 눌러 봐!","하루 손가락 따라와!","여기! 꾹 눌러 봐.","봐 봐, 이렇게!","이거야, 같이 눌러!","손 따라서 쭉 밀어 봐.","여기 있었네! 눌러 볼래?","같이 하자, 하나 둘 셋!","빛나는 걸 콕!","이걸 쏙 넣어 봐!","하루가 보여 줄게!","따라 해 봐, 쉬워!"],"en":["Tap the shiny one!","Follow my finger!","Right here. Tap it!","Watch me. Like this!","This one! Tap with me.","Slide it like this.","Here it is! Your turn.","Together: one, two, three!","Tap the glowing one.","Drop it right in here.","I'll show you how.","Copy me. It's easy!"]},
+      "reveal": {"ko":["정답은… {word}! {why}","이게 바로 {word}! {why}","짠, 바로 이거… {word}!","답은 {what}. {why}","여기 있었어, {word}!","{word}! 같이 말해 볼까?","이거였어! {why}","봐, {what}! {why}","잘 봐 둬… {word}!","정답 공개… {word}!","이건… {word}! {why}","{what} 맞지? {why}"],"en":["It's the {word}! {why}","Here it is… {word}! {why}","This one is the {word}.","The answer is {what}. {why}","Look! {word}! {why}","Say it with me… {word}!","It was this one! {why}","Ta-da! {word}!","See? {what}. {why}","That's the {word}. {why}","Found it: {word}!","Here's the {word}. Remember it!"]},
+      "retry": {"ko":["한 번 더 해 볼까?","다시 해 보자!","이번엔 할 수 있어!","준비됐어? 다시 간다!","한 판 더 할래?","다시 도전!","처음부터 다시 해 보자.","한 번 더, 출발!","이번엔 천천히 해 보자.","다시 하면 더 잘될 거야!","자, 다시 시작!","또 해 보고 싶지?"],"en":["One more go?","Let's go again!","You can do this one!","Ready? Here we go again!","Another round?","Let's try again.","Let's start again.","Once more, nice and slow.","Let's play it again!","Again? Let's go!","This time, you've got it!","Want to play one more time?"]},
+      "idle.word": {"ko":["{word}, 어디 있지?","같이 찾아보자… {word}!","기억나? {word}!","{word}! 찾으면 눌러 봐."],"en":["Did you see the… {word}?","Let's find the… {word}!","Remember? {word}!","{word}! Tap it when you find it."]},
+      "idle.plain": {"ko":["네 차례야!","준비되면 눌러 봐!","어디 있을까?","하루 여기 있어! 같이 하자.","손가락으로 콕!","천천히 골라도 돼.","뭐부터 해 볼까?","여기 봐, 여기!","궁금한 거 눌러 봐!","천천히 해, 기다릴게!","하나 골라 볼래?"],"en":["Your turn!","Tap when you're ready.","Where could it be?","I'm right here. Let's play!","Give it a tap!","Take your time.","What should we do first?","Look at this!","Pick one!","I'll wait for you!","Which one will you choose?"]},
+      "streak3": {"ko":["세 번 연속!","연속 세 번! 대단하다!","와, 세 개째 척척!","셋 연달아 맞혔어!","계속 맞히네!","착착 잘 되네!","멈출 수가 없네!","연속 세 번, 짝짝짝!","오늘 아주 잘 되는 날!","줄줄이 맞히고 있어!","세 번 다 맞았어!","하나, 둘, 셋! 연속!"],"en":["Three in a row!","That's three! Wow!","One, two, three in a row!","You got three right!","Three for three!","You keep getting them!","Another one right!","Three right in a row. Clap!","Wow, three right!","Again and again!","Three! You're so quick!","Three good ones!"]},
+      "streak5": {"ko":["다섯 번 연속! 최고야!","와, 다섯 번째도 맞았어!","연속 다섯! 정말 잘한다!","다섯 번 연달아! 짱이다!","하나도 안 놓쳤어!","다섯 개 연속, 박수!","이건 진짜 대단해!","다섯 번 쭉 맞혔어!","멈추질 않네! 다섯!","연속 다섯, 하이파이브!","다섯 번이나! 우와!","오늘 진짜 잘된다!"],"en":["Five in a row!","Five! Amazing!","You found five in a row!","Five right in a row!","You didn't miss one!","Five! That's a big streak!","Wow, five in a row!","Five in a row! Clap, clap!","Wow! That's five!","Five! Keep it going!","Five good ones. Wow!","Five! What a streak!"]},
+      "roundEnd": {"ko":["{n}개 찾았어! 멋지다!","오늘 배운 말… {words}!","{n}개 다 모았다!","다 했다! {words}!","끝! {what} 완성!","오늘은… {words}!","{n}개나 맞혔어!","짠, 다 채웠다!","{what} 다 끝났어!","같이 말해 볼까? {words}!","{n}개 찾기 성공!","마지막까지 해냈어!"],"en":["You found {n}!","Today's words… {words}!","All done! {words}!","Ta-da! All done: {what}!","{n} right! Nice!","Let's say them… {words}!","You filled them all!","The end! Look what you made!","{n} things found!","All finished! Clap!","You did every one!","Remember these? {words}!"]},
+      "levelUp": {"ko":["레벨 업! 한 단계 올라갔어!","이제 {level}단계야!","짠, 새 단계 열렸다!","한 칸 더 올라갔어!","다음 단계 가 볼까?","레벨 {level} 도착!","실력이 쑥쑥 늘고 있어!","새로운 문제가 기다려!","계단 하나 더 올라갔다!","이제 조금 더 어려워!","레벨 업 축하해!","더 높이 가 보자!"],"en":["Level up!","Now you're on level {level}!","A new level is open!","Up you go! Level {level}!","Ready for the next level?","You moved up a level!","You're getting better!","New puzzles are waiting!","One step higher!","Let's go to the next level!","Level up! Hooray!","Let's go higher!"]},
+      "encourage": {"ko":["어려웠는데 끝까지 했네!","힘들었지? 그래도 해냈어.","포기 안 한 거 멋져!","오늘 정말 열심히 했다.","어려운 건 하다 보면 쉬워져.","조금씩 늘고 있어!","다음엔 더 쉬울 거야.","실수해도 괜찮아.","하루도 처음엔 어려웠어.","끝까지 한 게 최고야.","쉬었다가 또 하자!","한 번 더 하면 더 잘돼!"],"en":["That was hard, and you kept going!","It was tricky, but you kept trying!","You didn't give up!","You worked so hard today.","Hard things get easier.","Practice makes it easier!","Next time will be easier.","Mistakes help us learn.","I found it hard at first too.","Finishing is the best part!","Let's rest, then play again!","You're getting stronger!"]},
+      "intro": {"ko":["안녕! {what} 하러 가자!","오늘은 {what}!","{name:이랑} 같이 놀자!","{name:이} 도와 달래!","같이 {word} 찾아볼까?","준비됐어? 출발!","오늘의 말은… {word}!","{count}개를 찾아 보자!","짠! {what} 시작!","하루랑 {what} 해 보자!","{name:이} 기다리고 있어!","재밌는 거 하자!"],"en":["Hi there! Let's play!","Today, it's {what}!","Let's help {name}!","{name} needs you!","Can you find the {word}?","Ready? Let's go!","Today's word is… {word}!","Can you spot {count} {plural}?","Ta-da! It's {what} time!","Come and play with me!","{name} is waiting for you!","Let's have some fun!"]}
+    },
+    "E1": {
+      "correct": {"ko":["맞았어! 정확해.","바로 그거지!","오, 금방 알아봤네!","좋아, 감 잡았구나!","그렇지, 잘 들었네!","척하면 척이네!","딱 맞혔어!","와, 눈썰미 좋다!","맞아, 그게 정답!","깔끔하게 해냈다!","좋았어, 그 느낌이야!","오, 제대로 골랐어!","정답! 잘 생각했네.","좋아, 이대로 쭉 가자!"],"en":["That's right!","You got it right!","Yes, exactly!","Nice thinking!","You've got it!","That's correct!","Sharp ears!","That's it! Good listening.","Right answer!","Good work!","Bingo! You knew it.","Exactly right. Keep going!","Nice choice!","Yes! You're getting good at this."]},
+      "correctSlot": {"ko":["맞아, {word}! 잘 들었어.","{word}! 바로 그거야.","찾았다… {word}! 기억해 둬.","{count}개, 딱 맞게 셌어!","{what}, 정확해!","좋아… {word}! 따라 해 볼래? {word}!","정답은… {word}! 잘 골랐어.","{what}! 빈틈없이 맞췄네.","{num}! 잘 셌구나.","와, {what} 완성!","{word}, 이제 확실히 알겠지?","그렇지, {what}!","이건… {word}! 소리도 기억나?"],"en":["Yes! It's the {word}.","There's the {word}! You found it.","Right… {word}! Say it with me… {word}!","{count}! You counted them all.","{what}. Exactly!","That's the {word}. Nice listening!","{count} {plural}! Every one.","You picked {what}. Correct!","{word}! You remembered!","Look… {what}. They match!","That's it… {word}!","You made {what}!","{word}. You know this one!"]},
+      "wrong1.word": {"ko":["잘 들어 봐… {word}!","찾아야 하는 건… {word}.","그건 {picked}! 찾는 건… {word}.","{word}… 어디 있을까?","아깝다! 다시 찾아보자… {word}!","{word}! 다시 골라 볼까?"],"en":["Hear the word again… {word}.","We need the… {word}.","That's the {picked}. Find the… {word}!","Where's the {word}?","Almost! Look for the… {word}.","{word}! Which one is it?"]},
+      "wrong1.plain": {"ko":["아깝다! 다시 볼까?","음, 다른 걸 골라 볼까?","거의 맞았어!","오, 비슷한데 달라.","괜찮아, 한 번 더!","생각할 시간 충분해.","다시 한번 살펴보자.","앗, 살짝 다르네!","괜찮아, 하나 더 골라 보자!"],"en":["So close! Have another look.","Hmm, let's pick again.","Almost there!","Close, but not quite.","That's okay. One more go!","No hurry. Think it over.","Let's look again.","Ooh, nearly!","Nice try! Pick again."]},
+      "wrong2": {"ko":["괜찮아, 같이 생각해 보자.","힌트 하나 줄게.","천천히, 하나씩 비교해 봐.","이번엔 소리에 집중!","거의 다 왔어, 조금만!","어려운 문제야. 같이 하자.","반짝이는 쪽을 봐 봐.","{word}… 한 번 더 들어 봐.","그건 {picked}! 다른 걸 골라 봐.","헷갈릴 수 있어. 괜찮아.","잘 보면 답이 보여!","이번엔 꼭 찾을 거야.","한 번 더! 내가 도와줄게."],"en":["That's okay. Let's think together.","Here's a clue for you.","Go slowly. Compare them.","Listen carefully this time.","You're so close. Keep going!","This one is tricky. I'll help.","Look where it's glowing.","Listen one more time… {word}.","That's the {picked}. Look for the {word}.","These look alike, don't they?","Look closely. You'll see it!","You'll get it this time.","One more try! I'll help you."]},
+      "hint1": {"ko":["다시 들어 봐… {word}!","우리가 찾는 건… {word}!","어디 있는지 찾아볼까… {word}?","그림을 하나씩 살펴봐… {word}.","소리를 잘 들어 봐… {word}.","천천히 둘러봐도 돼… {word}.","화면 전체를 쭉 봐 봐… {word}.","아닌 걸 하나씩 빼 봐… {word}.","어떤 그림일까… {word}?","첫소리를 잘 들어 봐… {word}.","한 번 더 말해 줄게… {word}.","어딘가 숨어 있을지도… {word}!"],"en":["Listen again… {word}.","We're looking for the… {word}.","Can you find the… {word}?","Check the pictures one by one… {word}.","Listen to the sound… {word}.","Look around slowly… {word}.","Look at the whole screen… {word}.","Which ones are not it? Find the… {word}.","Which picture is the… {word}?","Listen to the first sound… {word}.","I'll say it again… {word}.","It might be hiding… {word}!"]},
+      "hint2": {"ko":["힌트! {clue}","{place} 쪽에 있어.","{color} 거 중에 있어.","첫 글자는 {letter}!","남은 건 {count}개! 그중 하나야.","{clue} 이제 알겠지?","이 줄을 잘 봐.","{place}에 숨어 있대.","비슷한 거 둘 중 하나야.","소리부터 떠올려 봐… {sound}.","크기를 비교해 봐. {clue}","이쪽 반에 있어!"],"en":["Clue: {clue}","It's near the {place}.","It's one of the {color} ones.","It starts with {letter}.","Only {count} left. It's one of them.","{clue} Got it now?","Check this row.","It's hiding by the {place}.","It's one of these two.","Start with the sound… {sound}.","Compare the sizes. {clue}","It's on this half!"]},
+      "hint3": {"ko":["반짝이는 걸 눌러 봐.","내 손을 따라와 봐.","여기야! 직접 눌러 볼래?","이렇게 하는 거야. 봐 봐!","둘 중 이거! 눌러 봐.","같이 해 보자. 하나, 둘, 셋!","이 조각을 여기에 쏙.","빛나는 칸으로 옮겨 봐.","보여 줄게. 따라 해 봐!","바로 여기야, 잘 봐.","이 버튼이야. 콕!","이제 네가 해 봐!"],"en":["Tap the glowing one.","Follow my hand.","It's right here. You tap it!","Here's how. Watch!","This one. Give it a tap.","Let's do it together. One, two, three!","This piece goes right here.","Move it to the glowing spot.","I'll show you. Then you try.","Look here. This is it.","This button. Tap!","Now you do it!"]},
+      "reveal": {"ko":["정답은… {word}! {why}","답은 {what}. {why}","이건… {word}. {why}","짠, 여기 있었어! {why}","{what:이었어}. {why}","이번엔… {word}! {why} 기억해 두자.","정답 공개… {word}! {why}","답은… {word}! 같이 말해 볼까… {word}!","답은 이거! {why}","바로 {what}. {why}","헷갈렸지? 답은… {word}. {why}","{why} 그래서 답은… {what}!"],"en":["The answer is… {word}. {why}","It's {what}. {why}","This is the {word}. {why}","Here it was! {why}","It was {what}. {why}","It's the {word}. {why} Remember it!","Answer time… {word}! {why}","It's the {word}. Say it with me… {word}!","This is it. {why}","Look: {what}. {why}","Tricky, right? It's the {word}. {why}","{why} So the answer is {what}."]},
+      "retry": {"ko":["한 번 더 해 볼까?","다시 도전해 보자!","이번엔 더 잘될 거야.","처음부터 다시 가 보자.","감 잡았으니까 다시!","한 판 더? 좋아!","이제 요령을 알았잖아.","다시 하면 금방이야.","같은 문제, 다시 풀어 보자.","천천히, 다시 시작!","준비되면 다시 출발!","또 하고 싶으면 눌러!"],"en":["Want another go?","Let's try it again!","This time will go better.","Let's start from the beginning.","You know it better now. Again!","One more round? Sure!","Now you know the trick.","It'll be quick this time.","Same question. Let's solve it again.","Nice and slow. Start again!","Start again when you're ready!","Tap to play again."]},
+      "idle.word": {"ko":["{word}, 찾았어?","{word}, 어디 숨었을까?","기억나? 오늘의 말… {word}!","같이 찾아볼까… {word}?"],"en":["Did you find the… {word}?","Where is the {word} hiding?","Remember the word? {word}!","Shall we look for the… {word}?"]},
+      "idle.plain": {"ko":["네 차례야!","생각 중이구나. 천천히 해.","어디서부터 해 볼까?","문제 다시 들려줄까?","고르면 바로 알려 줄게!","여기 눌러서 시작해 봐.","막히면 힌트 버튼 눌러!","하루도 같이 고민 중!","하나만 골라 봐도 돼.","준비됐어? 기다릴게.","그림을 잘 봐 봐."],"en":["Your turn!","Thinking? Take your time.","Where should we start?","Want to hear it again?","Pick one, and I'll tell you!","Tap here to begin.","Stuck? Tap the hint button.","I'm thinking too!","Just pick one. It's okay.","Ready? I'll wait.","Look at the pictures."]},
+      "streak3": {"ko":["세 번 연속 정답!","연속 세 개! 감이 좋아!","셋 연달아 맞혔어!","흐름 탔다!","연속 세 번, 이 기세로!","계속 맞히네! 세 번째!","3연속! 리듬 좋다.","세 개 쭉! 집중력 최고.","벌써 세 번 연속이야!","착착착, 세 번!","잘 듣고 있구나! 세 번 연속.","세 번 다 정확해!"],"en":["Three in a row!","That's three straight!","Three for three!","You got three right!","Three in a row. Keep it up!","Three right. Nice rhythm!","Three right! Nice!","Three straight. Sharp focus!","Already three in a row!","Bam, bam, bam! Three!","Three right. You're really listening!","All three are right!"]},
+      "streak5": {"ko":["다섯 번 연속! 대단해!","5연속! 멈출 수가 없네.","하나도 안 놓쳤어! 다섯 번!","연속 다섯! 오늘 정말 잘한다.","다섯 번 쭉! 박수!","5연속 달성!","다섯 개 연달아, 진짜 잘한다!","이 기세 그대로, 다섯!","다섯 번 연속, 집중력 최고!","연속 다섯 개! 하이파이브!","와, 다섯 번이나 연속이야!","다섯 번째도 정답! 굉장해."],"en":["Five in a row! Incredible!","Five straight! You keep getting them right.","You haven't missed one. That's five!","Five in a row. You're so quick today!","Five straight! Let's clap!","Five in a row!","Five right in a row. So good!","Keep that going. Five!","Five straight. What focus!","Five in a row! High five!","Wow, five in a row!","Number five is right too!"]},
+      "roundEnd": {"ko":["{total}개 중에 {n}개 맞혔어!","오늘 익힌 말… {words}!","끝까지 다 했다! {n}개 성공.","{what} 완성! 멋지다.","오늘 배운 거 다시 말해 볼까? {words}!","{n}개 찾았어. 눈이 정말 좋구나!","이번 판 끝! {n}개 정답.","다 했다! 제일 어려웠던 건… {word}!","짠, {what} 다 채웠어!","수고했어! {words}, 기억해 둬.","{n}개나 해냈어! 대단해.","마지막까지 집중했네! {n}개 정답."],"en":["You got {n} out of {total}!","Today's words… {words}!","All done! {n} right.","All finished: {what}!","Let's say today's words… {words}!","You found {n}. Sharp eyes!","Round over! {n} correct.","All done! The hardest one was… {word}!","Ta-da! You filled it all in.","Nice work! Remember… {words}.","You got {n}! Awesome.","You stayed focused to the end. {n} right!"]},
+      "levelUp": {"ko":["레벨 업! 이제 {level}단계야.","한 단계 올라갔어! 조금 더 어려워질 거야.","새 단계 열렸다! 가 볼까?","{level}단계 도착! 준비됐지?","실력이 쑥 늘었네!","다음 단계로 출발!","이제 {level}단계 문제야.","레벨 {level}! 새로운 말이 기다려.","한 칸 더! 점점 높아진다.","레벨 업 축하해! 계속 가 보자.","이 단계도 금방 하겠는데?","쉬웠지? 그럼 다음 단계!"],"en":["Level up! Now you're on level {level}.","Up a level! It'll get a bit harder.","A new level is open. Let's go!","Welcome to level {level}! Ready?","Your skills just grew!","On to the next level!","Now it's level {level}.","Level {level}! New words are waiting.","One step higher!","Level up! Let's keep going.","You can do this level too!","Too easy? Next level!"]},
+      "encourage": {"ko":["어려운 판이었는데 끝까지 했네.","힘들어도 포기 안 했어. 그게 진짜 멋진 거야.","오늘은 연습한 날! 다음엔 더 잘될 거야.","헷갈려도 괜찮아. 그러면서 배우는 거야.","어려운 말이 많았지? 잘 버텼어.","한 번 더 하면 훨씬 쉬울 거야.","처음엔 다 어려워. 너 잘하고 있어.","오늘 새로 알게 된 게 있잖아.","머리 많이 썼다! 잠깐 쉬자.","실수는 배우는 중이라는 뜻이야.","다음엔 조금 쉬운 걸로 연습해 보자.","끝까지 해냈네. 진짜 멋지다!"],"en":["That was a tough round, and you finished it.","You didn't give up. That's what counts.","Today was a practice day. Next time will be easier.","Mixing them up is okay. That's how we learn.","Lots of hard words, right? You kept trying.","One more try and it'll feel easier.","Everything is hard at first. You're doing fine.","You learned something new today.","You thought so hard! Let's take a break.","Mistakes mean you're learning.","Let's practice an easier one next time.","You finished. I'm proud of you!"]},
+      "intro": {"ko":["안녕! 오늘은 {what} 해 볼 거야.","{name:이} 도움이 필요하대. 같이 가 볼까?","오늘의 말은… {word}!","{count}개를 찾아야 해. 준비됐지?","잘 듣고 골라 봐. 시작!","{name:이랑} 같이 {what} 하러 가자!","이번 판은 {what}! 출발!","소리를 잘 듣는 게 중요해. 시작해 볼까?","{place}에 뭐가 있는지 볼까?","다 찾으면 깜짝 선물이 있어!","오늘도 같이 해 보자, {child:야}!","이야기 하나 들려줄게. {what}!"],"en":["Hi! Today we're doing {what}.","{name} needs help. Let's go!","Today's word is… {word}!","We need to find {count}. Ready?","Listen, then pick. Let's start!","Let's go do {what} with {name}!","This round is {what}. Off we go!","Listen carefully. Ready to begin?","What's in the {place}? Let's look!","Find them all for a surprise!","Let's play again today, {child}!","Here's a little story. {what}!"]}
+    },
+    "E23": {
+      "correct": {"ko":["정답.","맞아.","정확해.","좋아, 맞혔어.","그렇지.","깔끔하네.","잘 풀었어.","맞아, 논리 좋았어.","빠르고 정확해.","확실하게 맞혔네.","좋아, 다음.","계산 정확해.","바로 그 답이야."],"en":["Correct.","That's right.","Exactly.","Nicely done.","Yes.","Good answer.","Solved.","Right, good reasoning.","Quick and accurate.","Precisely.","Good. Next one.","Your math is right.","That's the answer."]},
+      "correctSlot": {"ko":["{word}, 맞아.","정답은 {what}.","{calc}, 정확해.","{what}, 맞게 골랐어.","{word}. 뜻까지 정확해.","맞아, {what}.","{count}개, 계산 맞아.","좋아… {word}.","{what}. 근거도 좋았어.","{word} 맞아. 철자도 기억해 둬.","{calc}. 깔끔하게 풀었네.","{what}, 완성."],"en":["{word}. Correct.","The answer is {what}.","{count}. Exactly right.","{what}. Good choice.","{word}, and you got the meaning too.","Right: {what}.","{count}. The math works.","Good: {word}.","{what}. Solid reasoning.","{word} is right. Note the spelling.","{count}. Cleanly solved.","{what}, done."]},
+      "wrong1": {"ko":["아깝다. 다시 봐.","거의 맞았어.","한 번 더 확인해 봐.","조건을 다시 읽어 볼까?","그건 {picked}. 다시 골라 봐.","계산을 한 번 더 해 봐.","비슷하지만 달라.","더 맞는 답이 있어.","문제를 다시 들어 봐.","한 단계씩 확인해 봐.","고른 이유를 다시 떠올려 봐.","놓친 게 하나 있어."],"en":["Close. Look again.","Almost.","Double-check that one.","Read the conditions again.","That's the {picked}. Pick another.","Do the math again.","Similar, but not it.","There's a better answer.","Listen to the question again.","Check it step by step.","Not quite. What did you miss?","One detail is off."]},
+      "wrong2": {"ko":["힌트 줄게.","조건 하나만 다시 보자.","답이 두 개로 좁혀졌어.","처음부터 차근차근 해 보자.","이 부분이 핵심이야.","헷갈리는 문제야. 같이 보자.","단서를 하나 더 줄게.","계산을 두 부분으로 나눠 봐.","{word} 뜻을 떠올려 봐.","규칙을 다시 확인해 보자. {rule}","거의 다 왔어. 한 걸음만.","이번엔 근거를 생각하면서 골라 봐."],"en":["Here's a hint.","Let's check one condition again.","It's down to two options.","Let's go step by step.","This part is the key.","This one is tricky. Let's look together.","One more clue.","Split the problem into two parts.","Think about what {word} means.","Check the rule again. {rule}","You're one step away.","This time, pick with a reason."]},
+      "hint1.word": {"ko":["핵심 단어는… {word}.","첫소리에 집중해 봐… {word}.","어떤 뜻인지 생각해 봐… {word}.","다시 들어 봐… {word}.","철자를 떠올려 봐… {word}."],"en":["The key word is… {word}.","Focus on the first sound… {word}.","Think about this word… {word}.","Listen again… {word}.","Remember the spelling… {word}."]},
+      "hint1.plain": {"ko":["문제를 다시 읽어 봐.","뭘 묻는지 다시 봐.","조건을 하나씩 체크해 봐.","단위를 확인해 봐.","그림 속 단서를 찾아봐.","비슷한 것끼리 비교해 봐.","아는 것부터 정리해 봐.","답이 될 수 없는 걸 먼저 지워 봐.","규칙을 떠올려 봐.","다시 세어 봐."],"en":["Reread the question.","What is it really asking?","Check each condition.","Check the units.","Look for clues in the picture.","Compare the similar ones.","Start with what you know.","Cross out what can't be right.","Recall the rule.","Count again."]},
+      "hint2": {"ko":["단서: {clue}","{place} 근처를 봐.","첫 글자는 {letter}.","규칙은 이거야. {rule}","두 개 중 하나야.","이 줄에 있어.","{color} 것만 남겨 봐.","먼저 {step}부터 해 봐.","거꾸로 생각해 봐. {clue}","반으로 나눠서 생각해 봐.","이 부분을 다시 계산해 봐.","패턴을 봐. {clue}"],"en":["Clue: {clue}","Look near the {place}.","It starts with {letter}.","The rule is this. {rule}","It's one of these two.","It's in this row.","Keep only the {color} ones.","Do {step} first.","Work backwards. {clue}","Split it in half.","Recalculate this part.","Look at the pattern. {clue}"]},
+      "hint3": {"ko":["빛나는 걸 골라 봐.","정답 칸을 표시해 둘게.","이렇게 하는 거야. 따라 해 봐.","첫 단계는 내가 할게. 다음은 너.","이 조각이 여기 들어가.","남은 건 하나야.","순서대로 보여 줄게.","이 두 개를 바꿔 봐.","여기를 눌러 봐.","바로 이거야. 확인해 봐.","같이 해 보자. 보여 줄게.","표시된 걸 확인하고 골라."],"en":["Pick the highlighted one.","I've marked the right spot.","Here's how. Follow along.","I'll do step one. You do the next.","This piece goes here.","Only one option left.","I'll show you in order.","Swap these two.","Tap here.","You're right next to it. This one.","Let's do it together.","Check the marked one, then choose."]},
+      "reveal": {"ko":["정답은 {what}. {why}","답은… {word}. {why}","{why} 그래서 {what}.","이번 답은 {what}. 이유는 이거야. {why}","정리하면 {what}. {why}","{word} 뜻을 기억해 둬. {why}","정답 공개, {what}. {why}","{what}. 핵심은 이거야. {why}","답은 {what}. 다음엔 이걸 기억해. {rule}","여기서는 {what}. {why}","{what}. 헷갈리기 쉬운 부분이야. {why}","다시 보면, {why} 그러니까 {what}."],"en":["The answer is {what}. {why}","It's… {word}. {why}","{why} So it's {what}.","The answer here is {what}. Here's why. {why}","To sum up: {what}. {why}","Remember what {word} means. {why}","Answer: {what}. {why}","{what}. The key point: {why}","It's {what}. Next time, remember this. {rule}","Here, it's {what}. {why}","{what}. This one is easy to mix up. {why}","Look again. {why} That makes it {what}."]},
+      "retry": {"ko":["다시 풀어 볼래?","한 번 더.","같은 문제로 다시.","이번엔 맞힐 거야.","처음부터 다시 시작.","방법 알았으니 다시 해 봐.","한 판 더 할래?","다시 도전.","기록 깨 보자.","다시 해서 별 더 받아 보자.","이제 감 잡았지? 다시.","준비되면 시작."],"en":["Want to solve it again?","One more time.","Same problem, fresh start.","You'll get it this time.","Restart from the beginning.","You know the method now. Go again.","Another round?","Have another go.","Let's beat your score.","Play again for more stars.","Got the idea? Try it again.","Start when ready."]},
+      "idle": {"ko":["네 차례야.","천천히 생각해도 돼.","문제 다시 들을래?","막히면 힌트를 눌러.","어디까지 했는지 확인해 봐.","하나만 골라 봐.","준비되면 골라 봐.","생각 정리 중이야?","시간 제한 없어.","첫 단계부터 해 보자.","{word}, 기억나?","계속할까?"],"en":["Your move.","Take your time.","Want to hear the question again?","Stuck? Use a hint.","Check where you are.","Just pick one.","Choose when you're ready.","Still thinking?","There's no timer.","Begin with the first step.","Remember {word}?","Shall we continue?"]},
+      "streak3": {"ko":["3연속.","세 문제 연속 정답.","흐름 좋다.","연속 세 개, 정확해.","3연속, 페이스 좋아.","세 번째도 맞혔네.","리듬 탔다.","세 번 연속이야.","실수 없이 세 개.","계속 이렇게.","집중력 좋은데?","연속 세 번. 그대로 가자."],"en":["Three in a row.","Three straight correct.","Good momentum.","Three in a row, all accurate.","Three straight. Nice pace.","Number three, also right.","You're in a rhythm.","That's three in a row.","Three with no slips.","Keep it going.","Great focus.","Three straight. Stay with it."]},
+      "streak5": {"ko":["5연속.","다섯 문제 연속 정답!","연속 다섯, 대단한데.","5연속, 실수 하나 없어.","다섯 번째까지 정확해.","페이스 최고야. 5연속.","다섯 번 연속이야.","완전히 감 잡았네.","다섯 개 연속, 이건 실력이야.","끊기지 않네. 5연속.","다섯 번 연속, 집중력 대단해.","5연속. 다음 단계도 문제없겠다."],"en":["Five in a row.","Five straight correct!","Five in a row. Impressive.","Five straight, zero slips.","Accurate all the way to five.","Top pace. Five in a row.","That's five in a row.","You've really got this.","Five straight. That's skill.","Unbroken. Five in a row.","Five in a row. Serious focus.","Five straight. The next level won't stop you."]},
+      "roundEnd": {"ko":["{total}개 중 {n}개 정답.","이번 판 결과, {total}개 중 {n}개.","오늘 다룬 단어… {words}.","{what} 완료.","{n}개 정답. 다시 볼 문제는… {word}.","끝까지 정확했어. {n}개.","{n}개 정답. 지난번보다 {diff}개 많아.","이번 판 끝! {n}개 맞혔어.","수고했어. 다시 한번 정리… {words}.","{n}개 정답, 별 {stars}개.","완성, {what}. 잘했어.","이번 라운드 핵심… {words}."],"en":["{n} out of {total} correct.","Round result: {n} of {total}.","Words this round… {words}.","{what} complete.","{n} correct. The one to review… {word}.","Accurate to the end. {n} right.","{n} correct. That's {diff} more than last time.","Round over. {n} correct.","Nice work. Quick review… {words}.","{n} correct, {stars} stars.","Done: {what}. Well played.","Key words this round… {words}."]},
+      "levelUp": {"ko":["레벨 업. 이제 {level}단계.","다음 단계로 넘어가.","{level}단계 시작. 조금 더 어려워.","실력이 올랐어. 레벨 {level}.","새 단계가 열렸어.","이 단계는 끝. 다음으로.","레벨 {level}. 새 문제 유형이 나와.","한 단계 위로.","레벨 업. 계속 가 보자.","쉬웠다면 다음 단계가 맞아.","레벨 {level}, 시작해 보자.","이제 {level}단계 실력이야."],"en":["Level up. You're on level {level}.","Moving to the next level.","Level {level} starts now. A bit harder.","Your skills went up. Level {level}.","New level unlocked.","This level is done. Next.","Level {level}. New question types ahead.","One level higher.","Level up. Keep going.","If that felt easy, this is your level.","Level {level}. Let's begin.","You're at level {level} now."]},
+      "encourage": {"ko":["어려운 판이었어. 끝낸 것만으로도 충분해.","오늘 문제, 쉽지 않았지. 잘 버텼어.","어디가 헷갈리는지 알게 됐잖아.","다음엔 한 단계 낮춰서 연습해 보자.","실수는 다음 판의 힌트야.","포기하지 않은 게 제일 중요해.","어려운 문제일수록 배우는 게 많아.","잠깐 쉬고 다시 하면 달라질 거야.","오늘은 연습. 실력은 쌓이고 있어.","놓친 단어만 다시 보면 돼… {words}.","이 난이도에서 이만큼이면 잘한 거야.","다음 판은 더 잘될 거야."],"en":["That was a hard round. Finishing it counts.","Not an easy set today. You kept going.","Now you know which parts are tricky.","Next time, let's practice one level lower.","Mistakes are hints for the next round.","Not giving up is what matters most.","Hard problems teach the most.","Take a short break. It'll feel different after.","Today was practice. Your skills are building.","Just review the ones you missed… {words}.","At this level, that's a solid result.","The next round will go better."]},
+      "intro": {"ko":["이번 미션은 {what}.","{name:이} 도움을 요청했어. 시작하자.","목표는 {count}개 찾기.","오늘의 주제는 {what}.","규칙은 간단해. {rule}","준비되면 시작해.","이번 판 단어는… {word}.","{place}에서 단서를 찾아봐.","이번엔 속도보다 정확도가 중요해.","레벨 {level} 시작.","{what}. 할 수 있겠지?","새 문제 세트야. 가 보자."],"en":["Mission: {what}.","{name} asked for help. Let's start.","Goal: find {count}.","Today's topic is {what}.","The rule is simple. {rule}","Start when you're ready.","This round's word… {word}.","Look for clues in the {place}.","Accuracy matters more than speed here.","Level {level}, go.","{what}. Think you can handle it?","New set of questions. Let's go."]}
+    }
+  };
+  /* /NARRATE-POOLS */
+
+  /* NARRATE-EXTRA — small original pools §11 does not have (design): runner cheers, a short line after a reveal, the goodbye on exit. JSON between the markers (voice-gen.mjs reads it). */
+  var NARR_EXTRA = {
+    "K": {
+      "cheer": {"ko":["와!","야호!","좋아!","앗싸!","오예!"],"en":["Yay!","Woo-hoo!","Yes!","Whee!","Wow!"]},
+      "afterReveal": {"ko":["이제 알았지?","좋아, 기억해 두자!","잘 찾았어. 다음 거 하자!"],"en":["Now you know!","Good. Remember that one!","There it is. Next one!"]},
+      "bye": {"ko":["또 놀자!","다음에 또 만나!","안녕, 또 와!"],"en":["See you soon!","Bye for now!","Come back soon!"]}
+    },
+    "E1": {
+      "cheer": {"ko":["좋았어!","와!","야호!","그렇지!","앗싸!"],"en":["Yay!","Nice!","Yes!","Woo-hoo!","Got it!"]},
+      "afterReveal": {"ko":["이제 알겠지? 다음 거 가 보자.","좋아, 이번 건 기억해 두자.","잘했어. 이제 확실히 알았네."],"en":["Now you know it. On to the next!","Good. Keep that one in mind.","There you go. Now you know."]},
+      "bye": {"ko":["오늘도 재밌었어. 또 하자!","다음에 또 만나!","잘 놀았다! 안녕!"],"en":["That was fun. See you soon!","Bye for now!","Great playing. See you!"]}
+    },
+    "E23": {
+      "cheer": {"ko":["좋아.","그거지.","오, 좋다."],"en":["Nice.","Got it.","There it is."]},
+      "afterReveal": {"ko":["이제 정리됐지?","좋아, 다음 문제."],"en":["Now it makes sense.","Okay, next one."]},
+      "bye": {"ko":["오늘은 여기까지. 다음에 또 하자.","수고했어. 다음에 봐."],"en":["That's it for today. See you next time.","Good work. See you."]}
+    }
+  };
+  /* /NARRATE-EXTRA */
+  var NB_GROUP = { K: 'K', E1: 'E1', E2: 'E23', E3: 'E23' };
+  var NWORD = { word: 1, words: 1, picked: 1, plural: 1, letter: 1, sound: 1 };          // spoken in wordLang, never with a particle
+  var NNUM = { count: 1, num: 1, calc: 1, n: 1, total: 1, level: 1, stars: 1, diff: 1 };
+  var NSLOT_RE = /\{([a-z]+)(?::([^}]+))?\}/g, NALNUM = /[0-9A-Za-z가-힣ㄱ-ㆎ]/;
+  var KO_ONE = ['', '하나', '둘', '셋', '넷', '다섯', '여섯', '일곱', '여덟', '아홉'], KO_PRE = ['', '한', '두', '세', '네', '다섯', '여섯', '일곱', '여덟', '아홉'];
+  var KO_TEN = ['', '열', '스물', '서른', '마흔', '쉰', '예순', '일흔', '여든', '아흔'], KO_SINO = ['영', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+  /** Korean number readings: count 세 (before a counter: 세 개), one 셋 (counting aloud), sino 삼 (sums, answers, levels). */
+  function koCount(n) { if (n === 20) return '스무'; var t = Math.floor(n / 10), o = n % 10; return (KO_TEN[t] || '') + (o ? KO_PRE[o] : ''); }
+  function koOne(n) { var t = Math.floor(n / 10), o = n % 10; return (KO_TEN[t] || '') + (o ? KO_ONE[o] : ''); }
+  function koSino(n) { if (n === 0) return '영'; var s = ''; [[1000, '천'], [100, '백'], [10, '십']].forEach(function (u) { var d = Math.floor(n / u[0]) % 10; if (d) s += (d === 1 ? '' : KO_SINO[d]) + u[1]; }); return s + (n % 10 ? KO_SINO[n % 10] : ''); }
+  SK.koNumber = function (n, style) { n = +n; if (!(n >= 0) || Math.floor(n) !== n) return String(n); if (style === 'sino') return n < 10000 ? koSino(n) : String(n); if (n < 1 || n > 99) return String(n); return style === 'one' ? koOne(n) : koCount(n); };
+
+  var NC = { band: null, lang: null, wordLang: null, pools: null, speaker: null, haru: null, visual: null, react: true, bubble: null, idle: true, music: false, pill: false, streak3: null, hintButton: true, on: false };
+  var nowMs = function () { return performance.now(); };
+  function nBand() { return NC.band || (LEARN.state && LEARN.state.band) || 'E1'; }
+  function nGroup() { return NB_GROUP[nBand()] || 'E1'; }
+  function nLang() { return NC.lang || SK.lang; }
+  function nWordLang() { return NC.wordLang || nLang(); }
+  function freshRound() { return { t0: nowMs(), voiceMs: 0, items: 0, correct: 0, correctN: 0, firstTry: 0, wrongItems: 0, reveals: 0, wrong1: 0, w1n: 0, sincePraise: 0, praisedLast: false, firstSuccess: true, streak: 0, wordCorrect: 0, words: [], missed: [], nonWord: 0, lines: 0, praise: 0, childUsed: false, charIntro: 0, charLines: 0, ended: false }; }
+  var RS = freshRound(), IT = null, NTOK = 0, MECH = {}, HARD_NEXT = false, IDLE_N = 0, BAGS = {};
+  var CUR = null, NQ = [], NLOG = [], lineSeq = 0, lastLineEnd = 0, lastNonIdleEnd = 0, lastInput = 0, prevInput = 0, dragging = false, lastCorrectAt = -1e9, lastLabel = { word: null, t: -1e9 };
+  var IDLE = { stage: 9, pauseEnd: 0, paused: false, iv: 0 }, VIS = { glow: [], hand: null, demo: null };
+  function waitMs(ms) { return new Promise(function (r) { setTimeout(r, Math.max(0, ms || 0)); }); }
+
+  // ---------------------------------------------------------------- slots and the segment model (§10.10)
+  function langVal(v, lang) { if (v == null || v === '') return null; if (typeof v === 'object' && !Array.isArray(v)) v = v[lang] != null ? v[lang] : null; return v == null || v === '' ? null : v; }
+  function textOf(x, L) { if (x == null) return null; if (typeof x === 'function') x = x(L); if (typeof x === 'object' && !Array.isArray(x)) x = x[L]; return x == null || x === '' ? null : String(x); }
+  function wordOf(c) { var w = langVal(c && c.word, nWordLang()); return w == null ? null : String(w); }
+  function slotVal(c, name, L, W, ev) {
+    var lang = NWORD[name] ? W : L, v;
+    if (name === 'child') { if (!(ev === 'intro' || ev === 'levelUp') || RS.childUsed) return null; v = c.child != null ? c.child : SK.name; }
+    else if (name === 'letter') { v = langVal(c.letter, lang); if (v == null) { var w = wordOf(c); v = w ? w.charAt(0).toUpperCase() : null; } return v; }
+    else if (name === 'words') { var a = (c.words || []).map(function (x) { return langVal(x, W); }).filter(Boolean); return a.length ? a : null; }
+    else v = c[name] != null ? c[name] : (name === 'num' || name === 'calc' ? c.count : null);   // {count} {num} {calc} all read ctx.count
+    v = langVal(v, lang);
+    if (v != null && NNUM[name] && !isFinite(+v)) return null;
+    return v;
+  }
+  function fillable(line, c, L, W, ev) { var ok = true; line.replace(NSLOT_RE, function (m, name) { if (slotVal(c, name, L, W, ev) == null) ok = false; return m; }); return ok; }
+  function numSlot(name, v, L) {
+    var n = +v; if (L !== 'ko' || !(n >= 0) || Math.floor(n) !== n) return { dsp: String(v), spk: String(v) };
+    if (name === 'num') { var one = SK.koNumber(n, 'one'); return { dsp: one, spk: one }; }
+    if (name === 'calc' || name === 'level') return { dsp: String(n), spk: SK.koNumber(n, 'sino') };
+    return { dsp: String(n), spk: SK.koNumber(n, 'count') };   // count, n, total, stars, diff: the form before 개
+  }
+  var capFirst = function (s) { return s.charAt(0).toUpperCase() + s.slice(1); };
+  /**
+   * render(line, ctx, L, W, ev) → {display, segs:[{text, lang, word?} | {gap}], tmpl}. A wordLang slot becomes its own segment
+   * whenever the languages differ, after "…", or when only punctuation follows it (the target word: a pause before, a slower
+   * rate on it). Gaps: 250 ms after "…" or a sentence end, 120 ms otherwise, 450 ms between the words of {words}.
+   * (narrate-pools.mjs fixedSegments() makes the same split for the clip generator.)
+   */
+  function render(line, c, L, W, ev, o) {
+    o = o || {}; var toks = [], last = 0, m; NSLOT_RE.lastIndex = 0;
+    while ((m = NSLOT_RE.exec(line))) { if (m.index > last) toks.push({ lit: line.slice(last, m.index) }); toks.push({ slot: m[1], josa: m[2] }); last = NSLOT_RE.lastIndex; }
+    if (last < line.length) toks.push({ lit: line.slice(last) });
+    var segs = [], dsp = '', buf = '', pend = 0, whyNext = false, words = 0;
+    function push(seg) { if (segs.length) segs.push({ gap: pend || 120 }); segs.push(seg); pend = 0; }
+    function flush() { var s = buf.trim(); buf = ''; if (s && NALNUM.test(s)) { var seg = { text: s, lang: L }; if (whyNext && o.whyGap && segs.length) pend = Math.max(pend, o.whyGap); whyNext = false; push(seg); pend = /[….!?]["')\]]*$/.test(s) ? 250 : 120; } }
+    var atStart = function () { return !dsp.trim() || /[.!?…]\s*$/.test(dsp); };
+    for (var i = 0; i < toks.length; i++) {
+      var t = toks[i];
+      if (t.lit != null) { buf += t.lit; dsp += t.lit; continue; }
+      var name = t.slot, v = slotVal(c, name, L, W, ev);
+      if (v == null) continue;
+      if (name === 'child') RS.childUsed = true;
+      if (!NWORD[name]) {
+        var d, s;
+        if (NNUM[name]) { var ns = numSlot(name, v, L); d = ns.dsp; s = ns.spk; } else { d = s = String(v); }
+        if (L === 'en' && atStart()) { d = capFirst(d); s = capFirst(s); }
+        if (t.josa && L === 'ko') { var pt = name === 'child' ? particle(v, '아', '야') : particle(v, t.josa); d += pt; s += pt; }
+        if (name === 'why' && !buf.trim()) whyNext = true;
+        buf += s; dsp += d; continue;
+      }
+      var list = name === 'words' ? v : [String(v)], next = toks[i + 1] ? (toks[i + 1].lit != null ? toks[i + 1].lit : 'x') : '';
+      var split = W !== L || name === 'words' || /…\s*$/.test(buf) || /^\s*([!?.,…]|$)/.test(next);
+      var jo = t.josa && W === L && L === 'ko' ? particle(list[list.length - 1], t.josa) : '';
+      if (!split) { var wd = list[0] + jo; buf += wd; dsp += (L === 'en' && atStart() ? capFirst(wd) : wd); continue; }
+      flush();
+      for (var k = 0; k < list.length; k++) {
+        if (k) pend = 450;
+        push({ text: list[k] + (k === list.length - 1 ? jo : ''), lang: W, word: true }); words++;
+        dsp += (k ? ', ' : '') + (L === 'en' && !k && atStart() ? capFirst(list[k]) : list[k]) + (k === list.length - 1 ? jo : '');
+      }
+      pend = 120;
+      if (toks[i + 1] && toks[i + 1].lit != null) {
+        var pm = toks[i + 1].lit.match(/^\s*[!?.,…]+/);
+        if (pm) { dsp += pm[0]; toks[i + 1] = { lit: toks[i + 1].lit.slice(pm[0].length) }; pend = /[….!?]/.test(pm[0]) ? 250 : 120; }
+      }
+    }
+    flush();
+    return { display: dsp.replace(/\s+/g, ' ').trim(), segs: segs, words: words, tmpl: line };
+  }
+
+  // ---------------------------------------------------------------- shuffle bags (§10.5)
+  function poolOf(key, L) {
+    var g = nGroup(), out = [], P = NARR_POOLS[g] && NARR_POOLS[g][key], X = NARR_EXTRA[g] && NARR_EXTRA[g][key];
+    if (P && P[L]) out = out.concat(P[L]);
+    if (X && X[L]) out = out.concat(X[L]);
+    var gp = NC.pools; if (gp) {   // the game's own lines for this event count toward the same no-repeat window (§10.5.6)
+      [gp[key], gp[nGroup()] && gp[nGroup()][key], gp[nBand()] && gp[nBand()][key]].forEach(function (v) {
+        if (!v) return; if (Array.isArray(v)) out = out.concat(v.map(function (x) { return textOf(x, L); }).filter(Boolean)); else if (v[L]) out = out.concat(v[L]);
+      });
+    }
+    if (NC.hintButton === false) out = out.filter(function (l) { return !/힌트 버튼|힌트를 눌러|hint button|use a hint/i.test(l); });
+    return out;
+  }
+  function specific(lines, L) { if (!lines) return []; if (typeof lines === 'string') return [lines]; if (Array.isArray(lines)) return lines.map(function (x) { return textOf(x, L); }).filter(Boolean); var v = lines[L]; return v ? [].concat(v) : []; }
+  /**
+   * draw(bagKey, specificLines, poolLines, ctx, …) → one line. Game lines given for this moment come first (never the same twice
+   * in a row); pool lines: no repeat within the last 4 uses, refill only after ≥ 2/3 of the bag was used (§10.5.1).
+   */
+  function draw(key, spec, base, c, L, W, ev, filter) {
+    var b = BAGS[key] || (BAGS[key] = { used: {}, recent: [] }), lastL = b.recent[b.recent.length - 1];
+    var ok = function (l) { return (!filter || filter(l)) && fillable(l, c, L, W, ev); };
+    var s = spec.filter(function (l) { return ok(l) && l !== lastL; });
+    var pick = s.length ? s[Math.floor(Math.random() * s.length)] : null;
+    if (!pick && base.length) {
+      var fresh = function (l) { return !b.used[l] && b.recent.indexOf(l) < 0; }, from = function (test) { var a = base.filter(function (l) { return ok(l) && test(l); }); return a.length ? a[Math.floor(Math.random() * a.length)] : null; };
+      pick = from(fresh);
+      if (!pick && base.filter(function (l) { return b.used[l]; }).length >= base.length * 2 / 3) { b.used = {}; pick = from(fresh); }
+      if (!pick) pick = from(function (l) { return b.recent.indexOf(l) < 0; });
+      if (!pick) pick = from(function (l) { return l !== lastL; });
+      if (!pick) pick = from(function () { return true; });
+    }
+    if (!pick) pick = spec.filter(ok)[0] || null;   // only the line said last time fits
+    if (!pick) return null;
+    b.used[pick] = true; b.recent.push(pick); if (b.recent.length > 4) b.recent.shift();
+    return pick;
+  }
+
+  // ---------------------------------------------------------------- lines: priority, queue, barge-in (§10.4)
+  /**
+   * line(o) → Promise<{text, tmpl, cut}|null>. o: {event, tmpl, ctx, style, prio 1|2|3, story, word, obj, delay, idle, budget,
+   * speaker, who, anchor, whyGap, maxWait}. Resolves when the line has finished or was dropped (§10.4.9).
+   */
+  function line(o) {
+    var L = o.L || nLang(), W = nWordLang(), c = o.ctx || {}, my = NTOK;
+    var r = render(o.tmpl, c, L, W, o.event, o);
+    if (!r.segs.length) return Promise.resolve(null);
+    var ln = { n: ++lineSeq, event: o.event, kind: c.kind || null, prio: o.prio || 2, style: o.style || 'instruction', story: !!o.story, word: !!o.word || (r.words > 0 && r.segs.length === 1), obj: o.obj != null ? o.obj : null, idle: !!o.idle, budget: o.budget !== false,
+      tmpl: o.tmpl, text: r.display, segs: r.segs, L: L, W: W, pool: o.pool || null, bag: o.bag || null, ctx: c, item: IT, speaker: o.speaker, who: o.who, anchor: o.anchor, maxWait: o.maxWait, at: nowMs() };
+    ln.promise = new Promise(function (res) { ln.resolve = res; });
+    var go = function () { if (my !== NTOK) return settle(ln, 'cancelled'); if (ln.prio === 3 && !ln.story && lastInput > ln.at) return settle(ln, 'input'); schedule(ln); };
+    if (o.delay > 0) setTimeout(go, o.delay); else go();
+    return ln.promise;
+  }
+  function settle(ln, dropped) {
+    if (ln.settled) return; ln.settled = true;
+    if (dropped) { ln.dropped = dropped; logLine(ln); }
+    ln.resolve(dropped ? null : { text: ln.text, tmpl: ln.tmpl, cut: ln.cut || null });
+  }
+  function schedule(ln) {
+    ln.queuedAt = nowMs();
+    var c = CUR;
+    if (!c) { if (NQ.length) { NQ.push(ln); return pump(0); } return start(ln); }
+    if (ln.prio === 1) {
+      if (c.story) return enqueue(ln, ln.event === 'label' || ln.event === 'replay' ? 1000 : 0);
+      if (c.prio === 1) { if (c.obj !== ln.obj && nowMs() - c.startedAt >= 400) return replace(c, ln, 'replaced'); return enqueue(ln); }
+      return replace(c, ln, 'p1');
+    }
+    if (ln.prio === 2) {
+      if (c.prio === 1 || c.story) return enqueue(ln, 0);
+      return replace(c, ln, 'p2');   // a newer instruction or hint takes over; praise gives way
+    }
+    return enqueue(ln, ln.maxWait || 2500);   // P3 waits a little behind anything, then is stale
+  }
+  function enqueue(ln, maxWait) {
+    if (maxWait) ln.maxWait = maxWait;
+    NQ.push(ln);
+    var p1 = NQ.filter(function (x) { return x.prio === 1 && x.word; });   // at most 2 target words wait (§10.4.5)
+    while (p1.length > 2) { var old = p1.shift(); NQ.splice(NQ.indexOf(old), 1); settle(old, 'queue-full'); }
+  }
+  function replace(c, ln, why) { NQ.unshift(ln); cutLine(c, why); }
+  function pump(gap) {
+    setTimeout(function () {
+      if (CUR) return;
+      NQ.sort(function (a, b) { return a.prio - b.prio || a.queuedAt - b.queuedAt; });
+      while (NQ.length) {
+        var ln = NQ.shift(), waited = nowMs() - ln.queuedAt;
+        if (ln.maxWait && waited > ln.maxWait) { settle(ln, 'stale'); continue; }
+        if (ln.event === 'instruction' && ln.item && ln.item.done) { settle(ln, 'step-done'); continue; }   // never an instruction for a step already done
+        return start(ln);
+      }
+    }, gap == null ? 150 : gap);
+  }
+  function speakerOf(ln) { return ln.speaker !== undefined ? ln.speaker : NC.speaker; }
+  function start(ln) {
+    CUR = ln; ln.startedAt = nowMs(); RS.lines++;
+    var sp = speakerOf(ln), release = SND.duck(-10, 80, 300), voiced = false, vp = null;
+    var voice = function () { if (!voiced) { voiced = true; vp = speakSegs(ln); } return vp; };
+    if (ln.word && (NC.pill || (ln.ctx && ln.ctx.at))) setTimeout(function () { if (!ln.cut) vis('pill', { text: ln.text, word: ln.text, ctx: ln.ctx }); }, 400);   // the printed word 300–800 ms after the voice
+    var done;
+    if (sp && typeof sp.say === 'function') {
+      var before = UI.bubbleEl();
+      try { sp.say(ln.text, { voice: voice, hold: 0, keep: true, bubble: NC.bubble !== false, style: ln.style, replay: function () { replayLine(ln); }, line: { event: ln.event, prio: ln.prio, word: ln.word } }); } catch (e) { console.error(e); }
+      ln.bubbleEl = UI.bubbleEl() !== before ? UI.bubbleEl() : null;
+      setTimeout(voice, 1500);   // a speaker wrapper that never calls o.voice(): speak anyway
+      done = new Promise(function (res) { (function wait() { if (vp) vp.then(res, res); else setTimeout(wait, 30); })(); });
+    } else {
+      if (ln.who || (NC.bubble === true && !sp)) { UI.say(ln.text, { who: ln.who || undefined, anchor: ln.anchor, replay: function () { replayLine(ln); } }); ln.bubbleEl = UI.bubbleEl(); }
+      done = voice();
+    }
+    done.then(function () { ended(ln, release); }, function () { ended(ln, release); });
+  }
+  function speakSegs(ln) {
+    var i = 0, band = nBand();
+    return new Promise(function (res) {
+      ln.stopNow = function () { clearTimeout(ln.gapT); res(); };
+      (function next() {
+        if (ln.cut || i >= ln.segs.length) return res();
+        var s = ln.segs[i++];
+        if (s.gap) { ln.gapT = setTimeout(next, s.gap); return; }
+        var p = s.word ? SND.speak(s.text, { lang: s.lang, style: 'word', band: band, key: [s.text], word: true })
+          : SND.speak(s.text, { lang: s.lang, style: ln.style, band: band, key: [band + '|' + s.text, s.text] });
+        p.then(next, next);
+      })();
+    });
+  }
+  /**
+   * cut a playing line (§10.4.3): a clip with ≤ 400 ms left finishes, a longer clip fades out over 80 ms, the speechSynthesis
+   * fallback stops at once. A stopped line is never resumed.
+   */
+  function cutLine(ln, why) {
+    if (ln.cut || ln.ended) return;
+    ln.cut = why;
+    var C2 = VC.clips, a = C2 && C2.audio, clip = C2 && C2.busy && C2.busy();
+    if (clip && a && isFinite(a.duration)) {
+      var left = a.duration - a.currentTime;
+      if (left <= 0.4) return;   // the segment ends by itself; speakSegs stops after it
+      var v0 = a.volume, k = 0, iv = setInterval(function () { k++; try { a.volume = Math.max(0, v0 * (1 - k / 4)); } catch (e) { /* iOS: volume is read-only */ } if (k >= 4) { clearInterval(iv); VC.stop(); try { a.volume = v0; } catch (e) { /* ignore */ } if (ln.stopNow) ln.stopNow(); } }, 20);
+      return;
+    }
+    if (CUR === ln) VC.stop();
+    if (ln.stopNow) ln.stopNow();
+  }
+  function ended(ln, release) {
+    if (ln.ended) return; ln.ended = true; ln.endedAt = nowMs(); release();
+    if (ln.budget) RS.voiceMs += ln.endedAt - ln.startedAt;
+    if (!ln.idle) lastNonIdleEnd = ln.endedAt;
+    lastLineEnd = ln.endedAt;
+    if (!ln.word && ln.budget) RS.nonWord++;
+    if (CUR === ln) CUR = null;
+    logLine(ln);
+    var b = ln.bubbleEl; if (b) setTimeout(function () { if (!CUR && UI.bubbleEl() === b) UI.hideSay(); }, 1300);
+    settle(ln);
+    pump(ln.cut ? 60 : 150);
+  }
+  function logLine(ln) {
+    if (ln.logged) return; ln.logged = true;
+    NLOG.push({ n: ln.n, t: Math.round(ln.at), event: ln.event, kind: ln.kind, prio: ln.prio, style: ln.style, pool: ln.pool, bag: ln.bag, line: ln.tmpl, text: ln.text, lang: ln.L,
+      segments: ln.segs.map(function (s) { return s.gap ? { gap: s.gap } : { text: s.text, lang: s.lang, word: !!s.word }; }),
+      startedAt: ln.startedAt ? Math.round(ln.startedAt) : null, endedAt: ln.endedAt ? Math.round(ln.endedAt) : null, cut: ln.cut || null, dropped: ln.dropped || null });
+    if (NLOG.length > 500) NLOG.splice(0, NLOG.length - 500);
+  }
+  function replayLine(ln) { line({ event: 'replay', tmpl: ln.tmpl, ctx: ln.ctx, style: ln.style, prio: 1, obj: 'replay', idle: true, budget: false, L: ln.L, pool: ln.pool }); }
+
+  /** say a line: o.text (given) or drawn from o.pool (one key or several, in preference order) after o.lines (game lines for this moment). */
+  function say(o) {
+    var L = nLang(), W = nWordLang(), c = o.ctx || {}, keys = [].concat(o.pool || []), tmpl = null, bag = null;
+    if (o.text != null) tmpl = textOf(o.text, L);
+    else {
+      var base = []; keys.forEach(function (k) { base = base.concat(poolOf(k, L)); });
+      bag = nGroup() + '|' + L + '|' + (o.bag || keys.join('+'));
+      tmpl = draw(bag, specific(o.lines, L), base, c, L, W, o.event, o.filter);
+    }
+    if (!tmpl) return Promise.resolve(null);
+    if (o.appendWhy && c.why != null && !/\{why\}/.test(tmpl)) tmpl += ' {why}';
+    return line({ event: o.event, tmpl: tmpl, ctx: c, style: o.style, prio: o.prio, story: o.story, obj: o.obj, delay: o.delay, idle: o.idle, budget: o.budget, whyGap: o.whyGap, maxWait: o.maxWait, pool: keys.join('+') || 'given', bag: bag, word: o.word });
+  }
+  function sayWord(ev, c, w, o) {
+    o = o || {};
+    return line({ event: ev, tmpl: '{word}', ctx: Object.assign({}, c, { word: w }), style: 'word', prio: o.prio || 1, obj: w, word: true, delay: o.delay, idle: o.idle, budget: o.budget, story: o.story, pool: 'word' });
+  }
+
+  // ---------------------------------------------------------------- visuals: the game's hook first, the kit's DOM defaults otherwise
+  function elOf(x) { if (typeof x === 'function') x = x(); if (typeof x === 'string') x = document.querySelector(x); return x && x.nodeType === 1 ? x : null; }
+  function ptOf(x) {
+    if (typeof x === 'function') x = x(); if (typeof x === 'string') x = document.querySelector(x);
+    if (!x) return null;
+    if (x.nodeType === 1) { if (!x.isConnected) return null; var r = x.getBoundingClientRect(); return r.width || r.height ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null; }
+    if (x.isObject3D && SK.main) return SK.main.screenOf(x);
+    if (x.isVector3 && SK.main) return SK.main.screenOf(x);
+    return x.x != null ? x : null;
+  }
+  function clearVis() { VIS.glow.forEach(function (e) { e.classList.remove('sk-n-glow', 'sk-n-answer'); }); VIS.glow = []; if (VIS.hand) { VIS.hand.remove(); VIS.hand = null; } }
+  function defaultVisual(kind, i) {
+    var c = i.ctx || {}, tgt = elOf(c.target), list = function (a) { return (a || []).map(elOf).filter(Boolean); };
+    if (kind === 'pulse') (list(c.candidates).length ? list(c.candidates) : tgt ? [tgt] : []).forEach(function (e) { e.classList.remove('sk-n-pulse'); void e.offsetWidth; e.classList.add('sk-n-pulse'); setTimeout(function () { e.classList.remove('sk-n-pulse'); }, 1400); });
+    else if (kind === 'glow') (list(c.near).length ? list(c.near) : tgt ? [tgt] : []).forEach(function (e) { e.classList.add('sk-n-glow'); VIS.glow.push(e); });
+    else if (kind === 'hand' || kind === 'reveal') {
+      if (kind === 'reveal' && tgt) { tgt.classList.add('sk-n-glow', 'sk-n-answer'); VIS.glow.push(tgt); }
+      if (c.target && ptOf(c.target)) { if (VIS.hand) VIS.hand.remove(); VIS.hand = UI.hand(c.target); }
+    } else if (kind === 'demo') {
+      var to = c.to || c.target; if (!to) return;
+      if (VIS.demo) VIS.demo.remove();
+      var dh = VIS.demo = UI.hand(to, { from: c.from, loops: c.loops || 2 });
+      if (!c.from) setTimeout(function () { dh.remove(); if (VIS.demo === dh) VIS.demo = null; }, (c.loops || 2) * 1700);   // a pointing demo: ≤ 2 loops too
+    } else if (kind === 'lock' || kind === 'unlock') { var pn = c.panel; if (pn && pn.lock) pn.lock(kind === 'lock'); }
+    else if (kind === 'pill') UI.wordPill(i.text, { at: c.at || c.target });
+    else if (kind === 'clear') clearVis();
+  }
+  /** visual hook: setup({visual(kind, info)}) runs first; return true there to skip the kit default. kinds: pulse glow hand reveal demo lock unlock pill recap shake clear */
+  function vis(kind, info) {
+    info = info || {}; info.kind = kind; var handled = false;
+    if (typeof NC.visual === 'function') { try { handled = NC.visual(kind, info) === true; } catch (e) { console.error(e); } }
+    if (!handled) defaultVisual(kind, info);
+    SK.emit('narrate:visual', kind, info);
+  }
+  function react(name) {
+    if (NC.react === false) return;
+    if (typeof NC.react === 'function') { try { NC.react(name); } catch (e) { console.error(e); } return; }
+    var h = NC.haru || (NC.speaker && typeof NC.speaker.play === 'function' ? NC.speaker : null);
+    if (h && h.play) { try { h.play(name); } catch (e) { /* ignore */ } }
+  }
+
+  // ---------------------------------------------------------------- items, rounds, the idle ladder (§10.7, §10.8)
+  function ctxOf(ctx) { var o = {}, k; if (IT && IT.ctx) for (k in IT.ctx) o[k] = IT.ctx[k]; ctx = ctx || {}; for (k in ctx) if (ctx[k] !== undefined) o[k] = ctx[k]; return o; }
+  function newItem(id, ctx, implicit) {
+    if (RS.ended) newRound();
+    IT = { id: id, ctx: ctx || {}, wrongs: 0, revealed: false, hintStep: 0, hints: 0, done: false, implicit: !!implicit, startedAt: nowMs(), prompt: (ctx && ctx.prompt) || null };
+    RS.items++; IDLE.stage = 0; IDLE.pauseEnd = nowMs();
+    return IT;
+  }
+  function newRound() { RS = freshRound(); }
+  function wordAdd(w, missed) {
+    if (!w) return; var a = RS.words, i = a.indexOf(w); if (i >= 0) a.splice(i, 1); a.push(w);
+    if (missed && RS.missed.indexOf(w) < 0) RS.missed.push(w);
+  }
+  function idleTimes() { return { K: [6, 11, 17], E1: [7, 13, 20], E2: [9, 16, 25], E3: [9, 16, 25] }[nBand()] || [7, 13, 20]; }
+  function idleTick() {
+    if (!NC.on || NC.idle === false) return;
+    var t = nowMs(), it = IT;
+    if (!it || it.done || IDLE.stage >= 3) return;
+    if (IDLE.paused || dragging || document.hidden || (CUR && !CUR.idle)) { IDLE.pauseEnd = t; return; }   // the clock waits (§10.8)
+    var secs = (t - Math.max(lastInput, lastNonIdleEnd, IDLE.pauseEnd, it.startedAt)) / 1000, T = idleTimes(), c = ctxOf({});
+    if (IDLE.stage === 0 && secs >= T[0]) { IDLE.stage = 1; vis('pulse', { ctx: c, idle: true, step: 0 }); }
+    else if (IDLE.stage === 1 && secs >= T[1]) { IDLE.stage = 2; idleLine(c); }
+    else if (IDLE.stage === 2 && secs >= T[2]) {
+      IDLE.stage = 3; it.hintStep = Math.max(it.hintStep, 3);
+      vis('hand', { ctx: c, idle: true, step: 3 });
+      if (t - lastLineEnd >= 4000 && !CUR) say({ event: 'idle', pool: 'hint3', ctx: c, style: 'gentle', prio: 3, idle: true });
+    }
+  }
+  function idleLine(c) {
+    var pool;
+    if (nGroup() === 'E23') pool = 'idle';
+    else { IDLE_N++; pool = IDLE_N % 3 === 0 && wordOf(c) ? 'idle.word' : 'idle.plain'; }
+    react('hello');
+    return say({ event: 'idle', pool: pool, ctx: c, style: 'instruction', prio: 3, idle: true });
+  }
+  function onDown() {
+    var t = nowMs(); prevInput = lastInput; lastInput = t; dragging = true;
+    if (!NC.on) return;
+    if (IT && !IT.done) IDLE.stage = 0;   // the ladder restarts after an input
+    if (CUR && CUR.prio === 3 && !CUR.story) cutLine(CUR, 'input');   // stale praise has no value (§10.4.1)
+    for (var i = NQ.length - 1; i >= 0; i--) if (NQ[i].prio === 3) settle(NQ.splice(i, 1)[0], 'input');
+    if (VIS.demo) { VIS.demo.remove(); VIS.demo = null; }   // the demo hand is gone on touch-down
+  }
+  function onUp() { dragging = false; }
+  window.addEventListener('pointerdown', onDown, { capture: true, passive: true });
+  ['pointerup', 'pointercancel'].forEach(function (ev) { window.addEventListener(ev, onUp, { capture: true, passive: true }); });
+
+  function stepDone() { if (CUR && CUR.prio === 2 && !CUR.story) cutLine(CUR, 'step'); }   // P2 stops when the step is complete (§10.4.2)
+  function praiseOK(firstOfMech) {
+    if (firstOfMech) return true;                                     // always on the first success of a new mechanic
+    if (RS.praisedLast) return false;                                 // never on two consecutive items
+    var per = { K: 2, E1: 3, E2: 4, E3: 5 }[nBand()] || 3;
+    if (RS.sincePraise + 1 < per) return false;
+    var el = (nowMs() - RS.t0) / 1000;                               // talk budget: voice ≤ 30 %, ≤ one non-word line per 6 s
+    if (el > 20 && RS.voiceMs / 1000 / el > 0.3) return false;
+    if (RS.nonWord + 1 > el / 6 + 2) return false;
+    return true;
+  }
+  function streak3On() { return NC.streak3 != null ? !!NC.streak3 : nGroup() !== 'E23'; }
+  var noWordSlot = function (l) { return !/\{(word|words|picked|plural|letter|sound)\}/.test(l); };
+
+  // ---------------------------------------------------------------- events (§10.2)
+  var EV = {};
+  EV.intro = async function (ctx) {
+    var c = Object.assign({}, ctx), my = NTOK, out = [];   // its own slots only (not the last item's)
+    if (!ctx || !ctx.keepRound) newRound();
+    await waitMs(c.settle != null ? c.settle : 450);                 // scene settled → first line 450 ms
+    if (my !== NTOK) return out;
+    react('hello');
+    if (c.music === true || (c.music !== false && NC.music)) SND.music(true);
+    var two = nGroup() !== 'E23', goal = c.goal != null ? c.goal : null, storyOn = c.story !== false && (two || goal == null);
+    if (c.mechanic) { MECH[c.mechanic] = true; RS.firstSuccess = true; }
+    if (storyOn) {
+      out.push(await say({ event: 'intro', pool: 'intro', text: c.story != null && c.story !== true ? c.story : null, lines: c.lines, ctx: c, style: 'story', prio: 2, story: true }));
+      if (my !== NTOK) return out;
+      if (goal != null) await waitMs(550);                            // story → goal 400–700 ms
+    }
+    if (goal != null && my === NTOK) {
+      if (IT) IT.prompt = goal;
+      out.push(await say({ event: 'intro', text: goal, ctx: c, style: 'instruction', prio: 2, story: true }));
+    }
+    return out;
+  };
+  EV.instruction = function (ctx) {
+    var c = ctxOf(ctx), text = c.text != null ? c.text : c.line != null ? c.line : IT && IT.prompt;
+    if (text == null) return Promise.resolve(null);
+    if (c.mechanic) {
+      var seen = MECH[c.mechanic];
+      if (seen && nBand() !== 'K' && !c.always) return Promise.resolve(null);   // once per mechanic (K: every new step)
+      MECH[c.mechanic] = true; if (!seen) RS.firstSuccess = true;
+    }
+    if (IT && c.prompt !== false) IT.prompt = text;
+    if (c.demo) EV.demo(c.demo === true ? {} : c.demo);
+    return say({ event: 'instruction', text: text, ctx: c, style: 'instruction', prio: 2, delay: c.delay });
+  };
+  EV.demo = function (ctx) {
+    var c = ctxOf(ctx), my = NTOK;
+    return waitMs(c.delay != null ? c.delay : 500).then(function () { if (my === NTOK) vis('demo', { ctx: c }); return true; });
+  };
+  EV.label = function (ctx) {
+    var c = ctxOf(ctx), w = wordOf(c), t = nowMs(); if (!w) return Promise.resolve(null);
+    if (c.choice && IT && !IT.done && !IT.revealed) { if (c.sound !== false) SND.play('pick'); return Promise.resolve(null); }   // no name for an open item's answer choices
+    if (lastLabel.word === w && t - lastLabel.t < 400) return Promise.resolve(null);   // debounce 400 ms
+    lastLabel = { word: w, t: t };
+    if (c.sound !== false) SND.play(c.sound || 'pick');
+    wordAdd(w);
+    return sayWord('label', c, w, { delay: Math.max(200, lastCorrectAt + 600 - t) });   // never over the last reaction's first 600 ms
+  };
+  EV.correct = async function (ctx) {
+    var it = IT && !IT.done ? IT : newItem((ctx && ctx.item) || 'auto', {}, true), c = ctxOf(ctx), my = NTOK, t0 = nowMs(), kind = c.kind || 'quiz', out = [];
+    stepDone();
+    var revealed = it.revealed, first = it.wrongs === 0 && !revealed, w = wordOf(c), band = nBand();
+    it.done = true; lastCorrectAt = t0; clearVis();   // the hint hand and glows go when the item is answered
+    RS.correct++; if (!revealed) RS.correctN++; if (first) RS.firstTry++;
+    wordAdd(w, !first);
+    var firstOfMech = RS.firstSuccess; RS.firstSuccess = false;
+    var streak = revealed ? (RS.streak = 0) : first ? ++RS.streak : (RS.streak = 0);
+    var streakHit = !revealed && ((streak === 3 && streak3On()) || (streak >= 5 && streak % 5 === 0));
+    var snd = c.sound === false ? null : c.sound || (revealed ? 'chime' : c.last ? 'chimeLast' : kind === 'collect' ? 'ting' : kind === 'count' ? 'count' : 'chime');
+    if (snd) SND.play(snd, { vol: revealed ? 0.7 : 1 });
+    vis('lock', { ctx: c });
+    var unlocked = false, unlock = function () { if (!unlocked) { unlocked = true; vis('unlock', { ctx: c }); } };
+    setTimeout(unlock, 2800);
+    setTimeout(function () { if (my === NTOK) react(revealed ? 'nod' : c.last || streakHit ? 'cheer' : 'nod'); }, 400);   // reaction 300–600 ms
+    var labelled = w && lastLabel.word === w && t0 - lastLabel.t < 2000;   // the label already said it: one word event (§10.6)
+    var at = t0 + (kind === 'count' ? 150 : kind === 'collect' ? 1300 : 600);
+    if (c.after && kind !== 'collect' && kind !== 'count') { await Promise.race([Promise.resolve(c.after), waitMs(1500)]); at = Math.max(at, Math.min(nowMs(), t0 + 1500)); }
+    if (my !== NTOK) return out;
+    // after a reveal: the word only (no praise, no streak), then one short line to move on
+    if (revealed) {
+      if (w && !labelled) out.push(await sayWord('correct', c, w, { delay: at - nowMs() }));
+      setTimeout(unlock, 300);
+      RS.praisedLast = false;
+      if (my === NTOK && !(lastInput > t0)) out.push(await say({ event: 'correct', pool: 'afterReveal', ctx: c, style: 'gentle', prio: 3, delay: 300 }));
+      return out;
+    }
+    var praiseDue = !streakHit && praiseOK(firstOfMech), covered = false, r1 = null;
+    if (kind === 'collect' && praiseDue) { say({ event: 'correct', pool: 'cheer', ctx: c, style: 'praise', prio: 3, delay: 150, obj: 'cheer' }); covered = true; }
+    // 1. the target word, the number, or the answer named
+    if (w && !labelled) {
+      if (kind === 'find') { r1 = await say({ event: 'correct', pool: 'correctSlot', bag: 'find', ctx: c, style: 'praise', prio: 1, obj: w, delay: at - nowMs(), filter: function (l) { return (l.match(/\{word\}/g) || []).length === 1 && /[가-힣A-Za-z]/.test(l.replace(NSLOT_RE, '')); } }); covered = !!r1; }
+      else if (band === 'K' && ++RS.wordCorrect % 4 === 0) r1 = await say({ event: 'correct', pool: 'correctSlot', bag: 'echo', ctx: c, style: 'word', prio: 1, obj: w, delay: at - nowMs(), word: true, filter: function (l) { return (l.match(/\{word\}/g) || []).length === 2; } });
+      if (!r1 && my === NTOK) r1 = await sayWord('correct', c, w, { delay: at - nowMs() });
+    } else if (!w && kind === 'count' && c.count != null) {
+      r1 = await line({ event: 'correct', tmpl: nLang() === 'ko' ? '{num}' : '{count}', ctx: c, style: 'word', prio: 1, obj: 'n' + c.count, word: true, delay: at - nowMs(), pool: 'number' });
+    } else if (!w && (c.lines || c.what != null || c.count != null)) {
+      // no word: a line that names what the child did ("바나나 다섯 개, 딱 맞게 담았어!") — the answer confirmation; why rides along
+      r1 = await say({ event: 'correct', pool: ['correctSlot', 'correct'], bag: 'praise', lines: c.lines, ctx: c, style: 'praise', prio: 1, obj: 'answer', delay: at - nowMs(), filter: noWordSlot, appendWhy: true });
+      covered = true;
+    } else if (!w && praiseDue) {
+      r1 = await say({ event: 'correct', pool: 'correct', bag: 'praise', ctx: c, style: 'praise', prio: 1, obj: 'answer', delay: at - nowMs(), appendWhy: true });
+      covered = true;
+    }
+    out.push(r1);
+    setTimeout(unlock, 300);                                          // other choices locked until the word ends + 300 ms
+    if (my !== NTOK) return out;
+    // 2. one more line at most: streak › praise (+ why) › why
+    var stale = lastInput > t0;                                       // the child already started the next action
+    var whyDone = covered && c.why != null && r1 && /\{why\}/.test(r1.tmpl);
+    if (streakHit && !stale) {
+      SND.play('star');
+      out.push(await say({ event: 'streak', pool: streak >= 5 ? 'streak5' : 'streak3', ctx: c, style: 'praise', prio: 3, delay: 300 }));
+      RS.sincePraise = 0; RS.praisedLast = true; RS.praise++;
+    } else if (praiseDue && !covered && !stale) {
+      out.push(await say({ event: 'correct', pool: c.what != null ? ['correctSlot', 'correct'] : ['correct'], bag: 'praise', lines: c.lines, ctx: c, style: 'praise', prio: 3, delay: 300, filter: noWordSlot, appendWhy: true }));
+      RS.sincePraise = 0; RS.praisedLast = true; RS.praise++;
+    } else {
+      if (covered && r1) { RS.sincePraise = 0; RS.praisedLast = true; RS.praise++; } else { RS.sincePraise++; RS.praisedLast = false; }
+      if (c.why != null && !whyDone && my === NTOK) out.push(await line({ event: 'correct', tmpl: '{why}', ctx: c, style: 'instruction', prio: 2, delay: 300, pool: 'why' }));
+    }
+    return out;
+  };
+  EV.wrong = async function (ctx) {
+    var it = IT && !IT.done ? IT : newItem((ctx && ctx.item) || 'auto', {}, true), c = ctxOf(ctx), my = NTOK, t0 = nowMs(), kind = c.kind || 'quiz';
+    var n = ++it.wrongs, band = nBand(), g = nGroup();
+    if (n === 1) RS.wrongItems++;
+    RS.streak = 0; IDLE.stage = 0;
+    var snd = c.sound === false ? null : c.sound || (kind === 'drop' ? 'return' : kind === 'collect' ? 'womp' : 'hmm');
+    setTimeout(function () { if (snd && my === NTOK) SND.play(snd); }, kind === 'drop' ? 0 : 200);   // wrong sound 150–250 ms after the release
+    vis('shake', { ctx: c, n: n });
+    setTimeout(function () { if (my === NTOK) react('think'); }, 300);
+    var at = function () { return t0 + 500 - nowMs(); };              // voice 400–700 ms after the release
+    if (it.revealed) {                                               // after the reveal: point again, one "show" line
+      vis('reveal', { ctx: c });
+      if (it.saidShow) return null; it.saidShow = true;
+      return say({ event: 'wrong', pool: 'hint3', ctx: c, style: 'gentle', prio: 1, delay: at() });
+    }
+    if (n === 1) {
+      if (kind === 'drop' && !c.voice) { if (band === 'K') setTimeout(function () { if (my === NTOK) vis('pulse', { ctx: c, step: 1 }); }, 400); return null; }   // the item glides home; no voice on the first miss
+      if (g === 'E23' && (++RS.wrong1) % 2 === 0) return null;         // E2–E3: a line on every other wrong(1)
+      var pool = g === 'E23' ? 'wrong1' : (++RS.w1n % 2 === 1 && wordOf(c) ? 'wrong1.word' : 'wrong1.plain');
+      var r = await say({ event: 'wrong', pool: pool, text: c.mistake, ctx: c, style: 'gentle', prio: 1, obj: 'wrong' + RS.wrongItems + '.' + n, delay: at() });
+      if (band === 'K' && my === NTOK) { await waitMs(200); it.hintStep = Math.max(it.hintStep, 1); vis('pulse', { ctx: c, step: 1 }); }   // hint(1): the pulse only
+      return r;
+    }
+    if (n === 2) {
+      var r2 = await say({ event: 'wrong', pool: 'wrong2', text: c.mistake2, ctx: c, style: 'gentle', prio: 1, obj: 'wrong' + RS.wrongItems + '.' + n, delay: at() });
+      if (my !== NTOK) return r2;
+      if (band === 'K') { await waitMs(350); return EV.revealAnswer(c); }
+      await waitMs(200); it.hintStep = Math.max(it.hintStep, 2); vis('glow', { ctx: c, step: 2 });
+      return say({ event: 'hint', pool: 'hint2', ctx: c, style: 'gentle', prio: 2 });
+    }
+    return EV.revealAnswer(Object.assign({}, c, { delay: at() }));
+  };
+  EV.hint = function (ctx) {
+    var c = ctxOf(ctx), it = IT, step = c.step || Math.min(3, ((it && it.hintStep) || 0) + 1);
+    if (it) { it.hintStep = Math.max(it.hintStep, step); it.hints++; }
+    IDLE.stage = 0;
+    vis(step === 1 ? 'pulse' : step === 2 ? 'glow' : 'hand', { ctx: c, step: step });
+    react('think');
+    var pool = step === 1 ? (nGroup() === 'E23' ? (wordOf(c) ? 'hint1.word' : 'hint1.plain') : 'hint1') : step === 2 ? 'hint2' : 'hint3';
+    return say({ event: 'hint', pool: pool, ctx: c, style: 'gentle', prio: 2 }).then(function (r) {
+      if (r || step !== 1 || !(it && it.prompt)) return r;
+      return say({ event: 'hint', text: it.prompt, ctx: c, style: 'instruction', prio: 2 });   // no {word}: hint 1 restates the goal
+    });
+  };
+  EV.revealAnswer = function (ctx) {
+    var c = ctxOf(ctx), it = IT; if (it) { it.revealed = true; it.hintStep = 3; } RS.reveals++;
+    if (it) wordAdd(wordOf(c), true);
+    SND.play('reveal'); vis('reveal', { ctx: c }); react('wow');
+    // the reveal names the answer when the item has one ({word}, else {what}); lines that only point come last
+    var names = wordOf(c) ? function (l) { return /\{word\}/.test(l); } : c.what != null ? function (l) { return /\{what\}/.test(l); } : null;
+    var o = { event: 'revealAnswer', pool: 'reveal', lines: c.revealLines, ctx: c, style: 'reveal', prio: 1, obj: 'reveal', delay: c.delay, whyGap: 450 };
+    return say(Object.assign({}, o, { filter: names })).then(function (r) { return r || (names ? say(o) : null); }).then(function (r) {
+      return r || say({ event: 'revealAnswer', pool: 'hint3', ctx: c, style: 'gentle', prio: 1 });
+    });
+  };
+  EV.reveal = EV.revealAnswer;
+  EV.retry = function (ctx) {
+    var c = ctxOf(ctx); RS.streak = 0; SND.hush(c.hush || 1200);    // the music drops out around a calm "again" line
+    return waitMs(200).then(function () { return say({ event: 'retry', pool: 'retry', text: c.text, ctx: c, style: 'instruction', prio: 2 }); });
+  };
+  EV.idle = function (ctx) { return idleLine(ctxOf(ctx)); };
+  EV.streak = function (ctx) { var c = ctxOf(ctx), n = c.n || RS.streak; SND.play('star'); return say({ event: 'streak', pool: n >= 5 ? 'streak5' : 'streak3', ctx: c, style: 'praise', prio: 3 }); };
+  EV.encourage = function (ctx) { var c = Object.assign({}, ctx); react('nod'); return say({ event: 'encourage', pool: 'encourage', lines: c.lines, ctx: c, style: 'gentle', prio: 3, maxWait: 4000 }); };
+  EV.roundEnd = async function (ctx) {
+    var c = Object.assign({}, ctx), my = NTOK; IT = null; IDLE.stage = 9; vis('clear');
+    await waitMs(c.breath != null ? c.breath : 1700);                // a breath of 1.5–2 s after the last feedback
+    if (my !== NTOK) return null;
+    if (c.sound !== false) SND.play(c.sound || 'sparkleRun');
+    var uniq = function (a) { var o = []; a.forEach(function (x) { if (x && o.indexOf(x) < 0) o.push(x); }); return o; };
+    var lw = function (a) { return (a || []).map(function (x) { return langVal(x, nWordLang()); }).filter(Boolean); };
+    var missed = uniq(c.missed ? lw(c.missed) : RS.missed), words = uniq(c.words ? lw(c.words) : RS.words);
+    var recap = uniq(missed.concat(words.slice().reverse())).slice(0, 4);
+    var n = c.n != null ? c.n : RS.correctN, total = c.total != null ? c.total : Math.max(RS.items, n);
+    var hard = c.hard != null ? !!c.hard : HARD_NEXT || (RS.items > 0 && RS.wrongItems / RS.items >= 0.4) || RS.reveals >= 2;
+    HARD_NEXT = false;
+    react(hard ? 'nod' : 'cheer');
+    var cc = Object.assign({}, c, { n: n, total: total, words: recap.length ? recap : null, word: c.word || missed[0] || null });
+    var r = await say({ event: 'roundEnd', pool: hard ? 'encourage' : 'roundEnd', lines: hard ? c.hardLines : c.lines, ctx: cc, style: hard ? 'gentle' : 'praise', prio: 2, story: true });
+    var out = { line: r, hard: hard, recap: [] };
+    if (c.recap !== false && recap.length && my === NTOK && !(r && /\{words\}/.test(r.tmpl))) {
+      for (var i = 0; i < recap.length && my === NTOK; i++) {
+        await waitMs(i ? 150 : 350); vis('recap', { word: recap[i], i: i, ctx: c });   // icon lights → its text → its voice 300 ms later (words 450 ms apart)
+        await waitMs(300); if (my !== NTOK) break;
+        await sayWord('recap', c, recap[i], { prio: 2, story: true }); out.recap.push(recap[i]);
+      }
+    }
+    RS.ended = true;
+    if (c.levelUp && my === NTOK) out.levelUp = await EV.levelUp({ level: c.level });
+    out.stats = N.stats(); return out;
+  };
+  EV.levelUp = async function (ctx) {
+    var c = Object.assign({}, ctx), gap = 600 - (nowMs() - lastLineEnd); if (gap > 0) await waitMs(gap);   // ≥ 600 ms after the round-end line
+    [1, 1.12, 1.26].forEach(function (p, i) { setTimeout(function () { SND.play('star', { pitch: p }); }, i * 120); });
+    react('spin');
+    var lv = c.level != null ? c.level : LEARN.state && LEARN.state.level;
+    return say({ event: 'levelUp', pool: 'levelUp', ctx: Object.assign({}, c, { level: lv }), style: 'praise', prio: 2 });
+  };
+  EV.characterLine = function (ctx) {
+    var c = Object.assign({}, ctx || {}), atIntro = RS.items === 0, ok = atIntro ? RS.charIntro < 2 : RS.charLines < 1;
+    var snd = c.sound === false ? null : c.sound || 'whistle';
+    if (typeof snd === 'function') snd(); else if (snd) SND.play(snd);
+    if (!ok || c.text == null) return Promise.resolve(null);          // ≤ 2 lines at the intro, ≤ 1 per round afterwards: the sound only
+    if (atIntro) RS.charIntro++; else RS.charLines++;
+    return line({ event: 'characterLine', tmpl: textOf(c.text, nLang()), ctx: c, style: 'character', prio: 3, maxWait: 4000, delay: snd ? 250 : 0, speaker: c.speaker !== undefined ? c.speaker : null, who: c.name ? (typeof c.name === 'object' ? c.name : { ko: c.name, en: c.name }) : null, anchor: c.anchor, pool: 'character' });
+  };
+  EV.replay = function (ctx) {
+    var c = ctxOf(ctx), w = wordOf(c); if (!w) return Promise.resolve(null);
+    if (nowMs() - lastInput < 600) lastInput = prevInput;            // replay does not reset the idle clock
+    return sayWord('replay', c, w, { idle: true, budget: false });
+  };
+  EV.repeatPrompt = function (ctx) {
+    var c = ctxOf(ctx), text = IT && IT.prompt; if (text == null) return Promise.resolve(null);
+    return say({ event: 'repeatPrompt', text: text, ctx: c, style: 'instruction', prio: 2 });
+  };
+  EV.card = function (ctx) {   // a word card: the music hushes 1.5 s and the word is said inside the hush
+    var c = ctxOf(ctx), w = wordOf(c); SND.hush(1500); if (!w) return Promise.resolve(null);
+    return waitMs(250).then(function () { return sayWord('card', c, w); });
+  };
+  EV.line = function (ctx) {   // any other narrator line of the game: {text: {ko, en} | string (slots allowed), style, prio, story}
+    var c = ctxOf(ctx); if (c.text == null) return Promise.resolve(null);
+    return say({ event: c.event || 'line', text: c.text, ctx: c, style: c.style || 'instruction', prio: c.prio || 2, story: !!c.story, delay: c.delay });
+  };
+
+  /**
+   * SiaKit.narrate(event, ctx) → Promise (resolves when the event's lines have finished or were dropped).
+   * events: intro instruction demo label correct wrong hint revealAnswer retry idle streak roundEnd levelUp encourage
+   * characterLine replay repeatPrompt card line. See NARRATION.md.
+   */
+  var N = SK.narrate = function (event, ctx) {
+    var f = EV[event];
+    if (!f) { console.warn('SiaKit.narrate: unknown event "' + event + '"'); return Promise.resolve(null); }
+    if (!NC.on) N.setup({});
+    SK.emit('narrate', event, ctx || {});
+    try { return Promise.resolve(f(ctx || {})).catch(function (e) { console.error(e); return null; }); } catch (e) { console.error(e); return Promise.resolve(null); }
+  };
+  N.version = 1;
+  /**
+   * setup({band, lang, wordLang, pools, speaker, haru, visual, react, bubble, idle, music, pill, streak3, hintButton}) → narrate.
+   * band: default SiaKit.learn.state.band · lang: default SiaKit.lang · wordLang: the language of {word} (default lang)
+   * pools: the game's own lines {correctSlot: {ko: [...], en: [...]}, …} or per band {E1: {…}} · speaker: haru (bubble + mouth)
+   * or {say(text, {voice}) → Promise} · visual(kind, info) → true to replace the kit's default · idle: false turns the ladder off.
+   */
+  N.setup = function (o) {
+    o = o || {}; for (var k in o) if (o[k] !== undefined) NC[k] = o[k];
+    if (o.speaker && !o.haru && typeof o.speaker.play === 'function') NC.haru = o.speaker;
+    NC.on = true; if (!IDLE.iv) IDLE.iv = setInterval(idleTick, 250);
+    G.narrate = N; return N;
+  };
+  N.config = function () { return NC; };
+  /** item(id, ctx) — a new item: resets the wrong / hint / idle ladders; ctx holds the item's slots (word, what, why, clue, place, prompt, target, candidates, near, panel …). item(null) = none. */
+  N.item = function (id, ctx) { if (!NC.on) N.setup({}); vis('clear'); if (id == null) { IT = null; IDLE.stage = 9; return null; } return newItem(id, ctx); };
+  N.current = function () { return IT; };
+  /** the step is complete (stops a playing instruction); correct does it by itself. */
+  N.stepDone = stepDone;
+  /** newRound() — counters for a new round (intro and the first item after a roundEnd do it by themselves). */
+  N.newRound = newRound;
+  N.inRound = function () { return RS.items > 0 && !RS.ended; };
+  /** pauseIdle(true|false) — hold the idle clock (cut-scenes, rewards, your own animations). */
+  N.pauseIdle = function (on) { IDLE.paused = !!on; if (!on) IDLE.pauseEnd = nowMs(); };
+  /** the child rated the round "hard" (the kit's 어땠어 card does this by itself): the next round end is an encouragement. */
+  N.hardNext = function (on) { HARD_NEXT = on !== false; };
+  /** cancel() — stop everything now (exit, pause): the line, the queue, waiting flows, the hand. */
+  N.cancel = function () {
+    NTOK++; var q = NQ; NQ = []; q.forEach(function (l) { settle(l, 'cancelled'); });
+    if (CUR) cutLine(CUR, 'cancel'); VC.stop(); IDLE.stage = 9; clearVis(); if (VIS.demo) { VIS.demo.remove(); VIS.demo = null; }
+  };
+  /** goodbye() — on exit during a round: the music fades and one short goodbye line is said (resolves at once otherwise). */
+  N.goodbye = function () {
+    if (!N.inRound()) return Promise.resolve(null);
+    N.cancel(); SND.music(false); RS.ended = true;
+    return say({ event: 'goodbye', pool: 'bye', ctx: {}, style: 'instruction', prio: 1 });
+  };
+  /** segments(line, ctx, {lang, wordLang}) → the segment list of §10.10 (for tests). */
+  N.segments = function (text, ctx, o) { o = o || {}; var L = o.lang || nLang(); var r = render(textOf(text, L), ctx || {}, L, o.wordLang || nWordLang(), o.event || 'line', o); return r; };
+  /** pool(key, lang) → the lines of one pool for the current band (kit + the game's own). */
+  N.pool = function (key, lang) { return poolOf(key, lang || nLang()); };
+  N.pools = function () { return NARR_POOLS; };
+  N.log = NLOG;
+  /** stats() → {voiceShare, voiceMs, playMs, lines, repeats, praise, nonWord, items, correct, firstTry, reveals, wrongItems, streak, words, missed, speaking} */
+  N.stats = function () {
+    var playMs = nowMs() - RS.t0, repeats = 0, lastBy = {};
+    NLOG.forEach(function (l) { if (!l.bag || l.dropped) return; if (lastBy[l.bag] === l.line) repeats++; lastBy[l.bag] = l.line; });
+    return { voiceShare: playMs > 0 ? +(RS.voiceMs / playMs).toFixed(3) : 0, voiceMs: Math.round(RS.voiceMs), playMs: Math.round(playMs), lines: RS.lines, repeats: repeats, praise: RS.praise, nonWord: RS.nonWord,
+      items: RS.items, correct: RS.correct, correctN: RS.correctN, firstTry: RS.firstTry, reveals: RS.reveals, wrongItems: RS.wrongItems, streak: RS.streak, words: RS.words.slice(), missed: RS.missed.slice(), speaking: !!CUR, queue: NQ.length, idleStage: IDLE.stage, band: nBand(), lang: nLang(), wordLang: nWordLang() };
+  };
+  N.events = Object.keys(EV);
+  // the 어땠어 card: "hard" makes the next round end an encouragement (§10.2 encourage)
+  SK.on('result', function (msg) { if (msg && msg.feel === 'hard') HARD_NEXT = true; });
+
+  // narration visuals the kit draws by itself (games can replace them through setup({visual}))
+  /** hand(target, {from, loops}) → {el, remove()} — a pointing hand on target (element | selector | {x,y} | fn | Object3D); with from: a demo that moves from → target, ≤ loops times. */
+  UI.hand = function (target, o) {
+    o = o || {}; var h = el('div', 'sk-hand' + (o.from ? ' sk-hand-demo' : ''), '<span>👆</span>', UI.layer('fx')), t0 = nowMs(), loopMs = o.loopMs || 1700, loops = o.loops || 2, gone = false;
+    var api = { el: h, remove: function () { if (gone) return; gone = true; anchored = anchored.filter(function (x) { return x !== a; }); h.remove(); } };
+    var a = { el: h, place: function () {
+      var p;
+      if (o.from) {
+        var f = ptOf(o.from), to = ptOf(target); if (!f || !to) { h.style.display = 'none'; return; }
+        var k = ((nowMs() - t0) % loopMs) / loopMs, e = k < 0.18 ? 0 : k > 0.78 ? 1 : (k - 0.18) / 0.6; e = e * e * (3 - 2 * e);
+        p = { x: f.x + (to.x - f.x) * e, y: f.y + (to.y - f.y) * e }; h.classList.toggle('sk-press', k < 0.14 || (k > 0.78 && k < 0.9));
+        if (nowMs() - t0 > loopMs * loops) { api.remove(); return; }
+      } else p = ptOf(target);
+      if (!p || p.visible === false) { h.style.display = 'none'; return; }
+      h.style.display = ''; h.style.left = p.x + 'px'; h.style.top = p.y + 'px';
+    } };
+    anchored.push(a); a.place(); return api;
+  };
+  /** wordPill(text, {at, dur}) — the printed word, 1.3 s, just after the voice (at: element | {x,y} | fn; default lower middle). */
+  UI.wordPill = function (text, o) {
+    o = o || {}; var p = el('div', 'sk-wordpill', esc(text), UI.layer('fx')), at = ptOf(o.at);
+    p.style.left = (at ? at.x : innerWidth / 2) + 'px'; p.style.top = (at ? at.y - 30 * UI.u : innerHeight * 0.72) + 'px';
+    setTimeout(function () { p.remove(); }, o.dur || 1500); return p;
   };
 
   /** call when the first frame of your game is ready (removes the boot screen, marks __game.ready). */

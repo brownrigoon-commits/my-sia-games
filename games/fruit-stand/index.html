@@ -185,6 +185,8 @@ button{font:inherit;color:var(--ink);cursor:pointer;border:0;background:none;pad
 const W=1024,H=768,INK='#1C2333',FONT='-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif';
 const Q=new URLSearchParams(location.search);
 let LANG=(Q.get('lang')||navigator.language||'ko').slice(0,2)==='en'?'en':'ko';
+// ?lang=ko&locklang=1 / ?lang=en&locklang=1: a one-language version (the launcher lists 한국어 and English separately) — no EN/한 button
+const LANGLOCK=Q.get('locklang')==='1'&&/^(ko|en)$/.test(Q.get('lang')||'');
 const CHILD=Q.get('name')||'';
 const $=id=>document.getElementById(id);
 const num=n=>Number(n).toLocaleString('en-US');
@@ -774,7 +776,7 @@ var SiaVoiceCore = window.SiaVoiceCore = (function () {
   function pump() {
     if (busy) return; var it = q.shift(); if (!it) return;
     busy = true; curItem = it; var my = token, done = false;
-    function fin() { if (done) return; done = true; if (my !== token) return; busy = false; curItem = null; cur = null; if (it.last) it.resolve(); if (q.length) later(pump, PAUSE); }
+    function fin() { if (done) return; done = true; if (my !== token) return; busy = false; curItem = null; cur = null; if (it.last) it.resolve(); if (q.length) later(pump, it.pause != null ? it.pause : PAUSE); }
     try {
       var u = new U(it.text); cur = u;
       u.lang = it.lang === 'en' ? 'en-US' : 'ko-KR'; var v = V.get(it.lang); if (v) u.voice = v;
@@ -786,8 +788,10 @@ var SiaVoiceCore = window.SiaVoiceCore = (function () {
     } catch (e) { later(fin, est(it.text, it.lang) * 1000); }
   }
   /**
-   * say(text, lang, {rate, pitch, queue, clips, key}) → Promise that resolves when the line has been spoken (or after an estimate without an engine).
+   * say(text, lang, {rate, pitch, pause, queue, clips, key, word}) → Promise that resolves when the line has been spoken (or after an estimate without an engine).
    * A new line cancels what is still being spoken unless queue is true. Pre-recorded clips are tried first when the page has them.
+   * key: the text the clip id was made from (default text), or a list of keys tried in order (['E1|맞았어!', '맞았어!']).
+   * word: true → a target-word clip (voice/<lang>/word/<id>.mp3, manifest "words"). pause: ms between sentences (default 250).
    */
   var chain = Promise.resolve();
   V.say = function (text, lang, o) {
@@ -798,11 +802,11 @@ var SiaVoiceCore = window.SiaVoiceCore = (function () {
     var my = token;
     var run = function () {
       if (my !== token) return;                                   // cancelled while waiting in the queue
-      var urls = o.clips === false ? null : CLIPS.lookup(text, lang, o.key);
+      var urls = o.clips === false ? null : CLIPS.lookup(text, lang, o.key, o.word);
       if (urls) { var ct = clipToken; return CLIPS.play(urls, ct).then(function (ok) { if (ok || ct !== clipToken || my !== token) return; return tts(text, lang, o, e); }); }
       return tts(text, lang, o, e);
     };
-    var p = o.queue ? chain.then(function () { return my === token ? V.delay(PAUSE / 1000) : null; }).then(run) : run();
+    var p = o.queue ? chain.then(function () { return my === token ? V.delay((o.pause != null ? o.pause : PAUSE) / 1000) : null; }).then(run) : run();
     chain = p.then(null, function () { /* ignore */ });
     return p;
   };
@@ -810,7 +814,7 @@ var SiaVoiceCore = window.SiaVoiceCore = (function () {
     if (!S || !U) return V.delay(e);
     return new Promise(function (resolve) {
       var parts = V.sentences(text), rate = o.rate || (lang === 'en' ? 0.95 : 1.0), pitch = o.pitch || 1.0;
-      parts.forEach(function (p, i) { q.push({ text: p, lang: lang, rate: rate, pitch: pitch, last: i === parts.length - 1, resolve: resolve }); });
+      parts.forEach(function (p, i) { q.push({ text: p, lang: lang, rate: rate, pitch: pitch, pause: o.pause, last: i === parts.length - 1, resolve: resolve }); });
       if (!parts.length) return resolve();
       pump();
     });
@@ -843,7 +847,7 @@ var SiaVoiceCore = window.SiaVoiceCore = (function () {
     if (!CLIPS.enabled || typeof fetch !== 'function') { CLIPS.loaded = true; return Promise.resolve(null); }
     return fetch(url || (CLIPS.base + 'manifest.json'), { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
       .then(function (m) {
-        if (m) { ['ko', 'en'].forEach(function (l) { var x = m[l]; if (!x) return; ['ids', 'numbers', 'names'].forEach(function (k) { if (Array.isArray(x[k])) { var o = {}; x[k].forEach(function (id) { o[id] = true; }); x[k] = o; } x[k] = x[k] || {}; }); x.templates = x.templates || []; }); CLIPS.probe = false; }
+        if (m) { ['ko', 'en'].forEach(function (l) { var x = m[l]; if (!x) return; ['ids', 'numbers', 'names', 'words'].forEach(function (k) { if (Array.isArray(x[k])) { var o = {}; x[k].forEach(function (id) { o[id] = true; }); x[k] = o; } x[k] = x[k] || {}; }); x.templates = x.templates || []; }); CLIPS.probe = false; }
         CLIPS.manifest = m; CLIPS.loaded = true; return m;
       });
   };
@@ -851,6 +855,7 @@ var SiaVoiceCore = window.SiaVoiceCore = (function () {
   // Korean number reading for clips: 0–100 whole words, then X천 / X백 chunks + the rest, 만; native counting (한·두·세…) for 개/마리/송이
   var SINO = ['영', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
   function numKo(n, style) {
+    if (style === 'one') return n >= 1 && n <= 20 ? ['s' + n] : null;   /* 하나, 둘, 셋 … counted aloud (voice/ko/num/s1…s20) */
     if (style === 'native') { if (n < 1 || n > 99) return null; if (n === 20) return ['n20a']; /* 스무 개, 스물한 개 */ if (n < 20) return ['n' + n]; var t = Math.floor(n / 10) * 10, o = n % 10; return o ? ['n' + t, 'n' + o] : ['n' + t]; }
     if (n <= 100) return [String(n)];
     if (n > 10000) return null;
@@ -871,15 +876,21 @@ var SiaVoiceCore = window.SiaVoiceCore = (function () {
     var s = String(val).replace(/[,\s]/g, ''); if (!/^\d+$/.test(s)) return null; var n = parseInt(s, 10);
     return lang === 'en' ? numEn(n) : numKo(n, style);
   };
-  /** lookup(text, lang, key) → clip urls for the line (key: the exact text the id was made from; default text) or null. */
-  CLIPS.lookup = function (text, lang, key) {
+  /**
+   * lookup(text, lang, key, word) → clip urls for the line or null. key: the exact text the id was made from (default text), or a
+   * list of such keys tried in order. word: a target-word clip under word/ (manifest "words"; never probed without a manifest).
+   */
+  CLIPS.lookup = function (text, lang, key, word) {
     if (!CLIPS.enabled) return null;
-    var id = V.id(key || text), m = CLIPS.manifest && CLIPS.manifest[lang], base = CLIPS.base + lang + '/';
+    var keys = Array.isArray(key) ? key.filter(Boolean) : [key || text]; if (!keys.length) keys = [text];
+    var id = V.id(keys[keys.length - 1]), m = CLIPS.manifest && CLIPS.manifest[lang], base = CLIPS.base + lang + '/';
+    if (word) { if (!m || !m.words) return null; for (var w0 = 0; w0 < keys.length; w0++) { var wid = V.id(keys[w0]); if (m.words[wid]) return [base + 'word/' + wid + '.mp3']; } return null; }
     if (!m) { if (CLIPS.loaded && CLIPS.probe && CLIPS.misses < 3) return [base + id + '.mp3']; return null; }   // no manifest: probe a few times
-    if (m.ids[id]) return [base + id + '.mp3'];
+    for (var k0 = 0; k0 < keys.length; k0++) { var kid = V.id(keys[k0]); if (m.ids[kid]) return [base + kid + '.mp3']; }
+    var src = keys[keys.length - 1];
     for (var i = 0; i < m.templates.length; i++) {
       var t = m.templates[i]; try { t._re = t._re || new RegExp(t.re); } catch (e) { continue; }
-      var mm = t._re.exec(key || text); if (!mm) continue;   // templates are cut from the exact source line, not the rewritten one
+      var mm = t._re.exec(src); if (!mm) continue;   // templates are cut from the exact source line, not the rewritten one
       var urls = [], gi = 1, ok = true;
       for (var p = 0; p < t.parts.length && ok; p++) {
         var part = t.parts[p];
@@ -1257,6 +1268,7 @@ $('btnTitle').addEventListener('click',()=>{AU.tap();gotoTitle();});
 $('btnStart').addEventListener('click',()=>{if($('btnStart').disabled)return;AU.init();AU.resume();AU.tap();startPlay();});
 $('btnClose').addEventListener('click',()=>{AU.tap();gotoTitle();});
 $('btnSound').addEventListener('click',()=>{AU.init();AU.resume();VM.toggle();});   // sound menu (sound on/off lives inside it)
+if(LANGLOCK)$('btnLang').style.display='none';
 $('btnLang').addEventListener('click',()=>{LANG=LANG==='ko'?'en':'ko';applyLang();haru('haruT','hello',titleHello(),true);});
 document.querySelectorAll('.haru').forEach(h=>h.addEventListener('click',()=>{const b=h.querySelector('.bubble');if(b&&b.textContent)speak(b.textContent);}));
 

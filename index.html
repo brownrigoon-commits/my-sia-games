@@ -3,55 +3,100 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>MY SIA 놀이</title>
+<title>MY SIA 놀이 · Games</title>
 <style>
-:root{--ink:#1C2333;--bg:#FFF3D6;--card:#fff;--blue:#2F6BFF;--yellow:#F2C14E}
+:root{--ink:#1C2333;--bg:#FFF3D6;--card:#fff;--blue:#2F6BFF;--yellow:#F2C14E;--sub:#5A6377;--line:#c5b991}
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Segoe UI",sans-serif;-webkit-text-size-adjust:100%}
-main{max-width:980px;margin:0 auto;padding:28px 16px 48px}
+main{max-width:1120px;margin:0 auto;padding:30px 24px 48px}
 h1{font-size:34px;margin:0 0 4px;font-weight:900}
-p.sub{margin:0 0 22px;color:#5A6377;font-weight:700}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-a.card{display:block;background:var(--card);border:4px solid var(--ink);border-radius:22px;padding:18px 18px 16px;text-decoration:none;color:var(--ink);box-shadow:0 6px 0 rgba(0,0,0,.15);transition:transform .08s}
-a.card:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.15)}
-.tag{display:inline-block;font-size:13px;font-weight:800;color:#fff;border-radius:12px;padding:2px 10px;margin-bottom:8px}
-.card b{display:block;font-size:24px;margin-bottom:4px}
-.card span{display:block;font-size:15px;color:#5A6377;font-weight:700;line-height:1.4}
-.note{margin-top:26px;font-size:14px;color:#5A6377;font-weight:700;line-height:1.6}
-/* Game screenshots, shared with MY SIA's visual game picker. */
-main{max-width:1120px;padding:30px 24px 48px}
-p.sub{margin-bottom:24px;line-height:1.5}
-.grid{gap:24px;grid-template-columns:repeat(3,minmax(0,1fr))}
-a.card{position:relative;padding:0 0 16px;border:2px solid #fff;border-radius:24px;overflow:hidden;box-shadow:0 5px 0 #c5b991,0 10px 25px #74623c15;transition:transform .16s,box-shadow .16s}
-a.card:hover{transform:translateY(-3px);box-shadow:0 8px 0 #c5b991,0 14px 28px #74623c20}
-a.card:active{transform:translateY(3px);box-shadow:0 2px 0 #c5b991}
-a.card:focus-visible{outline:4px solid #2f6bff;outline-offset:4px}
+p.sub{margin:0 0 18px;color:var(--sub);font-weight:700;line-height:1.5}
+/* jump bar: 한국어 / English */
+nav.langs{position:sticky;top:0;z-index:5;display:flex;gap:10px;padding:10px 0 12px;margin:0 0 6px;background:var(--bg)}
+nav.langs a{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;background:#fff;border:2px solid #fff;box-shadow:0 4px 0 var(--line);color:var(--ink);text-decoration:none;font-weight:800;font-size:17px}
+nav.langs a small{font-size:13px;color:var(--sub);font-weight:700}
+nav.langs a:active{transform:translateY(3px);box-shadow:0 1px 0 var(--line)}
+nav.langs a:focus-visible{outline:4px solid var(--blue);outline-offset:3px}
+nav.langs a.on{background:var(--ink);border-color:var(--ink);color:#fff}
+nav.langs a.on small{color:#d8dbe4}
+section{scroll-margin-top:72px;padding-top:14px}
+section+section{margin-top:40px;border-top:3px dashed #e3d4a8;padding-top:30px}
+h2{font-size:26px;margin:0 0 4px;font-weight:900;display:flex;align-items:baseline;gap:10px}
+h2 small{font-size:15px;color:var(--sub);font-weight:700}
+section p.sub{margin-bottom:20px}
+.grid{display:grid;gap:24px;grid-template-columns:repeat(3,minmax(0,1fr))}
+a.card{position:relative;display:block;background:var(--card);padding:0 0 16px;border:2px solid #fff;border-radius:24px;overflow:hidden;text-decoration:none;color:var(--ink);box-shadow:0 5px 0 var(--line),0 10px 25px #74623c15;transition:transform .16s,box-shadow .16s}
+a.card:hover{transform:translateY(-3px);box-shadow:0 8px 0 var(--line),0 14px 28px #74623c20}
+a.card:active{transform:translateY(3px);box-shadow:0 2px 0 var(--line)}
+a.card:focus-visible{outline:4px solid var(--blue);outline-offset:4px}
 .card .scene{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;background:#d8e6dd}
-.card .tag{position:absolute;left:12px;top:12px;margin:0;border:2px solid #ffffffdc;font-style:normal;box-shadow:0 2px 6px #18263c20;font-size:12px;padding:4px 10px}
-.card b{font-size:21px;line-height:1.25;margin:16px 16px 7px}
-.card span{font-size:14px;line-height:1.5;margin:0 16px;color:#526779;font-weight:600}
+.card .tag{position:absolute;left:12px;top:12px;margin:0;display:inline-block;color:#fff;border-radius:12px;border:2px solid #ffffffdc;font-style:normal;font-weight:800;box-shadow:0 2px 6px #18263c20;font-size:12px;padding:4px 10px}
+.card b{display:block;font-size:21px;line-height:1.25;margin:16px 16px 7px}
+.card span{display:block;font-size:14px;line-height:1.5;margin:0 16px;color:#526779;font-weight:600}
+.note{margin-top:26px;font-size:14px;color:var(--sub);font-weight:700;line-height:1.6}
 @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
-@media(max-width:460px){main{padding:24px 14px 32px}h1{font-size:28px}p.sub{font-size:14px}.grid{gap:16px 12px}a.card{border-radius:18px}.card b{font-size:17px;margin:12px 10px 5px}.card span{font-size:12px;margin:0 10px}.card .tag{left:8px;top:8px;font-size:10px;padding:3px 7px}}
-@media(prefers-reduced-motion:reduce){a.card{transition:none}}
+@media(max-width:460px){main{padding:24px 14px 32px}h1{font-size:28px}h2{font-size:22px}p.sub{font-size:14px}nav.langs a{padding:8px 14px;font-size:16px}.grid{gap:16px 12px}a.card{border-radius:18px}.card b{font-size:17px;margin:12px 10px 5px}.card span{font-size:12px;margin:0 10px}.card .tag{left:8px;top:8px;font-size:10px;padding:3px 7px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}a.card{transition:none}}
 </style>
 </head>
 <body>
 <main>
 <h1>MY SIA 놀이</h1>
-<p class="sub">아이패드를 가로로 놓고, 게임을 고른 뒤 나이를 눌러 시작해요.</p>
+<p class="sub">아이패드를 가로로 놓고, 게임을 고른 뒤 나이를 눌러 시작해요. 한국어판과 영어판이 따로 있어요.</p>
+<nav class="langs" aria-label="언어 / Language"><a href="#ko" id="go-ko" class="on">한국어 <small>15</small></a><a href="#en" id="go-en" lang="en">English <small>15</small></a></nav>
+<section id="ko" aria-labelledby="h-ko">
+<h2 id="h-ko">한국어 <small>게임 15개</small></h2>
+<p class="sub">하루가 한국어로 말하고, 게임 안에서 언어가 바뀌지 않아요.</p>
 <div class="grid">
-<a class="card" href="games/letter-flight/index.html"><svg class="scene" viewBox="350 244 840 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/letter-flight-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3B559E">언어 · 3D</em><b>글자 비행</b><span>하늘의 글자 풍선을 순서대로 터뜨려 낱말을 완성해요.</span></a>
-<a class="card" href="games/fruit-orchard/index.html"><svg class="scene" viewBox="260 95 930 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/fruit-orchard-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#E88F4D">수학 · 3D</em><b>열매 숲</b><span>주문만큼 열매를 따고 세기·덧셈·곱셈·분수를 풀어요.</span></a>
-<a class="card" href="games/float-lab/index.html"><svg class="scene" viewBox="200 105 990 660" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/float-lab-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3F7D5B">과학 · 3D</em><b>뜰까 가라앉을까 실험실</b><span>먼저 예측하고 물통에 넣어 확인해요.</span></a>
-<a class="card" href="games/nature-explorer/index.html"><svg class="scene" viewBox="250 100 810 540" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/nature-explorer-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#8A4FBE">자연 · 3D</em><b>자연 탐험 사진가</b><span>사바나·숲·북극·남극·바다에서 동물을 찍고 답해요.</span></a>
-<a class="card" href="games/bubble-theater/index.html"><svg class="scene" viewBox="0 88 840 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/bubble-theater-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3B559E">언어 · 3D</em><b>말풍선 극장</b><span>무대 위 인물의 마음과 상황에 맞는 대사를 골라요.</span></a>
-<a class="card" href="games/train-time/index.html"><svg class="scene" viewBox="510 88 675 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/train-time-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#E88F4D">수학 · 3D</em><b>기차 시간표</b><span>시계를 맞춰 기차를 출발시키고 걸린 시간을 계산해요.</span></a>
-<a class="card" href="games/seed-garden/index.html"><svg class="scene" viewBox="0 150 810 540" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/seed-garden-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3F7D5B">과학 · 3D</em><b>씨앗 정원</b><span>물·빛·온도를 정하고 날마다 자라는 식물을 관찰해요.</span></a>
-<a class="card" href="games/deep-sea/index.html"><svg class="scene" viewBox="170 180 810 540" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/deep-sea-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#8A4FBE">자연 · 3D</em><b>바다 탐험 잠수함</b><span>깊이 내려가며 바다 생물을 스캔하고 답해요.</span></a>
-<a class="card" href="games/fossil-dig/index.html"><svg class="scene" viewBox="215 275 240 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/fossil-dig-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#B98B5E">과학 · 수학</em><b>공룡 화석 발굴</b><span>칸을 파서 뼈를 찾고 공룡을 맞춰요.</span></a>
-<a class="card" href="games/fruit-stand/index.html"><svg class="scene" viewBox="100 100 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/fruit-stand-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#DB5F52">수학</em><b>과일 가게 계산대</b><span>손님 주문을 받고 값과 거스름돈을 계산해요.</span></a>
+<a class="card" href="games/letter-flight/index.html?lang=ko&amp;locklang=1"><svg class="scene" viewBox="350 244 840 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/letter-flight-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3B559E">언어 · 3D</em><b>글자 비행</b><span>하늘의 글자 풍선을 순서대로 터뜨려 낱말을 완성해요.</span></a>
+<a class="card" href="games/fruit-orchard/index.html?lang=ko&amp;locklang=1"><svg class="scene" viewBox="260 95 930 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/fruit-orchard-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#E88F4D">수학 · 3D</em><b>열매 숲</b><span>주문만큼 열매를 따고 세기·덧셈·곱셈·분수를 풀어요.</span></a>
+<a class="card" href="games/float-lab/index.html?lang=ko&amp;locklang=1"><svg class="scene" viewBox="200 105 990 660" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/float-lab-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3F7D5B">과학 · 3D</em><b>뜰까 가라앉을까 실험실</b><span>먼저 예측하고 물통에 넣어 확인해요.</span></a>
+<a class="card" href="games/nature-explorer/index.html?lang=ko&amp;locklang=1"><svg class="scene" viewBox="250 100 810 540" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/nature-explorer-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#8A4FBE">자연 · 3D</em><b>자연 탐험 사진가</b><span>사바나·숲·북극·남극·바다에서 동물을 찍고 답해요.</span></a>
+<a class="card" href="games/bubble-theater/index.html?lang=ko&amp;locklang=1"><svg class="scene" viewBox="0 88 840 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/bubble-theater-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3B559E">언어 · 3D</em><b>말풍선 극장</b><span>무대 위 인물의 마음과 상황에 맞는 대사를 골라요.</span></a>
+<a class="card" href="games/train-time/index.html?lang=ko&amp;locklang=1"><svg class="scene" viewBox="510 88 675 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/train-time-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#E88F4D">수학 · 3D</em><b>기차 시간표</b><span>시계를 맞춰 기차를 출발시키고 걸린 시간을 계산해요.</span></a>
+<a class="card" href="games/seed-garden/index.html?lang=ko&amp;locklang=1"><svg class="scene" viewBox="0 150 810 540" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/seed-garden-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3F7D5B">과학 · 3D</em><b>씨앗 정원</b><span>물·빛·온도를 정하고 날마다 자라는 식물을 관찰해요.</span></a>
+<a class="card" href="games/deep-sea/index.html?lang=ko&amp;locklang=1"><svg class="scene" viewBox="170 180 810 540" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/deep-sea-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#8A4FBE">자연 · 3D</em><b>바다 탐험 잠수함</b><span>깊이 내려가며 바다 생물을 스캔하고 답해요.</span></a>
+<a class="card" href="games/fossil-dig/index.html?lang=ko&amp;locklang=1"><svg class="scene" viewBox="215 275 240 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/fossil-dig-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#B98B5E">과학 · 수학</em><b>공룡 화석 발굴</b><span>칸을 파서 뼈를 찾고 공룡을 맞춰요.</span></a>
+<a class="card" href="games/fruit-stand/index.html?lang=ko&amp;locklang=1"><svg class="scene" viewBox="100 100 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/fruit-stand-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#DB5F52">수학</em><b>과일 가게 계산대</b><span>손님 주문을 받고 값과 거스름돈을 계산해요.</span></a>
+<a class="card" href="games/story-detective/index.html?lang=ko&amp;locklang=1"><svg class="scene" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/story-detective-20261015.webp" width="900" height="600"/></svg><em class="tag" style="background:#3B559E">언어 · 3D</em><b>이야기 탐정</b><span>숨은 이야기 카드를 찾아 순서대로 놓고 사건을 풀어요.</span></a>
+<a class="card" href="games/shape-builder/index.html?lang=ko&amp;locklang=1"><svg class="scene" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/shape-builder-20261015.webp" width="900" height="600"/></svg><em class="tag" style="background:#E88F4D">수학 · 3D</em><b>모양 건축가</b><span>블록을 세고 모양과 무늬를 찾아 집을 한 층씩 올려요.</span></a>
+<a class="card" href="games/space-station/index.html?lang=ko&amp;locklang=1"><svg class="scene" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/space-station-20261015.webp" width="900" height="600"/></svg><em class="tag" style="background:#3F7D5B">과학 · 3D</em><b>우주 정거장</b><span>하루와 우주 미션을 풀며 낮과 밤·달·행성을 배워요.</span></a>
+<a class="card" href="games/bug-safari/index.html?lang=ko&amp;locklang=1"><svg class="scene" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/bug-safari-20261015.webp" width="900" height="600"/></svg><em class="tag" style="background:#8A4FBE">자연 · 3D</em><b>곤충 탐험 정원</b><span>개미만큼 작아져서 돋보기로 곤충을 관찰해요.</span></a>
+<a class="card" href="games/robot-courier/index.html?lang=ko&amp;locklang=1"><svg class="scene" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/robot-courier-20261015.webp" width="900" height="600"/></svg><em class="tag" style="background:#1F8A8A">코딩 · 3D</em><b>로봇 배달부</b><span>블록으로 프로그램을 만들어 로봇이 소포를 배달해요.</span></a>
 </div>
 <p class="note">모든 게임은 나이(5~13살)에 맞는 내용 안에서 레벨 1~5로 나뉘고, 끝나면 "어땠어?"로 다음 레벨이 정해져요. 소리는 첫 터치 뒤에 나와요.</p>
+</section>
+<section id="en" lang="en" aria-labelledby="h-en">
+<h2 id="h-en">English <small>15 games</small></h2>
+<p class="sub">Haru speaks English, and the game stays in English. Hold the iPad sideways, pick a game, then tap your age to start.</p>
+<div class="grid">
+<a class="card" href="games/letter-flight/index.html?lang=en&amp;locklang=1"><svg class="scene" viewBox="350 244 840 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/letter-flight-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3B559E">Language · 3D</em><b>Letter Flight</b><span>Pop the letter balloons in order to spell the word.</span></a>
+<a class="card" href="games/fruit-orchard/index.html?lang=en&amp;locklang=1"><svg class="scene" viewBox="260 95 930 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/fruit-orchard-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#E88F4D">Math · 3D</em><b>Fruit Orchard</b><span>Pick fruit for each order: counting, adding, times tables and fractions.</span></a>
+<a class="card" href="games/float-lab/index.html?lang=en&amp;locklang=1"><svg class="scene" viewBox="200 105 990 660" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/float-lab-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3F7D5B">Science · 3D</em><b>Sink or Float Lab</b><span>Guess first, then drop it in the tank to find out.</span></a>
+<a class="card" href="games/nature-explorer/index.html?lang=en&amp;locklang=1"><svg class="scene" viewBox="250 100 810 540" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/nature-explorer-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#8A4FBE">Nature · 3D</em><b>Nature Explorer</b><span>Photograph animals in the savanna, forest, Arctic, Antarctic and sea.</span></a>
+<a class="card" href="games/bubble-theater/index.html?lang=en&amp;locklang=1"><svg class="scene" viewBox="0 88 840 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/bubble-theater-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3B559E">Language · 3D</em><b>Speech Bubble Theater</b><span>Choose the line that fits how the character feels on stage.</span></a>
+<a class="card" href="games/train-time/index.html?lang=en&amp;locklang=1"><svg class="scene" viewBox="510 88 675 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/train-time-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#E88F4D">Math · 3D</em><b>Train Timetable</b><span>Set the clock to send the train off and work out how long the trip takes.</span></a>
+<a class="card" href="games/seed-garden/index.html?lang=en&amp;locklang=1"><svg class="scene" viewBox="0 150 810 540" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/seed-garden-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#3F7D5B">Science · 3D</em><b>Seed Garden</b><span>Choose water, light and warmth, then watch your plant grow day by day.</span></a>
+<a class="card" href="games/deep-sea/index.html?lang=en&amp;locklang=1"><svg class="scene" viewBox="170 180 810 540" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/deep-sea-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#8A4FBE">Nature · 3D</em><b>Deep-Sea Submarine</b><span>Dive deeper, scan sea creatures and answer questions.</span></a>
+<a class="card" href="games/fossil-dig/index.html?lang=en&amp;locklang=1"><svg class="scene" viewBox="215 275 240 160" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/fossil-dig-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#B98B5E">Science · Math</em><b>Fossil Dig</b><span>Dig the squares, find the bones and put the dinosaur together.</span></a>
+<a class="card" href="games/fruit-stand/index.html?lang=en&amp;locklang=1"><svg class="scene" viewBox="100 100 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/fruit-stand-20261011.webp" width="1194" height="834"/></svg><em class="tag" style="background:#DB5F52">Math</em><b>Fruit Stand</b><span>Take customers' orders and work out prices and change.</span></a>
+<a class="card" href="games/story-detective/index.html?lang=en&amp;locklang=1"><svg class="scene" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/story-detective-20261015.webp" width="900" height="600"/></svg><em class="tag" style="background:#3B559E">Language · 3D</em><b>Story Detective</b><span>Find the hidden story cards, put them in order and solve the case.</span></a>
+<a class="card" href="games/shape-builder/index.html?lang=en&amp;locklang=1"><svg class="scene" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/shape-builder-20261015.webp" width="900" height="600"/></svg><em class="tag" style="background:#E88F4D">Math · 3D</em><b>Shape Builder</b><span>Count blocks, spot shapes and patterns, and build the house up.</span></a>
+<a class="card" href="games/space-station/index.html?lang=en&amp;locklang=1"><svg class="scene" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/space-station-20261015.webp" width="900" height="600"/></svg><em class="tag" style="background:#3F7D5B">Science · 3D</em><b>Space Station</b><span>Solve space missions with Haru: day and night, the Moon and planets.</span></a>
+<a class="card" href="games/bug-safari/index.html?lang=en&amp;locklang=1"><svg class="scene" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/bug-safari-20261015.webp" width="900" height="600"/></svg><em class="tag" style="background:#8A4FBE">Nature · 3D</em><b>Bug Safari</b><span>Shrink to the size of an ant and study bugs with a magnifier.</span></a>
+<a class="card" href="games/robot-courier/index.html?lang=en&amp;locklang=1"><svg class="scene" viewBox="0 0 900 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="assets/game-scenes/robot-courier-20261015.webp" width="900" height="600"/></svg><em class="tag" style="background:#1F8A8A">Coding · 3D</em><b>Robot Courier</b><span>Build a program from blocks so the robot delivers the package.</span></a>
+</div>
+<p class="note">Every game has levels 1–5 inside content for the child's age (5–13). After each round, "How was it?" sets the next level. Sound starts after the first tap.</p>
+</section>
 </main>
+<script>
+// highlight the language whose section is on screen (the links work without this)
+(function () {
+  var ko = document.getElementById('go-ko'), en = document.getElementById('go-en'), sec = document.getElementById('en');
+  function mark() { var r = sec.getBoundingClientRect(), onEn = r.top < window.innerHeight * 0.45; ko.classList.toggle('on', !onEn); en.classList.toggle('on', onEn); }
+  window.addEventListener('scroll', mark, { passive: true }); window.addEventListener('resize', mark); mark();
+})();
+</script>
 </body>
 </html>
