@@ -1,0 +1,3607 @@
+{
+  "version": "standalone-local-voice-rollout-v1",
+  "prepared_at": "2026-10-19T10:12:48.302Z",
+  "base_commit": "88838f8c4a3c339f0cb85a70ab143185d7d6836e",
+  "snapshot_sha256": "157d4ab6dced9ce50aa77fea6dd3c773bcc2433f8fd12ab7fe24553ed55d5b95",
+  "baseline_sha256": "516d13ab9bff46e49cf247ca41dd99d9ae2ef2157c1ded0ba5d6b9b5df15fb0f",
+  "run_identity": "ebd6c43507e76c0ea266f87ea57f2e45ef3bb838e142027ab25f1f5d84e7c566",
+  "manifest_updated_at": "2026-10-19T10:12:40.304148+00:00",
+  "observed_completed_count": 65,
+  "selected_completed_count": 65,
+  "unique_generated_audio": 65,
+  "destination_count": 186,
+  "staged_audio_count": 186,
+  "inferred_duplicate_target_coverage_count": 40,
+  "preserved_existing_count": 0,
+  "protected_target_count": 50,
+  "listening_verified_count": 0,
+  "transcript_verified_count": 0,
+  "source_hashes": {
+    "manifest.json": "9e253699cb392ab292b9892abf77f0179cfdfdb7ec4321b899f8bf3d94add056",
+    "production-inventory-v2.json": "19ab912cdce039c0ef66e1c622443325c6800d4a626261242f5eb0218a2fc141",
+    "run-receipt.json": "d9977b508279e7a8342e62bfd6c3a06e4f19887b18f5875fbd760afa8e7acda5"
+  },
+  "files": [
+    {
+      "path": "games/bug-safari/voice/ko/eac36088.mp3",
+      "bytes": 32684,
+      "sha256": "49be1c499b9793a89cb2f87cd00175acfc5859616e86871e5bf5840bfa45cd9b",
+      "git_blob": "0bc28d2a6c90e4f2e2cf9204b4b67ea615643d94",
+      "item_id": "0cf09702c465431638e2baec7cc9444e814ac23b9b255656c3773944c379e863",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/b23378c3.mp3",
+      "bytes": 33836,
+      "sha256": "adb5911c5df9b4b61cd43a5428e0756bd1afa5c2d9cb0929379a9244cb78f561",
+      "git_blob": "6267fc5f39268046322525bdf34b014172c9ae99",
+      "item_id": "545d8324564e7a48885068bee32099df642e34aee15be4e8c4411ad757db1e22",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/80469f85.mp3",
+      "bytes": 44972,
+      "sha256": "67ab1f2b835b1dfc2d5b9161aa3789ba5b4dc4c95cb1a1cf37ea6cecd68182e8",
+      "git_blob": "73b3f20e60354a92625a6fd7adebb86006176623",
+      "item_id": "000c8da7ba628e253140825d00b0f272ad465de44ca95bf3c1bd9e270fc6550c",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/87556fc7.mp3",
+      "bytes": 50732,
+      "sha256": "688bfc884d1a0f853446b83d9f83937aaf348e395de68b1ca76e0def2ac91f08",
+      "git_blob": "2732629f2cc1552047ca0b7fa855effa4e9805f4",
+      "item_id": "002d4fbef4d22c5e50fd0a58b6495bd11404799f4e2d7e63f005047ab77297dd",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/ac52d575.mp3",
+      "bytes": 60716,
+      "sha256": "18f53b008d1f855cebbc67706710648720a787477be83858eeb214f01a85c8ab",
+      "git_blob": "a4ed333bdfb0d4c49844d5893f129b20016d04d9",
+      "item_id": "004fb175874c8cc5b7aa08c601f3c845603a0be30ff0d8abc9ea8df3ec5a0b89",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/c00b8b5b.mp3",
+      "bytes": 23084,
+      "sha256": "c344ba6c02353516c9c970b9f3bdaf324ee15bed49ad845e4c6b27ea7e1dbe26",
+      "git_blob": "d54fb7b6676ca1c3eb2f92afba5e5f861abd70d2",
+      "item_id": "00565640e7597fc92593eb272e4f67a738983525ace13f9a7b0f398c9c2a94a7",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/f79a4231.mp3",
+      "bytes": 23084,
+      "sha256": "c344ba6c02353516c9c970b9f3bdaf324ee15bed49ad845e4c6b27ea7e1dbe26",
+      "git_blob": "d54fb7b6676ca1c3eb2f92afba5e5f861abd70d2",
+      "item_id": "00565640e7597fc92593eb272e4f67a738983525ace13f9a7b0f398c9c2a94a7",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/num/9.mp3",
+      "bytes": 10796,
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/num/9.mp3",
+      "bytes": 10796,
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/num/9.mp3",
+      "bytes": 10796,
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/num/9.mp3",
+      "bytes": 10796,
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/num/9.mp3",
+      "bytes": 10796,
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/0ade7c2c.mp3",
+      "bytes": 10796,
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/0ade7c2c.mp3",
+      "bytes": 10796,
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/0ade7c2c.mp3",
+      "bytes": 10796,
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/c75138bc.mp3",
+      "bytes": 44204,
+      "sha256": "f1c997cc10daa82efdbeec25224969d168c55c8116ecfdf3639ebe3a4cc20512",
+      "git_blob": "4b0e9f779f3c400d1047f3f12d708650b6978dbe",
+      "item_id": "00cfa8e381a501dd7844b12975ba9d6660a0012632ccda32dabcc5625f17f2fe",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/bf78c9bb.mp3",
+      "bytes": 47276,
+      "sha256": "053b36cf6333f3694b53fa4fd76daaa554dc4382de6eb12a559a45a08c2b0014",
+      "git_blob": "3c6cb545fc6825e07488dfa03c5e282e05e73d4a",
+      "item_id": "00dc4a5a2d20a29235cab47c2f60a4cd31b32c5ee3958e58034c41a0da907d89",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/749842fe.mp3",
+      "bytes": 41516,
+      "sha256": "d41cde56a18ac1853ae1959cc0cdbb65362a68cf34f8a1e2fe417374fd33d6f1",
+      "git_blob": "e4a1e69f10ea2f9715460e39ab09b8a43acaf3a6",
+      "item_id": "011abc63485b729e1fb3145d41bf18d59d3d0c36060021dc66ae29ee6d4554da",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/94ebaa9d.mp3",
+      "bytes": 51116,
+      "sha256": "5a2be7487927ee9f92be1eccda00e2bf9adea72f34c8bad4f91b639c517c0bd0",
+      "git_blob": "fd7e02a506307e5da2e37cb6b752d48431e4b4ed",
+      "item_id": "015a7edf4503c5aa0e980f5720276e1f42dbf83a11204abb67e077f54786e7a7",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/80e42307.mp3",
+      "bytes": 47276,
+      "sha256": "6341b6e772508bdf936e5763130ace528bf36d968570289e83c7aa9d90c761c0",
+      "git_blob": "6b42a5078439d73dca234ba714dc8fa692f346bb",
+      "item_id": "016821c3791fa8a2f295a4728b4b76eac490db76f1e163ca24d53b75b2d1fcf2",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/224f07e7.mp3",
+      "bytes": 20396,
+      "sha256": "14fa36e57ba60affef10aef85dbab8787f9933cda7201793505adaccf0fa3018",
+      "git_blob": "c76245e53f82b79be990c92ea7102313d8705476",
+      "item_id": "018f81bc74577f8c74e55ea2f93b1a290686c4ff532ce2f7c9117e99d01246a7",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/224f07e7.mp3",
+      "bytes": 20396,
+      "sha256": "14fa36e57ba60affef10aef85dbab8787f9933cda7201793505adaccf0fa3018",
+      "git_blob": "c76245e53f82b79be990c92ea7102313d8705476",
+      "item_id": "018f81bc74577f8c74e55ea2f93b1a290686c4ff532ce2f7c9117e99d01246a7",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/224f07e7.mp3",
+      "bytes": 20396,
+      "sha256": "14fa36e57ba60affef10aef85dbab8787f9933cda7201793505adaccf0fa3018",
+      "git_blob": "c76245e53f82b79be990c92ea7102313d8705476",
+      "item_id": "018f81bc74577f8c74e55ea2f93b1a290686c4ff532ce2f7c9117e99d01246a7",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/224f07e7.mp3",
+      "bytes": 20396,
+      "sha256": "14fa36e57ba60affef10aef85dbab8787f9933cda7201793505adaccf0fa3018",
+      "git_blob": "c76245e53f82b79be990c92ea7102313d8705476",
+      "item_id": "018f81bc74577f8c74e55ea2f93b1a290686c4ff532ce2f7c9117e99d01246a7",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/224f07e7.mp3",
+      "bytes": 20396,
+      "sha256": "14fa36e57ba60affef10aef85dbab8787f9933cda7201793505adaccf0fa3018",
+      "git_blob": "c76245e53f82b79be990c92ea7102313d8705476",
+      "item_id": "018f81bc74577f8c74e55ea2f93b1a290686c4ff532ce2f7c9117e99d01246a7",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/ef688b97.mp3",
+      "bytes": 16556,
+      "sha256": "8b32afe4aeae703b478152fccf96beb5454b7c69ee55ddbd3d9c0eaa57ace135",
+      "git_blob": "50fe5d703d9d732a8ebb1ed4bd83e1d73b934b76",
+      "item_id": "01c01bdbb94e956dcc605967ad485b1a5df12553d983c7ac4f36209c76cfa47c",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/ef688b97.mp3",
+      "bytes": 16556,
+      "sha256": "8b32afe4aeae703b478152fccf96beb5454b7c69ee55ddbd3d9c0eaa57ace135",
+      "git_blob": "50fe5d703d9d732a8ebb1ed4bd83e1d73b934b76",
+      "item_id": "01c01bdbb94e956dcc605967ad485b1a5df12553d983c7ac4f36209c76cfa47c",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/ef688b97.mp3",
+      "bytes": 16556,
+      "sha256": "8b32afe4aeae703b478152fccf96beb5454b7c69ee55ddbd3d9c0eaa57ace135",
+      "git_blob": "50fe5d703d9d732a8ebb1ed4bd83e1d73b934b76",
+      "item_id": "01c01bdbb94e956dcc605967ad485b1a5df12553d983c7ac4f36209c76cfa47c",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/ef688b97.mp3",
+      "bytes": 16556,
+      "sha256": "8b32afe4aeae703b478152fccf96beb5454b7c69ee55ddbd3d9c0eaa57ace135",
+      "git_blob": "50fe5d703d9d732a8ebb1ed4bd83e1d73b934b76",
+      "item_id": "01c01bdbb94e956dcc605967ad485b1a5df12553d983c7ac4f36209c76cfa47c",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/ef688b97.mp3",
+      "bytes": 16556,
+      "sha256": "8b32afe4aeae703b478152fccf96beb5454b7c69ee55ddbd3d9c0eaa57ace135",
+      "git_blob": "50fe5d703d9d732a8ebb1ed4bd83e1d73b934b76",
+      "item_id": "01c01bdbb94e956dcc605967ad485b1a5df12553d983c7ac4f36209c76cfa47c",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/ada0f45c.mp3",
+      "bytes": 29612,
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/ada0f45c.mp3",
+      "bytes": 29612,
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/ada0f45c.mp3",
+      "bytes": 29612,
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/ada0f45c.mp3",
+      "bytes": 29612,
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/ada0f45c.mp3",
+      "bytes": 29612,
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/8bf86e1e.mp3",
+      "bytes": 29612,
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/8bf86e1e.mp3",
+      "bytes": 29612,
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/8bf86e1e.mp3",
+      "bytes": 29612,
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/8bf86e1e.mp3",
+      "bytes": 29612,
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/8bf86e1e.mp3",
+      "bytes": 29612,
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/6350e7b6.mp3",
+      "bytes": 67244,
+      "sha256": "45faa7fd6062831bbfa96c94c3f5488414e00dad056a9699704b6ded47976ba6",
+      "git_blob": "21441e57c568df02f7e761c45fcf9f3ca126ece4",
+      "item_id": "0207479319139f0ecd08721d9b073d15c7da12c650f9f84af694654b067f3cb0",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/0efacec7.mp3",
+      "bytes": 45356,
+      "sha256": "b2cf50410b48c46f5f21afe37130d22db0aadfa36928fe6e5e42b10262830c53",
+      "git_blob": "369f6e5149d25ccfdac1efc484554ae430a20fbe",
+      "item_id": "020b103a4f703ea3523fc553520715efc0840a68dfaf1d1218d62132fcacd80a",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/b0a51b7b.mp3",
+      "bytes": 45356,
+      "sha256": "721e7ee4e977ff1992703825e8abe6a78e50ae3e1ecdee5afaee5e28e7c78862",
+      "git_blob": "2fa8260cd5773eb0757af650e99aa3a049d23df1",
+      "item_id": "02149464c5a0eb6aaa95e5d2c51aae1466f3d9a77fd63296fc4a459fec9c7fd2",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/9a04f1fa.mp3",
+      "bytes": 27692,
+      "sha256": "e0e10a8e5bddafcd3c08609b4cf2feff313c3ba56e6d809e7b6d953e892cc8be",
+      "git_blob": "5bae2401347cb13cd6c28622954342f4334f27d4",
+      "item_id": "023039627c248430025669a527850fdee25ac6fc20e9de9808b7e3b2d74be135",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/9a04f1fa.mp3",
+      "bytes": 27692,
+      "sha256": "e0e10a8e5bddafcd3c08609b4cf2feff313c3ba56e6d809e7b6d953e892cc8be",
+      "git_blob": "5bae2401347cb13cd6c28622954342f4334f27d4",
+      "item_id": "023039627c248430025669a527850fdee25ac6fc20e9de9808b7e3b2d74be135",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/num/55.mp3",
+      "bytes": 13484,
+      "sha256": "70f59cad0f87f54619a88212f811f23847a7b27fc7e6624d7ecbe260965229d7",
+      "git_blob": "a1bf04418b5ce1bf03b2655d939b8fa77a0cf7e8",
+      "item_id": "023a87218b811a79eb9d90bd55b8b90d0680fb78691cb373b7ea410b382d8c7e",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/num/55.mp3",
+      "bytes": 13484,
+      "sha256": "70f59cad0f87f54619a88212f811f23847a7b27fc7e6624d7ecbe260965229d7",
+      "git_blob": "a1bf04418b5ce1bf03b2655d939b8fa77a0cf7e8",
+      "item_id": "023a87218b811a79eb9d90bd55b8b90d0680fb78691cb373b7ea410b382d8c7e",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/num/55.mp3",
+      "bytes": 13484,
+      "sha256": "70f59cad0f87f54619a88212f811f23847a7b27fc7e6624d7ecbe260965229d7",
+      "git_blob": "a1bf04418b5ce1bf03b2655d939b8fa77a0cf7e8",
+      "item_id": "023a87218b811a79eb9d90bd55b8b90d0680fb78691cb373b7ea410b382d8c7e",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/num/55.mp3",
+      "bytes": 13484,
+      "sha256": "70f59cad0f87f54619a88212f811f23847a7b27fc7e6624d7ecbe260965229d7",
+      "git_blob": "a1bf04418b5ce1bf03b2655d939b8fa77a0cf7e8",
+      "item_id": "023a87218b811a79eb9d90bd55b8b90d0680fb78691cb373b7ea410b382d8c7e",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/num/55.mp3",
+      "bytes": 13484,
+      "sha256": "70f59cad0f87f54619a88212f811f23847a7b27fc7e6624d7ecbe260965229d7",
+      "git_blob": "a1bf04418b5ce1bf03b2655d939b8fa77a0cf7e8",
+      "item_id": "023a87218b811a79eb9d90bd55b8b90d0680fb78691cb373b7ea410b382d8c7e",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/6e33ce74.mp3",
+      "bytes": 45356,
+      "sha256": "cea3de9cdf4e7cad33932d637687fc2c0834242fcf2f193c51efd9139646a346",
+      "git_blob": "26f3cdcf56fa1a4b4f24895d0e173769229c3039",
+      "item_id": "0248582bb8b3e22ddc306ff1dd6874a2c8e1dcf2ab832d3c19a6da96cf05b88d",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/24ac1c00.mp3",
+      "bytes": 31532,
+      "sha256": "3158467cd6de96911b3b63eb12d681092bb228421e7cef2d084faa7f810c079a",
+      "git_blob": "5772b3a24e423c4e30a427ca96c28ceb9f1b8eef",
+      "item_id": "025491d3e2beb9c11b262ebc8f1a03915161415f2ab49d1b2a789fd5cadab738",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/24ac1c00.mp3",
+      "bytes": 31532,
+      "sha256": "3158467cd6de96911b3b63eb12d681092bb228421e7cef2d084faa7f810c079a",
+      "git_blob": "5772b3a24e423c4e30a427ca96c28ceb9f1b8eef",
+      "item_id": "025491d3e2beb9c11b262ebc8f1a03915161415f2ab49d1b2a789fd5cadab738",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/24ac1c00.mp3",
+      "bytes": 31532,
+      "sha256": "3158467cd6de96911b3b63eb12d681092bb228421e7cef2d084faa7f810c079a",
+      "git_blob": "5772b3a24e423c4e30a427ca96c28ceb9f1b8eef",
+      "item_id": "025491d3e2beb9c11b262ebc8f1a03915161415f2ab49d1b2a789fd5cadab738",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/24ac1c00.mp3",
+      "bytes": 31532,
+      "sha256": "3158467cd6de96911b3b63eb12d681092bb228421e7cef2d084faa7f810c079a",
+      "git_blob": "5772b3a24e423c4e30a427ca96c28ceb9f1b8eef",
+      "item_id": "025491d3e2beb9c11b262ebc8f1a03915161415f2ab49d1b2a789fd5cadab738",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/24ac1c00.mp3",
+      "bytes": 31532,
+      "sha256": "3158467cd6de96911b3b63eb12d681092bb228421e7cef2d084faa7f810c079a",
+      "git_blob": "5772b3a24e423c4e30a427ca96c28ceb9f1b8eef",
+      "item_id": "025491d3e2beb9c11b262ebc8f1a03915161415f2ab49d1b2a789fd5cadab738",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/675b8be8.mp3",
+      "bytes": 53804,
+      "sha256": "46b3a367dba8eeb269c4cd5ff4caa7987295615165acc7aed2705c6cf1b98ac8",
+      "git_blob": "b80f10a9753daba55a06e2d8f97d4a16a6cd1b19",
+      "item_id": "025e8c1df943d640048d0320bf7a5cee1443837617d61fb8b07a1ad72c9c4e9f",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/841e9298.mp3",
+      "bytes": 139436,
+      "sha256": "541c6a627e82e5cdc7907161d8c8cb4a372b30e07838c385da999350669d4a3a",
+      "git_blob": "2edbcedc16abeb9ed52e0e57262cf9bd73f3cb8c",
+      "item_id": "026834b98ff6e89a8ab5293562d34ec8040fa11403be3635ae3ca1097dba3df1",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/d402c6b0.mp3",
+      "bytes": 41132,
+      "sha256": "560bd00b0a5032b8053e20273f5d300b98a7b3440fa3730354d36f43702cd385",
+      "git_blob": "8ad5088c78fb5bb3718066a34c2c0a19764c45d8",
+      "item_id": "0280428c52f41ab92548ce6e24778e7786625fb9744cc74b6bcedc2e567a7c31",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/cc346ee6.mp3",
+      "bytes": 15404,
+      "sha256": "102bbc711cbe942813588d15d5c821d78f97c4306ad1d7da46ee5bb52895af4e",
+      "git_blob": "bd888dca7df17b7bf3c01fc4afa9443702ad412d",
+      "item_id": "02d63e7481753b2b9822d8e39dfa1093fcf2d7bd86535ba27241e8ad98533542",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/cc346ee6.mp3",
+      "bytes": 15404,
+      "sha256": "102bbc711cbe942813588d15d5c821d78f97c4306ad1d7da46ee5bb52895af4e",
+      "git_blob": "bd888dca7df17b7bf3c01fc4afa9443702ad412d",
+      "item_id": "02d63e7481753b2b9822d8e39dfa1093fcf2d7bd86535ba27241e8ad98533542",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/cc346ee6.mp3",
+      "bytes": 15404,
+      "sha256": "102bbc711cbe942813588d15d5c821d78f97c4306ad1d7da46ee5bb52895af4e",
+      "git_blob": "bd888dca7df17b7bf3c01fc4afa9443702ad412d",
+      "item_id": "02d63e7481753b2b9822d8e39dfa1093fcf2d7bd86535ba27241e8ad98533542",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/cc346ee6.mp3",
+      "bytes": 15404,
+      "sha256": "102bbc711cbe942813588d15d5c821d78f97c4306ad1d7da46ee5bb52895af4e",
+      "git_blob": "bd888dca7df17b7bf3c01fc4afa9443702ad412d",
+      "item_id": "02d63e7481753b2b9822d8e39dfa1093fcf2d7bd86535ba27241e8ad98533542",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/cc346ee6.mp3",
+      "bytes": 15404,
+      "sha256": "102bbc711cbe942813588d15d5c821d78f97c4306ad1d7da46ee5bb52895af4e",
+      "git_blob": "bd888dca7df17b7bf3c01fc4afa9443702ad412d",
+      "item_id": "02d63e7481753b2b9822d8e39dfa1093fcf2d7bd86535ba27241e8ad98533542",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/8f2e52cf.mp3",
+      "bytes": 39596,
+      "sha256": "d556b1457c43853c01fb291d8a57ada3f50099b36604c099537c56963688dbb7",
+      "git_blob": "6f8ce6a0a7d856af07ba3da50a261e4d2aca6b26",
+      "item_id": "032a541449fcf93b7b8988315e1f02352baff078a91db07981c162a57c567869",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/5d97159c.mp3",
+      "bytes": 39596,
+      "sha256": "d556b1457c43853c01fb291d8a57ada3f50099b36604c099537c56963688dbb7",
+      "git_blob": "6f8ce6a0a7d856af07ba3da50a261e4d2aca6b26",
+      "item_id": "032a541449fcf93b7b8988315e1f02352baff078a91db07981c162a57c567869",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/f5d1d098.mp3",
+      "bytes": 33836,
+      "sha256": "4b2c8ed628d70071d7a7468b08a046bc13f851e439eff6f4bc318afe57849de8",
+      "git_blob": "c62e688931f2012ca2b6558d2c7c409a2d8059ed",
+      "item_id": "03419e977e9e4ceaa835b1f213caec772a8a271ca748e6c2ea4137ee2e641820",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/087fecab.mp3",
+      "bytes": 18092,
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/087fecab.mp3",
+      "bytes": 18092,
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/087fecab.mp3",
+      "bytes": 18092,
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/087fecab.mp3",
+      "bytes": 18092,
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/087fecab.mp3",
+      "bytes": 18092,
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/edc68a62.mp3",
+      "bytes": 18092,
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/edc68a62.mp3",
+      "bytes": 18092,
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/edc68a62.mp3",
+      "bytes": 18092,
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/edc68a62.mp3",
+      "bytes": 18092,
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/edc68a62.mp3",
+      "bytes": 18092,
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/22a7ba62.mp3",
+      "bytes": 37676,
+      "sha256": "d4e47913785bcb13ad2f6028c4521bb6b2ba4b2e6db5d523e565d519c174ce08",
+      "git_blob": "45cc1ca9ae90baca505a41a7bdcd1f8da4706899",
+      "item_id": "03a80e67e99d6c455e212df3f50d39b6f509968da3f3510c4694d68c982b5785",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/42c6c637.mp3",
+      "bytes": 43052,
+      "sha256": "925dbdf4528da929c1ae61c1e8edd4aba885a07008ac1135e917b765cb8c21a0",
+      "git_blob": "eb2ca37d547e406c69a3cde9255477ce18470dd1",
+      "item_id": "03e12d861e222fb33cc0846da80c7dc4692aa01817e08aa77106c88aa26a08e9",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/e3b0dc3a.mp3",
+      "bytes": 44204,
+      "sha256": "dc6928bc29b2bcf326b023a8d6793f2d244a09afb46f926b4bb232868b8febfb",
+      "git_blob": "12ac5a8e80dce8a25ff04392604ff65aff2fe10d",
+      "item_id": "03fc7340de20b0a05b400792f9a3c0e16955995fc4be5b7052bf0b3199266b71",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/e881a918.mp3",
+      "bytes": 51116,
+      "sha256": "9f155b6d3dbac5311457b8baea1aa9d8037cffd97e52eb10083fe24231bc03d5",
+      "git_blob": "a9b3caa836df5eac51967f1fe6a63d37b582cc02",
+      "item_id": "03fe5601610c57a6de97cd96858e22774e069d4dbcb8c4215dfcc62466b0d0fa",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/899b1a87.mp3",
+      "bytes": 16556,
+      "sha256": "bf69015c55860576c63e11e4bb9511e673e3baf6fc0a4b942f3092298557e237",
+      "git_blob": "46bff845916da2592709d3ed417c68d4d4fca8d1",
+      "item_id": "040aae5ddc3d2b29423432eb853ccaca2c896d4106fa9f326c7ddcaa26ea85f1",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/899b1a87.mp3",
+      "bytes": 16556,
+      "sha256": "bf69015c55860576c63e11e4bb9511e673e3baf6fc0a4b942f3092298557e237",
+      "git_blob": "46bff845916da2592709d3ed417c68d4d4fca8d1",
+      "item_id": "040aae5ddc3d2b29423432eb853ccaca2c896d4106fa9f326c7ddcaa26ea85f1",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/899b1a87.mp3",
+      "bytes": 16556,
+      "sha256": "bf69015c55860576c63e11e4bb9511e673e3baf6fc0a4b942f3092298557e237",
+      "git_blob": "46bff845916da2592709d3ed417c68d4d4fca8d1",
+      "item_id": "040aae5ddc3d2b29423432eb853ccaca2c896d4106fa9f326c7ddcaa26ea85f1",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/899b1a87.mp3",
+      "bytes": 16556,
+      "sha256": "bf69015c55860576c63e11e4bb9511e673e3baf6fc0a4b942f3092298557e237",
+      "git_blob": "46bff845916da2592709d3ed417c68d4d4fca8d1",
+      "item_id": "040aae5ddc3d2b29423432eb853ccaca2c896d4106fa9f326c7ddcaa26ea85f1",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/899b1a87.mp3",
+      "bytes": 16556,
+      "sha256": "bf69015c55860576c63e11e4bb9511e673e3baf6fc0a4b942f3092298557e237",
+      "git_blob": "46bff845916da2592709d3ed417c68d4d4fca8d1",
+      "item_id": "040aae5ddc3d2b29423432eb853ccaca2c896d4106fa9f326c7ddcaa26ea85f1",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/4d9c9594.mp3",
+      "bytes": 22316,
+      "sha256": "f52b1c7fb3d72b9d0c954789d50b2a9215955b23e46de1455a35ba99d4e84f2c",
+      "git_blob": "9f38b6e166e0bd312dc5445fe4fb0d87964dad6f",
+      "item_id": "04492a9030acdbb3106583512f34c8eab21f6a57a7b91c175c96ce6ebf2234b5",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/0639de90.mp3",
+      "bytes": 22316,
+      "sha256": "b0d9032eeb898d8e6dcb50a31b37160b624d3106afd50734c1e72c9bac89ae64",
+      "git_blob": "3d6979603f30d1f40cb3503fad0cebf1742da48b",
+      "item_id": "049416e53874c34ece77f6a0e9ee75378b9e3e8c7854ca2896f4a886f30d0c0b",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/0639de90.mp3",
+      "bytes": 22316,
+      "sha256": "b0d9032eeb898d8e6dcb50a31b37160b624d3106afd50734c1e72c9bac89ae64",
+      "git_blob": "3d6979603f30d1f40cb3503fad0cebf1742da48b",
+      "item_id": "049416e53874c34ece77f6a0e9ee75378b9e3e8c7854ca2896f4a886f30d0c0b",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/0639de90.mp3",
+      "bytes": 22316,
+      "sha256": "b0d9032eeb898d8e6dcb50a31b37160b624d3106afd50734c1e72c9bac89ae64",
+      "git_blob": "3d6979603f30d1f40cb3503fad0cebf1742da48b",
+      "item_id": "049416e53874c34ece77f6a0e9ee75378b9e3e8c7854ca2896f4a886f30d0c0b",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/0639de90.mp3",
+      "bytes": 22316,
+      "sha256": "b0d9032eeb898d8e6dcb50a31b37160b624d3106afd50734c1e72c9bac89ae64",
+      "git_blob": "3d6979603f30d1f40cb3503fad0cebf1742da48b",
+      "item_id": "049416e53874c34ece77f6a0e9ee75378b9e3e8c7854ca2896f4a886f30d0c0b",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/0639de90.mp3",
+      "bytes": 22316,
+      "sha256": "b0d9032eeb898d8e6dcb50a31b37160b624d3106afd50734c1e72c9bac89ae64",
+      "git_blob": "3d6979603f30d1f40cb3503fad0cebf1742da48b",
+      "item_id": "049416e53874c34ece77f6a0e9ee75378b9e3e8c7854ca2896f4a886f30d0c0b",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/1d0a723c.mp3",
+      "bytes": 52652,
+      "sha256": "516dab846af00fb93cd397072b78785c3b18b5c7267636eb977405c2332ffbab",
+      "git_blob": "e4a5262056617d183a4873cf20cc8f2e54351c5f",
+      "item_id": "049f1761322f555cb93b20989daf37e3e00f5d836f40cb91719d9a321179516a",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/963e5205.mp3",
+      "bytes": 18092,
+      "sha256": "ffd56595c379bb9b3b2aca43dc7a5899cdcf8fcc8e95f0b60883a3855a1cb657",
+      "git_blob": "c568422d3ac10a5f9524bb362b37e45257927937",
+      "item_id": "04ce56744db9a580b3c57721a89f511be3dce05d37b92b20736421952179c7c2",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/963e5205.mp3",
+      "bytes": 18092,
+      "sha256": "ffd56595c379bb9b3b2aca43dc7a5899cdcf8fcc8e95f0b60883a3855a1cb657",
+      "git_blob": "c568422d3ac10a5f9524bb362b37e45257927937",
+      "item_id": "04ce56744db9a580b3c57721a89f511be3dce05d37b92b20736421952179c7c2",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/963e5205.mp3",
+      "bytes": 18092,
+      "sha256": "ffd56595c379bb9b3b2aca43dc7a5899cdcf8fcc8e95f0b60883a3855a1cb657",
+      "git_blob": "c568422d3ac10a5f9524bb362b37e45257927937",
+      "item_id": "04ce56744db9a580b3c57721a89f511be3dce05d37b92b20736421952179c7c2",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/963e5205.mp3",
+      "bytes": 18092,
+      "sha256": "ffd56595c379bb9b3b2aca43dc7a5899cdcf8fcc8e95f0b60883a3855a1cb657",
+      "git_blob": "c568422d3ac10a5f9524bb362b37e45257927937",
+      "item_id": "04ce56744db9a580b3c57721a89f511be3dce05d37b92b20736421952179c7c2",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/963e5205.mp3",
+      "bytes": 18092,
+      "sha256": "ffd56595c379bb9b3b2aca43dc7a5899cdcf8fcc8e95f0b60883a3855a1cb657",
+      "git_blob": "c568422d3ac10a5f9524bb362b37e45257927937",
+      "item_id": "04ce56744db9a580b3c57721a89f511be3dce05d37b92b20736421952179c7c2",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/f905d0b1.mp3",
+      "bytes": 45356,
+      "sha256": "1e05f86f3a081176c5c5bf4e271ab0946fb6b08d04f4e15a12aeb179bdcc009b",
+      "git_blob": "c4008792b470d2766db957285ec2b788803ef652",
+      "item_id": "04dc0ab4dc4d710ff72672ec86a3bcfdb476bbb99ab25b335e17fbdaf3f3e269",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/a36f4fb1.mp3",
+      "bytes": 30764,
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/a36f4fb1.mp3",
+      "bytes": 30764,
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/a36f4fb1.mp3",
+      "bytes": 30764,
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/a36f4fb1.mp3",
+      "bytes": 30764,
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/a36f4fb1.mp3",
+      "bytes": 30764,
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/f2892cc4.mp3",
+      "bytes": 30764,
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/f2892cc4.mp3",
+      "bytes": 30764,
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/f2892cc4.mp3",
+      "bytes": 30764,
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/f2892cc4.mp3",
+      "bytes": 30764,
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/f2892cc4.mp3",
+      "bytes": 30764,
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/f6e08a2d.mp3",
+      "bytes": 36524,
+      "sha256": "30a4169bf5f356dbb62a85ea05b93d3ac71789bec7c8a94bfb9ffd04b5d746c3",
+      "git_blob": "5124ec846ac2b1425e9da1595afab71ed782ae9c",
+      "item_id": "057131202650c88e1f06742e158d669ed9da9ecefc092be4861ded03d47bf310",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/f4fc6bf1.mp3",
+      "bytes": 23852,
+      "sha256": "2c91b3c5fd25d7857fcbec41c7ac690a87d2f6273fb0d02a1fe9ef0d7f68bc7d",
+      "git_blob": "614cf12f8fd34eded5e48170eb9ed40418941bda",
+      "item_id": "0583de0caca1561a5ffcd456bc3f5722792992546f621f55190cfc9e5a8bf330",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/num/96.mp3",
+      "bytes": 14252,
+      "sha256": "8565cacd424a4ab593f708c5e64f49046c1d1043c1a7d061c23f4974f6020729",
+      "git_blob": "d8bc5b43b0f419cbb657b4610447e90b92421495",
+      "item_id": "05b10f3e967417b7f33991e738d51547114370cb979b83d30850f1d113acfb7a",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/num/96.mp3",
+      "bytes": 14252,
+      "sha256": "8565cacd424a4ab593f708c5e64f49046c1d1043c1a7d061c23f4974f6020729",
+      "git_blob": "d8bc5b43b0f419cbb657b4610447e90b92421495",
+      "item_id": "05b10f3e967417b7f33991e738d51547114370cb979b83d30850f1d113acfb7a",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/num/96.mp3",
+      "bytes": 14252,
+      "sha256": "8565cacd424a4ab593f708c5e64f49046c1d1043c1a7d061c23f4974f6020729",
+      "git_blob": "d8bc5b43b0f419cbb657b4610447e90b92421495",
+      "item_id": "05b10f3e967417b7f33991e738d51547114370cb979b83d30850f1d113acfb7a",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/num/96.mp3",
+      "bytes": 14252,
+      "sha256": "8565cacd424a4ab593f708c5e64f49046c1d1043c1a7d061c23f4974f6020729",
+      "git_blob": "d8bc5b43b0f419cbb657b4610447e90b92421495",
+      "item_id": "05b10f3e967417b7f33991e738d51547114370cb979b83d30850f1d113acfb7a",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/num/96.mp3",
+      "bytes": 14252,
+      "sha256": "8565cacd424a4ab593f708c5e64f49046c1d1043c1a7d061c23f4974f6020729",
+      "git_blob": "d8bc5b43b0f419cbb657b4610447e90b92421495",
+      "item_id": "05b10f3e967417b7f33991e738d51547114370cb979b83d30850f1d113acfb7a",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/7dfecc0b.mp3",
+      "bytes": 39212,
+      "sha256": "a46fe5ec489be41de13f9b7e4d0f9dd0d4aea67e0321dd37240243257af8f253",
+      "git_blob": "8caeba422a2c5323caee92048ba8cacf2c5d15c0",
+      "item_id": "05b769e8acd83e3ca7f5a74dfb3e2e29fdaf669e5753f9b6fe4446301e55a85c",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/59eff77d.mp3",
+      "bytes": 52652,
+      "sha256": "c87d31b11aed2cfefc5f9d4fa1b2099ebea56a42eff73cc4120931b2a7c74c05",
+      "git_blob": "ccc24d6626ff6e6b469de49169cf22cab48dfefc",
+      "item_id": "05fae2cfa44ff02e0147d234b6555b672055501e083bf7c6e0d5b8c1a463c9d1",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/63659acc.mp3",
+      "bytes": 28844,
+      "sha256": "7bbe922a62c450973f66a2eee434e9af045df6b3f4793c9bf8507989ec84769b",
+      "git_blob": "c833222fde93967d9f2e0c1de5c30a97d64635f9",
+      "item_id": "061b04a86aa7b7d91d70e4c30b19586f8ee7460ff11c085be1552c558f0e3fea",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/b277c1a7.mp3",
+      "bytes": 36524,
+      "sha256": "0436105931c4754bfc7d7412603358165e85f6cf4489380a4773745b653e3d50",
+      "git_blob": "59ddf7839f352b2c73e16a910ddf69dfff76ad98",
+      "item_id": "064d3d5674ee145c87279b168243ba68e78d6aa7a5f15f66ac5d9bd5ce66e67f",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/ea1739af.mp3",
+      "bytes": 48812,
+      "sha256": "43735cf34cca0575ae771e97be290175fa669331d65d209808e09e6025f1ff7a",
+      "git_blob": "3c8b6d3188c70656d7a2e5e3f14e3e9a4493d731",
+      "item_id": "064f38250466e48e2e50a011297c5467be4611bfd7cf6190ae33279f5668a1e6",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/num/69.mp3",
+      "bytes": 18092,
+      "sha256": "1beda814b09abd1d1f72ac9273aee66a7c42e87ebe2cce827a6ff99978e884ab",
+      "git_blob": "83789e4202ce709039e62e17c17fd387f83f1547",
+      "item_id": "0654aa2503097b8df480ef370d40a2b3c2828bd3bcb7d4f04245710b8d05c21e",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/num/69.mp3",
+      "bytes": 18092,
+      "sha256": "1beda814b09abd1d1f72ac9273aee66a7c42e87ebe2cce827a6ff99978e884ab",
+      "git_blob": "83789e4202ce709039e62e17c17fd387f83f1547",
+      "item_id": "0654aa2503097b8df480ef370d40a2b3c2828bd3bcb7d4f04245710b8d05c21e",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/num/69.mp3",
+      "bytes": 18092,
+      "sha256": "1beda814b09abd1d1f72ac9273aee66a7c42e87ebe2cce827a6ff99978e884ab",
+      "git_blob": "83789e4202ce709039e62e17c17fd387f83f1547",
+      "item_id": "0654aa2503097b8df480ef370d40a2b3c2828bd3bcb7d4f04245710b8d05c21e",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/num/69.mp3",
+      "bytes": 18092,
+      "sha256": "1beda814b09abd1d1f72ac9273aee66a7c42e87ebe2cce827a6ff99978e884ab",
+      "git_blob": "83789e4202ce709039e62e17c17fd387f83f1547",
+      "item_id": "0654aa2503097b8df480ef370d40a2b3c2828bd3bcb7d4f04245710b8d05c21e",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/num/69.mp3",
+      "bytes": 18092,
+      "sha256": "1beda814b09abd1d1f72ac9273aee66a7c42e87ebe2cce827a6ff99978e884ab",
+      "git_blob": "83789e4202ce709039e62e17c17fd387f83f1547",
+      "item_id": "0654aa2503097b8df480ef370d40a2b3c2828bd3bcb7d4f04245710b8d05c21e",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/num/53.mp3",
+      "bytes": 16172,
+      "sha256": "7001b5a8c8d72061be1f7546e4544d7ddaf6938923feeaa654229707f43b8219",
+      "git_blob": "a3a605debe851d5dda750ae4da437cce9bd33479",
+      "item_id": "0659b131434dce7138aa038173c8d3d968d0fabcaa2602aa8b4a6031b56ed9f1",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/num/53.mp3",
+      "bytes": 16172,
+      "sha256": "7001b5a8c8d72061be1f7546e4544d7ddaf6938923feeaa654229707f43b8219",
+      "git_blob": "a3a605debe851d5dda750ae4da437cce9bd33479",
+      "item_id": "0659b131434dce7138aa038173c8d3d968d0fabcaa2602aa8b4a6031b56ed9f1",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/num/53.mp3",
+      "bytes": 16172,
+      "sha256": "7001b5a8c8d72061be1f7546e4544d7ddaf6938923feeaa654229707f43b8219",
+      "git_blob": "a3a605debe851d5dda750ae4da437cce9bd33479",
+      "item_id": "0659b131434dce7138aa038173c8d3d968d0fabcaa2602aa8b4a6031b56ed9f1",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/num/53.mp3",
+      "bytes": 16172,
+      "sha256": "7001b5a8c8d72061be1f7546e4544d7ddaf6938923feeaa654229707f43b8219",
+      "git_blob": "a3a605debe851d5dda750ae4da437cce9bd33479",
+      "item_id": "0659b131434dce7138aa038173c8d3d968d0fabcaa2602aa8b4a6031b56ed9f1",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/num/53.mp3",
+      "bytes": 16172,
+      "sha256": "7001b5a8c8d72061be1f7546e4544d7ddaf6938923feeaa654229707f43b8219",
+      "git_blob": "a3a605debe851d5dda750ae4da437cce9bd33479",
+      "item_id": "0659b131434dce7138aa038173c8d3d968d0fabcaa2602aa8b4a6031b56ed9f1",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/3ef1cbc0.mp3",
+      "bytes": 29612,
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/3ef1cbc0.mp3",
+      "bytes": 29612,
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/3ef1cbc0.mp3",
+      "bytes": 29612,
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/3ef1cbc0.mp3",
+      "bytes": 29612,
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/3ef1cbc0.mp3",
+      "bytes": 29612,
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/e11449bb.mp3",
+      "bytes": 29612,
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/e11449bb.mp3",
+      "bytes": 29612,
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/e11449bb.mp3",
+      "bytes": 29612,
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/e11449bb.mp3",
+      "bytes": 29612,
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/e11449bb.mp3",
+      "bytes": 29612,
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/a1b0ecfe.mp3",
+      "bytes": 30764,
+      "sha256": "e5a8492139446d42d3c5d47b7a5efbf6b50d0d8c7f6ddd94d92eb44608615723",
+      "git_blob": "046132d7e94cf1217344ec1747c8472580f2a2be",
+      "item_id": "066da75fe54fe8b4c0323aa89ebe95fd3c0eee5449d341635043a8911b908689",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/0a0fb113.mp3",
+      "bytes": 38444,
+      "sha256": "d9a861047af7c3c03e79daeac63bf37373ef4e3d912bf1f4ce3c685e0970875c",
+      "git_blob": "5e6d7371c362a0240747a643a32247950d94545e",
+      "item_id": "067a73f4991cdb7bcc374d5422ff9a4d95c5f6336a27657d88e09000cdba062e",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/888a7057.mp3",
+      "bytes": 52652,
+      "sha256": "5cb3180e6467f8cd45d8b400d8ad3d17e9fb3a0739746ff75b747485ad522f93",
+      "git_blob": "6b5683934e66801208b3c7d7335dcf06e18bd7aa",
+      "item_id": "06b2c7c42447c2d5391fda739f9302d037b8f854552243ddc260e9f7ed8f0a5b",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/f45a1fbc.mp3",
+      "bytes": 25004,
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/f45a1fbc.mp3",
+      "bytes": 25004,
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/f45a1fbc.mp3",
+      "bytes": 25004,
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/f45a1fbc.mp3",
+      "bytes": 25004,
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/f45a1fbc.mp3",
+      "bytes": 25004,
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/7108dafa.mp3",
+      "bytes": 25004,
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/7108dafa.mp3",
+      "bytes": 25004,
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/7108dafa.mp3",
+      "bytes": 25004,
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/7108dafa.mp3",
+      "bytes": 25004,
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/7108dafa.mp3",
+      "bytes": 25004,
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/9c196ae7.mp3",
+      "bytes": 54956,
+      "sha256": "b1aace89feb86804ae931c4ecf195c11c76bd5ba60cc65ed94e2f41db603a8d5",
+      "git_blob": "20f37b0c27b68f52c1480c71a23cd79cc07520dc",
+      "item_id": "06d9a3585cebb954a49054f622e61c2e6ed05efa7becf0f6779b872132f7ce2c",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/1cc9bb50.mp3",
+      "bytes": 35372,
+      "sha256": "fcc043a575a1bd75c5476ca0b864be7aa1fa25a4957516b5ab49be42793056d6",
+      "git_blob": "cca493e4dec87503d2c74623671e67f51086d8ec",
+      "item_id": "070db0af2da3f8fc8bf128ca5208ffa7d1e8ce56e0e453b2856d966fe3321d66",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/f62ca4a8.mp3",
+      "bytes": 29612,
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/f62ca4a8.mp3",
+      "bytes": 29612,
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/f62ca4a8.mp3",
+      "bytes": 29612,
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/f62ca4a8.mp3",
+      "bytes": 29612,
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/f62ca4a8.mp3",
+      "bytes": 29612,
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/cb04ba47.mp3",
+      "bytes": 29612,
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/cb04ba47.mp3",
+      "bytes": 29612,
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/cb04ba47.mp3",
+      "bytes": 29612,
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/cb04ba47.mp3",
+      "bytes": 29612,
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/cb04ba47.mp3",
+      "bytes": 29612,
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/da97a7d2.mp3",
+      "bytes": 12716,
+      "sha256": "87322deeb76ab73cb0b49c44ee1229ae00a730e63efc9ce42a203cc77100b895",
+      "git_blob": "3d1ae2578fe04e0ba781846940d1880cf4af9ab5",
+      "item_id": "07340d6d2d98a1b9f7fa28d697f481a3e474ea90e38588023986792a5244fadf",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/da97a7d2.mp3",
+      "bytes": 12716,
+      "sha256": "87322deeb76ab73cb0b49c44ee1229ae00a730e63efc9ce42a203cc77100b895",
+      "git_blob": "3d1ae2578fe04e0ba781846940d1880cf4af9ab5",
+      "item_id": "07340d6d2d98a1b9f7fa28d697f481a3e474ea90e38588023986792a5244fadf",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/da97a7d2.mp3",
+      "bytes": 12716,
+      "sha256": "87322deeb76ab73cb0b49c44ee1229ae00a730e63efc9ce42a203cc77100b895",
+      "git_blob": "3d1ae2578fe04e0ba781846940d1880cf4af9ab5",
+      "item_id": "07340d6d2d98a1b9f7fa28d697f481a3e474ea90e38588023986792a5244fadf",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/da97a7d2.mp3",
+      "bytes": 12716,
+      "sha256": "87322deeb76ab73cb0b49c44ee1229ae00a730e63efc9ce42a203cc77100b895",
+      "git_blob": "3d1ae2578fe04e0ba781846940d1880cf4af9ab5",
+      "item_id": "07340d6d2d98a1b9f7fa28d697f481a3e474ea90e38588023986792a5244fadf",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/da97a7d2.mp3",
+      "bytes": 12716,
+      "sha256": "87322deeb76ab73cb0b49c44ee1229ae00a730e63efc9ce42a203cc77100b895",
+      "git_blob": "3d1ae2578fe04e0ba781846940d1880cf4af9ab5",
+      "item_id": "07340d6d2d98a1b9f7fa28d697f481a3e474ea90e38588023986792a5244fadf",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/89156b2a.mp3",
+      "bytes": 42284,
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/89156b2a.mp3",
+      "bytes": 42284,
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/89156b2a.mp3",
+      "bytes": 42284,
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/89156b2a.mp3",
+      "bytes": 42284,
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/89156b2a.mp3",
+      "bytes": 42284,
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "type": "audio"
+    },
+    {
+      "path": "games/robot-courier/voice/en/4fbcb2cc.mp3",
+      "bytes": 42284,
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/4fbcb2cc.mp3",
+      "bytes": 42284,
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "type": "audio"
+    },
+    {
+      "path": "games/shape-builder/voice/en/4fbcb2cc.mp3",
+      "bytes": 42284,
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "type": "audio"
+    },
+    {
+      "path": "games/space-station/voice/en/4fbcb2cc.mp3",
+      "bytes": 42284,
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "type": "audio"
+    },
+    {
+      "path": "games/story-detective/voice/en/4fbcb2cc.mp3",
+      "bytes": 42284,
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/28327843.mp3",
+      "bytes": 63404,
+      "sha256": "e0bb2adca772e9790eb768a6778dfcc2b4a3cb777986ca62542b7fc071805e5a",
+      "git_blob": "0184aaf3cc8ba2b6563a687d70260ecbad75df6a",
+      "item_id": "078e96df179a6fb91ed01ea78370c5c3a78a3e548d6de5bf6e692241ed348609",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/8e4ae797.mp3",
+      "bytes": 25772,
+      "sha256": "7e554c47387462bb281a9bd47940e8e63e10f2a721c69b0e427387f653c18d47",
+      "git_blob": "38391e3f9d3fc73c0354e4ac17dbaabe330ef05c",
+      "item_id": "07ab26e6f7ae152b2cee7f839fc7d14bf51bd17bcb7df9415e7ddc0c990eb2ee",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/0d80dfbd.mp3",
+      "bytes": 50732,
+      "sha256": "638e4b98c1bb3a1863156f269f25d15f84c628ca213d7b3af3d300c295fa3708",
+      "git_blob": "d0fdbe641f82b165d8ea6bbd4a0d03144912df28",
+      "item_id": "07b1c17d7fb7ad9411428b6677149f8598725c1168a5d681f8ccc1da2b23c722",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/b5d45bb0.mp3",
+      "bytes": 37676,
+      "sha256": "e76c9ccca262da802620f882cbfdfc4545468a03b9bd10ba1782e7e2ef08dfc6",
+      "git_blob": "c2d112b8bd16da27ac28b83b1cc255b055ffefcc",
+      "item_id": "07ccd022e49a152b7ce9ae9dcfce02a0a3bf756a4562243a678319109e3daec6",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/en/19932893.mp3",
+      "bytes": 58412,
+      "sha256": "7c4e37276478ba33409458ba55cf15b3f7473dd52275af7d632ababafcd2405a",
+      "git_blob": "dfcbb0cc66374ed41cf919e8424160cd0f0ad15d",
+      "item_id": "0856bbe497b46174dcb6fe02033e80d198ba0f9c479276429ced04cacc01975c",
+      "type": "audio"
+    },
+    {
+      "path": "games/bug-safari/voice/manifest.json",
+      "bytes": 1654,
+      "sha256": "8ccc273d1b52aa49e6b54a7ee459bfc0c654e6d637e7b8cadfbac760ab96858a",
+      "git_blob": "ef43fa0caa2dec340e508cac3723cfbb94fe968c",
+      "type": "manifest",
+      "previous_git_blob": "0967ef424bce6791893e9a57bb952f80fd536e93"
+    },
+    {
+      "path": "games/robot-courier/voice/manifest.json",
+      "bytes": 1734,
+      "sha256": "b36fc9ba6de80e42f500f09dab22ffe2719c60f40339de430d5768d15239e39b",
+      "git_blob": "c61736bf1f2c7ec46d2e0444642135201d767ff3",
+      "type": "manifest",
+      "previous_git_blob": "80c1c34e96df7524572e9eddabe0309a5969a5ca"
+    },
+    {
+      "path": "games/shape-builder/voice/manifest.json",
+      "bytes": 653,
+      "sha256": "124c2c616798fa4d16b20b88213538737decfc8b0e095be6d79a341c91b52660",
+      "git_blob": "0cd8c9c76c2f8374e0a38268b20b389c8cf893aa",
+      "type": "manifest",
+      "previous_git_blob": "0967ef424bce6791893e9a57bb952f80fd536e93"
+    },
+    {
+      "path": "games/space-station/voice/manifest.json",
+      "bytes": 653,
+      "sha256": "124c2c616798fa4d16b20b88213538737decfc8b0e095be6d79a341c91b52660",
+      "git_blob": "0cd8c9c76c2f8374e0a38268b20b389c8cf893aa",
+      "type": "manifest",
+      "previous_git_blob": "0967ef424bce6791893e9a57bb952f80fd536e93"
+    },
+    {
+      "path": "games/story-detective/voice/manifest.json",
+      "bytes": 653,
+      "sha256": "9c8ac9b72a8c79f0e2ee50ddf5b32ba644349784b759a1c48c49d0eac0bb320a",
+      "git_blob": "b55520ddc8efa74e9f3f30cc022dd8817625ce29",
+      "type": "manifest",
+      "previous_git_blob": "0967ef424bce6791893e9a57bb952f80fd536e93"
+    }
+  ],
+  "associations": [
+    {
+      "item_id": "0cf09702c465431638e2baec7cc9444e814ac23b9b255656c3773944c379e863",
+      "path": "games/bug-safari/voice/ko/eac36088.mp3",
+      "language": "ko",
+      "category": "ids",
+      "clip_id": "eac36088",
+      "sha256": "49be1c499b9793a89cb2f87cd00175acfc5859616e86871e5bf5840bfa45cd9b",
+      "git_blob": "0bc28d2a6c90e4f2e2cf9204b4b67ea615643d94",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "545d8324564e7a48885068bee32099df642e34aee15be4e8c4411ad757db1e22",
+      "path": "games/bug-safari/voice/en/b23378c3.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "b23378c3",
+      "sha256": "adb5911c5df9b4b61cd43a5428e0756bd1afa5c2d9cb0929379a9244cb78f561",
+      "git_blob": "6267fc5f39268046322525bdf34b014172c9ae99",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "000c8da7ba628e253140825d00b0f272ad465de44ca95bf3c1bd9e270fc6550c",
+      "path": "games/bug-safari/voice/en/80469f85.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "80469f85",
+      "sha256": "67ab1f2b835b1dfc2d5b9161aa3789ba5b4dc4c95cb1a1cf37ea6cecd68182e8",
+      "git_blob": "73b3f20e60354a92625a6fd7adebb86006176623",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "002d4fbef4d22c5e50fd0a58b6495bd11404799f4e2d7e63f005047ab77297dd",
+      "path": "games/bug-safari/voice/en/87556fc7.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "87556fc7",
+      "sha256": "688bfc884d1a0f853446b83d9f83937aaf348e395de68b1ca76e0def2ac91f08",
+      "git_blob": "2732629f2cc1552047ca0b7fa855effa4e9805f4",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "004fb175874c8cc5b7aa08c601f3c845603a0be30ff0d8abc9ea8df3ec5a0b89",
+      "path": "games/bug-safari/voice/en/ac52d575.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "ac52d575",
+      "sha256": "18f53b008d1f855cebbc67706710648720a787477be83858eeb214f01a85c8ab",
+      "git_blob": "a4ed333bdfb0d4c49844d5893f129b20016d04d9",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "00565640e7597fc92593eb272e4f67a738983525ace13f9a7b0f398c9c2a94a7",
+      "path": "games/bug-safari/voice/en/c00b8b5b.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "c00b8b5b",
+      "sha256": "c344ba6c02353516c9c970b9f3bdaf324ee15bed49ad845e4c6b27ea7e1dbe26",
+      "git_blob": "d54fb7b6676ca1c3eb2f92afba5e5f861abd70d2",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "00565640e7597fc92593eb272e4f67a738983525ace13f9a7b0f398c9c2a94a7",
+      "path": "games/bug-safari/voice/en/f79a4231.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f79a4231",
+      "sha256": "c344ba6c02353516c9c970b9f3bdaf324ee15bed49ad845e4c6b27ea7e1dbe26",
+      "git_blob": "d54fb7b6676ca1c3eb2f92afba5e5f861abd70d2",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "path": "games/robot-courier/voice/en/num/9.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "9",
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "path": "games/bug-safari/voice/en/num/9.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "9",
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "path": "games/shape-builder/voice/en/num/9.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "9",
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "path": "games/space-station/voice/en/num/9.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "9",
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "path": "games/story-detective/voice/en/num/9.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "9",
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "path": "games/robot-courier/voice/en/0ade7c2c.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "0ade7c2c",
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "path": "games/space-station/voice/en/0ade7c2c.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "0ade7c2c",
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "00a80f999809fc3aa094983d97fdf487bf95f566f4581f9b45f22af58b445ef3",
+      "path": "games/shape-builder/voice/en/0ade7c2c.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "0ade7c2c",
+      "sha256": "c721af58031650cf95b6d8702bfeae7d0c8fa48bb1a9c245a0610691cd9f52ae",
+      "git_blob": "b7880a5095a292bd9400cc8820cf8a561c7cddcd",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "00cfa8e381a501dd7844b12975ba9d6660a0012632ccda32dabcc5625f17f2fe",
+      "path": "games/bug-safari/voice/en/c75138bc.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "c75138bc",
+      "sha256": "f1c997cc10daa82efdbeec25224969d168c55c8116ecfdf3639ebe3a4cc20512",
+      "git_blob": "4b0e9f779f3c400d1047f3f12d708650b6978dbe",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "00dc4a5a2d20a29235cab47c2f60a4cd31b32c5ee3958e58034c41a0da907d89",
+      "path": "games/bug-safari/voice/en/bf78c9bb.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "bf78c9bb",
+      "sha256": "053b36cf6333f3694b53fa4fd76daaa554dc4382de6eb12a559a45a08c2b0014",
+      "git_blob": "3c6cb545fc6825e07488dfa03c5e282e05e73d4a",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "011abc63485b729e1fb3145d41bf18d59d3d0c36060021dc66ae29ee6d4554da",
+      "path": "games/bug-safari/voice/en/749842fe.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "749842fe",
+      "sha256": "d41cde56a18ac1853ae1959cc0cdbb65362a68cf34f8a1e2fe417374fd33d6f1",
+      "git_blob": "e4a1e69f10ea2f9715460e39ab09b8a43acaf3a6",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "015a7edf4503c5aa0e980f5720276e1f42dbf83a11204abb67e077f54786e7a7",
+      "path": "games/bug-safari/voice/en/94ebaa9d.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "94ebaa9d",
+      "sha256": "5a2be7487927ee9f92be1eccda00e2bf9adea72f34c8bad4f91b639c517c0bd0",
+      "git_blob": "fd7e02a506307e5da2e37cb6b752d48431e4b4ed",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "016821c3791fa8a2f295a4728b4b76eac490db76f1e163ca24d53b75b2d1fcf2",
+      "path": "games/bug-safari/voice/en/80e42307.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "80e42307",
+      "sha256": "6341b6e772508bdf936e5763130ace528bf36d968570289e83c7aa9d90c761c0",
+      "git_blob": "6b42a5078439d73dca234ba714dc8fa692f346bb",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "018f81bc74577f8c74e55ea2f93b1a290686c4ff532ce2f7c9117e99d01246a7",
+      "path": "games/robot-courier/voice/en/224f07e7.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "224f07e7",
+      "sha256": "14fa36e57ba60affef10aef85dbab8787f9933cda7201793505adaccf0fa3018",
+      "git_blob": "c76245e53f82b79be990c92ea7102313d8705476",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "018f81bc74577f8c74e55ea2f93b1a290686c4ff532ce2f7c9117e99d01246a7",
+      "path": "games/bug-safari/voice/en/224f07e7.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "224f07e7",
+      "sha256": "14fa36e57ba60affef10aef85dbab8787f9933cda7201793505adaccf0fa3018",
+      "git_blob": "c76245e53f82b79be990c92ea7102313d8705476",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "018f81bc74577f8c74e55ea2f93b1a290686c4ff532ce2f7c9117e99d01246a7",
+      "path": "games/shape-builder/voice/en/224f07e7.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "224f07e7",
+      "sha256": "14fa36e57ba60affef10aef85dbab8787f9933cda7201793505adaccf0fa3018",
+      "git_blob": "c76245e53f82b79be990c92ea7102313d8705476",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "018f81bc74577f8c74e55ea2f93b1a290686c4ff532ce2f7c9117e99d01246a7",
+      "path": "games/space-station/voice/en/224f07e7.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "224f07e7",
+      "sha256": "14fa36e57ba60affef10aef85dbab8787f9933cda7201793505adaccf0fa3018",
+      "git_blob": "c76245e53f82b79be990c92ea7102313d8705476",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "018f81bc74577f8c74e55ea2f93b1a290686c4ff532ce2f7c9117e99d01246a7",
+      "path": "games/story-detective/voice/en/224f07e7.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "224f07e7",
+      "sha256": "14fa36e57ba60affef10aef85dbab8787f9933cda7201793505adaccf0fa3018",
+      "git_blob": "c76245e53f82b79be990c92ea7102313d8705476",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "01c01bdbb94e956dcc605967ad485b1a5df12553d983c7ac4f36209c76cfa47c",
+      "path": "games/robot-courier/voice/en/ef688b97.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "ef688b97",
+      "sha256": "8b32afe4aeae703b478152fccf96beb5454b7c69ee55ddbd3d9c0eaa57ace135",
+      "git_blob": "50fe5d703d9d732a8ebb1ed4bd83e1d73b934b76",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "01c01bdbb94e956dcc605967ad485b1a5df12553d983c7ac4f36209c76cfa47c",
+      "path": "games/bug-safari/voice/en/ef688b97.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "ef688b97",
+      "sha256": "8b32afe4aeae703b478152fccf96beb5454b7c69ee55ddbd3d9c0eaa57ace135",
+      "git_blob": "50fe5d703d9d732a8ebb1ed4bd83e1d73b934b76",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "01c01bdbb94e956dcc605967ad485b1a5df12553d983c7ac4f36209c76cfa47c",
+      "path": "games/shape-builder/voice/en/ef688b97.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "ef688b97",
+      "sha256": "8b32afe4aeae703b478152fccf96beb5454b7c69ee55ddbd3d9c0eaa57ace135",
+      "git_blob": "50fe5d703d9d732a8ebb1ed4bd83e1d73b934b76",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "01c01bdbb94e956dcc605967ad485b1a5df12553d983c7ac4f36209c76cfa47c",
+      "path": "games/space-station/voice/en/ef688b97.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "ef688b97",
+      "sha256": "8b32afe4aeae703b478152fccf96beb5454b7c69ee55ddbd3d9c0eaa57ace135",
+      "git_blob": "50fe5d703d9d732a8ebb1ed4bd83e1d73b934b76",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "01c01bdbb94e956dcc605967ad485b1a5df12553d983c7ac4f36209c76cfa47c",
+      "path": "games/story-detective/voice/en/ef688b97.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "ef688b97",
+      "sha256": "8b32afe4aeae703b478152fccf96beb5454b7c69ee55ddbd3d9c0eaa57ace135",
+      "git_blob": "50fe5d703d9d732a8ebb1ed4bd83e1d73b934b76",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "path": "games/robot-courier/voice/en/ada0f45c.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "ada0f45c",
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "path": "games/bug-safari/voice/en/ada0f45c.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "ada0f45c",
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "path": "games/shape-builder/voice/en/ada0f45c.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "ada0f45c",
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "path": "games/space-station/voice/en/ada0f45c.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "ada0f45c",
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "path": "games/story-detective/voice/en/ada0f45c.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "ada0f45c",
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "path": "games/robot-courier/voice/en/8bf86e1e.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "8bf86e1e",
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "path": "games/bug-safari/voice/en/8bf86e1e.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "8bf86e1e",
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "path": "games/shape-builder/voice/en/8bf86e1e.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "8bf86e1e",
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "path": "games/space-station/voice/en/8bf86e1e.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "8bf86e1e",
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "01fb0827fa7a4df33f573c7321a3f1ea850d90d32a9cf31400fbda65098df9ef",
+      "path": "games/story-detective/voice/en/8bf86e1e.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "8bf86e1e",
+      "sha256": "fd6e1e57cc2899ffa086aff5198977e31b436509a49d877821ffd91917342d8e",
+      "git_blob": "d6266ef176db821073489b8df4cc8f04beebb357",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "0207479319139f0ecd08721d9b073d15c7da12c650f9f84af694654b067f3cb0",
+      "path": "games/bug-safari/voice/en/6350e7b6.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "6350e7b6",
+      "sha256": "45faa7fd6062831bbfa96c94c3f5488414e00dad056a9699704b6ded47976ba6",
+      "git_blob": "21441e57c568df02f7e761c45fcf9f3ca126ece4",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "020b103a4f703ea3523fc553520715efc0840a68dfaf1d1218d62132fcacd80a",
+      "path": "games/bug-safari/voice/en/0efacec7.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "0efacec7",
+      "sha256": "b2cf50410b48c46f5f21afe37130d22db0aadfa36928fe6e5e42b10262830c53",
+      "git_blob": "369f6e5149d25ccfdac1efc484554ae430a20fbe",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "02149464c5a0eb6aaa95e5d2c51aae1466f3d9a77fd63296fc4a459fec9c7fd2",
+      "path": "games/bug-safari/voice/en/b0a51b7b.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "b0a51b7b",
+      "sha256": "721e7ee4e977ff1992703825e8abe6a78e50ae3e1ecdee5afaee5e28e7c78862",
+      "git_blob": "2fa8260cd5773eb0757af650e99aa3a049d23df1",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "023039627c248430025669a527850fdee25ac6fc20e9de9808b7e3b2d74be135",
+      "path": "games/bug-safari/voice/en/9a04f1fa.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "9a04f1fa",
+      "sha256": "e0e10a8e5bddafcd3c08609b4cf2feff313c3ba56e6d809e7b6d953e892cc8be",
+      "git_blob": "5bae2401347cb13cd6c28622954342f4334f27d4",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "023039627c248430025669a527850fdee25ac6fc20e9de9808b7e3b2d74be135",
+      "path": "games/story-detective/voice/en/9a04f1fa.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "9a04f1fa",
+      "sha256": "e0e10a8e5bddafcd3c08609b4cf2feff313c3ba56e6d809e7b6d953e892cc8be",
+      "git_blob": "5bae2401347cb13cd6c28622954342f4334f27d4",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "023a87218b811a79eb9d90bd55b8b90d0680fb78691cb373b7ea410b382d8c7e",
+      "path": "games/robot-courier/voice/en/num/55.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "55",
+      "sha256": "70f59cad0f87f54619a88212f811f23847a7b27fc7e6624d7ecbe260965229d7",
+      "git_blob": "a1bf04418b5ce1bf03b2655d939b8fa77a0cf7e8",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "023a87218b811a79eb9d90bd55b8b90d0680fb78691cb373b7ea410b382d8c7e",
+      "path": "games/bug-safari/voice/en/num/55.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "55",
+      "sha256": "70f59cad0f87f54619a88212f811f23847a7b27fc7e6624d7ecbe260965229d7",
+      "git_blob": "a1bf04418b5ce1bf03b2655d939b8fa77a0cf7e8",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "023a87218b811a79eb9d90bd55b8b90d0680fb78691cb373b7ea410b382d8c7e",
+      "path": "games/shape-builder/voice/en/num/55.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "55",
+      "sha256": "70f59cad0f87f54619a88212f811f23847a7b27fc7e6624d7ecbe260965229d7",
+      "git_blob": "a1bf04418b5ce1bf03b2655d939b8fa77a0cf7e8",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "023a87218b811a79eb9d90bd55b8b90d0680fb78691cb373b7ea410b382d8c7e",
+      "path": "games/space-station/voice/en/num/55.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "55",
+      "sha256": "70f59cad0f87f54619a88212f811f23847a7b27fc7e6624d7ecbe260965229d7",
+      "git_blob": "a1bf04418b5ce1bf03b2655d939b8fa77a0cf7e8",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "023a87218b811a79eb9d90bd55b8b90d0680fb78691cb373b7ea410b382d8c7e",
+      "path": "games/story-detective/voice/en/num/55.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "55",
+      "sha256": "70f59cad0f87f54619a88212f811f23847a7b27fc7e6624d7ecbe260965229d7",
+      "git_blob": "a1bf04418b5ce1bf03b2655d939b8fa77a0cf7e8",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0248582bb8b3e22ddc306ff1dd6874a2c8e1dcf2ab832d3c19a6da96cf05b88d",
+      "path": "games/bug-safari/voice/en/6e33ce74.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "6e33ce74",
+      "sha256": "cea3de9cdf4e7cad33932d637687fc2c0834242fcf2f193c51efd9139646a346",
+      "git_blob": "26f3cdcf56fa1a4b4f24895d0e173769229c3039",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "025491d3e2beb9c11b262ebc8f1a03915161415f2ab49d1b2a789fd5cadab738",
+      "path": "games/robot-courier/voice/en/24ac1c00.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "24ac1c00",
+      "sha256": "3158467cd6de96911b3b63eb12d681092bb228421e7cef2d084faa7f810c079a",
+      "git_blob": "5772b3a24e423c4e30a427ca96c28ceb9f1b8eef",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "025491d3e2beb9c11b262ebc8f1a03915161415f2ab49d1b2a789fd5cadab738",
+      "path": "games/bug-safari/voice/en/24ac1c00.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "24ac1c00",
+      "sha256": "3158467cd6de96911b3b63eb12d681092bb228421e7cef2d084faa7f810c079a",
+      "git_blob": "5772b3a24e423c4e30a427ca96c28ceb9f1b8eef",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "025491d3e2beb9c11b262ebc8f1a03915161415f2ab49d1b2a789fd5cadab738",
+      "path": "games/shape-builder/voice/en/24ac1c00.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "24ac1c00",
+      "sha256": "3158467cd6de96911b3b63eb12d681092bb228421e7cef2d084faa7f810c079a",
+      "git_blob": "5772b3a24e423c4e30a427ca96c28ceb9f1b8eef",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "025491d3e2beb9c11b262ebc8f1a03915161415f2ab49d1b2a789fd5cadab738",
+      "path": "games/space-station/voice/en/24ac1c00.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "24ac1c00",
+      "sha256": "3158467cd6de96911b3b63eb12d681092bb228421e7cef2d084faa7f810c079a",
+      "git_blob": "5772b3a24e423c4e30a427ca96c28ceb9f1b8eef",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "025491d3e2beb9c11b262ebc8f1a03915161415f2ab49d1b2a789fd5cadab738",
+      "path": "games/story-detective/voice/en/24ac1c00.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "24ac1c00",
+      "sha256": "3158467cd6de96911b3b63eb12d681092bb228421e7cef2d084faa7f810c079a",
+      "git_blob": "5772b3a24e423c4e30a427ca96c28ceb9f1b8eef",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "025e8c1df943d640048d0320bf7a5cee1443837617d61fb8b07a1ad72c9c4e9f",
+      "path": "games/bug-safari/voice/en/675b8be8.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "675b8be8",
+      "sha256": "46b3a367dba8eeb269c4cd5ff4caa7987295615165acc7aed2705c6cf1b98ac8",
+      "git_blob": "b80f10a9753daba55a06e2d8f97d4a16a6cd1b19",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "026834b98ff6e89a8ab5293562d34ec8040fa11403be3635ae3ca1097dba3df1",
+      "path": "games/bug-safari/voice/en/841e9298.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "841e9298",
+      "sha256": "541c6a627e82e5cdc7907161d8c8cb4a372b30e07838c385da999350669d4a3a",
+      "git_blob": "2edbcedc16abeb9ed52e0e57262cf9bd73f3cb8c",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0280428c52f41ab92548ce6e24778e7786625fb9744cc74b6bcedc2e567a7c31",
+      "path": "games/bug-safari/voice/en/d402c6b0.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "d402c6b0",
+      "sha256": "560bd00b0a5032b8053e20273f5d300b98a7b3440fa3730354d36f43702cd385",
+      "git_blob": "8ad5088c78fb5bb3718066a34c2c0a19764c45d8",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "02d63e7481753b2b9822d8e39dfa1093fcf2d7bd86535ba27241e8ad98533542",
+      "path": "games/robot-courier/voice/en/cc346ee6.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "cc346ee6",
+      "sha256": "102bbc711cbe942813588d15d5c821d78f97c4306ad1d7da46ee5bb52895af4e",
+      "git_blob": "bd888dca7df17b7bf3c01fc4afa9443702ad412d",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "02d63e7481753b2b9822d8e39dfa1093fcf2d7bd86535ba27241e8ad98533542",
+      "path": "games/bug-safari/voice/en/cc346ee6.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "cc346ee6",
+      "sha256": "102bbc711cbe942813588d15d5c821d78f97c4306ad1d7da46ee5bb52895af4e",
+      "git_blob": "bd888dca7df17b7bf3c01fc4afa9443702ad412d",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "02d63e7481753b2b9822d8e39dfa1093fcf2d7bd86535ba27241e8ad98533542",
+      "path": "games/shape-builder/voice/en/cc346ee6.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "cc346ee6",
+      "sha256": "102bbc711cbe942813588d15d5c821d78f97c4306ad1d7da46ee5bb52895af4e",
+      "git_blob": "bd888dca7df17b7bf3c01fc4afa9443702ad412d",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "02d63e7481753b2b9822d8e39dfa1093fcf2d7bd86535ba27241e8ad98533542",
+      "path": "games/space-station/voice/en/cc346ee6.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "cc346ee6",
+      "sha256": "102bbc711cbe942813588d15d5c821d78f97c4306ad1d7da46ee5bb52895af4e",
+      "git_blob": "bd888dca7df17b7bf3c01fc4afa9443702ad412d",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "02d63e7481753b2b9822d8e39dfa1093fcf2d7bd86535ba27241e8ad98533542",
+      "path": "games/story-detective/voice/en/cc346ee6.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "cc346ee6",
+      "sha256": "102bbc711cbe942813588d15d5c821d78f97c4306ad1d7da46ee5bb52895af4e",
+      "git_blob": "bd888dca7df17b7bf3c01fc4afa9443702ad412d",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "032a541449fcf93b7b8988315e1f02352baff078a91db07981c162a57c567869",
+      "path": "games/bug-safari/voice/en/8f2e52cf.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "8f2e52cf",
+      "sha256": "d556b1457c43853c01fb291d8a57ada3f50099b36604c099537c56963688dbb7",
+      "git_blob": "6f8ce6a0a7d856af07ba3da50a261e4d2aca6b26",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "032a541449fcf93b7b8988315e1f02352baff078a91db07981c162a57c567869",
+      "path": "games/bug-safari/voice/en/5d97159c.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "5d97159c",
+      "sha256": "d556b1457c43853c01fb291d8a57ada3f50099b36604c099537c56963688dbb7",
+      "git_blob": "6f8ce6a0a7d856af07ba3da50a261e4d2aca6b26",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "03419e977e9e4ceaa835b1f213caec772a8a271ca748e6c2ea4137ee2e641820",
+      "path": "games/bug-safari/voice/en/f5d1d098.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f5d1d098",
+      "sha256": "4b2c8ed628d70071d7a7468b08a046bc13f851e439eff6f4bc318afe57849de8",
+      "git_blob": "c62e688931f2012ca2b6558d2c7c409a2d8059ed",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "path": "games/robot-courier/voice/en/087fecab.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "087fecab",
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "path": "games/bug-safari/voice/en/087fecab.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "087fecab",
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "path": "games/shape-builder/voice/en/087fecab.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "087fecab",
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "path": "games/space-station/voice/en/087fecab.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "087fecab",
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "path": "games/story-detective/voice/en/087fecab.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "087fecab",
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "path": "games/robot-courier/voice/en/edc68a62.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "edc68a62",
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "path": "games/bug-safari/voice/en/edc68a62.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "edc68a62",
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "path": "games/shape-builder/voice/en/edc68a62.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "edc68a62",
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "path": "games/space-station/voice/en/edc68a62.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "edc68a62",
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "03763986fbbfcfb6f59e1f4478f87e8ae94e22a8de7bc887582d517a89439825",
+      "path": "games/story-detective/voice/en/edc68a62.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "edc68a62",
+      "sha256": "451f8a1275988da02ed72c07cfc7cca2b80f9d06686c1997de69f5e77121b94a",
+      "git_blob": "865de3b396c94b62dc36ee111c70cca335dc2b9f",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "03a80e67e99d6c455e212df3f50d39b6f509968da3f3510c4694d68c982b5785",
+      "path": "games/bug-safari/voice/en/22a7ba62.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "22a7ba62",
+      "sha256": "d4e47913785bcb13ad2f6028c4521bb6b2ba4b2e6db5d523e565d519c174ce08",
+      "git_blob": "45cc1ca9ae90baca505a41a7bdcd1f8da4706899",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "03e12d861e222fb33cc0846da80c7dc4692aa01817e08aa77106c88aa26a08e9",
+      "path": "games/bug-safari/voice/en/42c6c637.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "42c6c637",
+      "sha256": "925dbdf4528da929c1ae61c1e8edd4aba885a07008ac1135e917b765cb8c21a0",
+      "git_blob": "eb2ca37d547e406c69a3cde9255477ce18470dd1",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "03fc7340de20b0a05b400792f9a3c0e16955995fc4be5b7052bf0b3199266b71",
+      "path": "games/bug-safari/voice/en/e3b0dc3a.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "e3b0dc3a",
+      "sha256": "dc6928bc29b2bcf326b023a8d6793f2d244a09afb46f926b4bb232868b8febfb",
+      "git_blob": "12ac5a8e80dce8a25ff04392604ff65aff2fe10d",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "03fe5601610c57a6de97cd96858e22774e069d4dbcb8c4215dfcc62466b0d0fa",
+      "path": "games/bug-safari/voice/en/e881a918.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "e881a918",
+      "sha256": "9f155b6d3dbac5311457b8baea1aa9d8037cffd97e52eb10083fe24231bc03d5",
+      "git_blob": "a9b3caa836df5eac51967f1fe6a63d37b582cc02",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "040aae5ddc3d2b29423432eb853ccaca2c896d4106fa9f326c7ddcaa26ea85f1",
+      "path": "games/robot-courier/voice/en/899b1a87.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "899b1a87",
+      "sha256": "bf69015c55860576c63e11e4bb9511e673e3baf6fc0a4b942f3092298557e237",
+      "git_blob": "46bff845916da2592709d3ed417c68d4d4fca8d1",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "040aae5ddc3d2b29423432eb853ccaca2c896d4106fa9f326c7ddcaa26ea85f1",
+      "path": "games/bug-safari/voice/en/899b1a87.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "899b1a87",
+      "sha256": "bf69015c55860576c63e11e4bb9511e673e3baf6fc0a4b942f3092298557e237",
+      "git_blob": "46bff845916da2592709d3ed417c68d4d4fca8d1",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "040aae5ddc3d2b29423432eb853ccaca2c896d4106fa9f326c7ddcaa26ea85f1",
+      "path": "games/shape-builder/voice/en/899b1a87.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "899b1a87",
+      "sha256": "bf69015c55860576c63e11e4bb9511e673e3baf6fc0a4b942f3092298557e237",
+      "git_blob": "46bff845916da2592709d3ed417c68d4d4fca8d1",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "040aae5ddc3d2b29423432eb853ccaca2c896d4106fa9f326c7ddcaa26ea85f1",
+      "path": "games/space-station/voice/en/899b1a87.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "899b1a87",
+      "sha256": "bf69015c55860576c63e11e4bb9511e673e3baf6fc0a4b942f3092298557e237",
+      "git_blob": "46bff845916da2592709d3ed417c68d4d4fca8d1",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "040aae5ddc3d2b29423432eb853ccaca2c896d4106fa9f326c7ddcaa26ea85f1",
+      "path": "games/story-detective/voice/en/899b1a87.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "899b1a87",
+      "sha256": "bf69015c55860576c63e11e4bb9511e673e3baf6fc0a4b942f3092298557e237",
+      "git_blob": "46bff845916da2592709d3ed417c68d4d4fca8d1",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "04492a9030acdbb3106583512f34c8eab21f6a57a7b91c175c96ce6ebf2234b5",
+      "path": "games/bug-safari/voice/en/4d9c9594.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "4d9c9594",
+      "sha256": "f52b1c7fb3d72b9d0c954789d50b2a9215955b23e46de1455a35ba99d4e84f2c",
+      "git_blob": "9f38b6e166e0bd312dc5445fe4fb0d87964dad6f",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "049416e53874c34ece77f6a0e9ee75378b9e3e8c7854ca2896f4a886f30d0c0b",
+      "path": "games/robot-courier/voice/en/0639de90.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "0639de90",
+      "sha256": "b0d9032eeb898d8e6dcb50a31b37160b624d3106afd50734c1e72c9bac89ae64",
+      "git_blob": "3d6979603f30d1f40cb3503fad0cebf1742da48b",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "049416e53874c34ece77f6a0e9ee75378b9e3e8c7854ca2896f4a886f30d0c0b",
+      "path": "games/bug-safari/voice/en/0639de90.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "0639de90",
+      "sha256": "b0d9032eeb898d8e6dcb50a31b37160b624d3106afd50734c1e72c9bac89ae64",
+      "git_blob": "3d6979603f30d1f40cb3503fad0cebf1742da48b",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "049416e53874c34ece77f6a0e9ee75378b9e3e8c7854ca2896f4a886f30d0c0b",
+      "path": "games/shape-builder/voice/en/0639de90.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "0639de90",
+      "sha256": "b0d9032eeb898d8e6dcb50a31b37160b624d3106afd50734c1e72c9bac89ae64",
+      "git_blob": "3d6979603f30d1f40cb3503fad0cebf1742da48b",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "049416e53874c34ece77f6a0e9ee75378b9e3e8c7854ca2896f4a886f30d0c0b",
+      "path": "games/space-station/voice/en/0639de90.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "0639de90",
+      "sha256": "b0d9032eeb898d8e6dcb50a31b37160b624d3106afd50734c1e72c9bac89ae64",
+      "git_blob": "3d6979603f30d1f40cb3503fad0cebf1742da48b",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "049416e53874c34ece77f6a0e9ee75378b9e3e8c7854ca2896f4a886f30d0c0b",
+      "path": "games/story-detective/voice/en/0639de90.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "0639de90",
+      "sha256": "b0d9032eeb898d8e6dcb50a31b37160b624d3106afd50734c1e72c9bac89ae64",
+      "git_blob": "3d6979603f30d1f40cb3503fad0cebf1742da48b",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "049f1761322f555cb93b20989daf37e3e00f5d836f40cb91719d9a321179516a",
+      "path": "games/bug-safari/voice/en/1d0a723c.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "1d0a723c",
+      "sha256": "516dab846af00fb93cd397072b78785c3b18b5c7267636eb977405c2332ffbab",
+      "git_blob": "e4a5262056617d183a4873cf20cc8f2e54351c5f",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "04ce56744db9a580b3c57721a89f511be3dce05d37b92b20736421952179c7c2",
+      "path": "games/robot-courier/voice/en/963e5205.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "963e5205",
+      "sha256": "ffd56595c379bb9b3b2aca43dc7a5899cdcf8fcc8e95f0b60883a3855a1cb657",
+      "git_blob": "c568422d3ac10a5f9524bb362b37e45257927937",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "04ce56744db9a580b3c57721a89f511be3dce05d37b92b20736421952179c7c2",
+      "path": "games/bug-safari/voice/en/963e5205.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "963e5205",
+      "sha256": "ffd56595c379bb9b3b2aca43dc7a5899cdcf8fcc8e95f0b60883a3855a1cb657",
+      "git_blob": "c568422d3ac10a5f9524bb362b37e45257927937",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "04ce56744db9a580b3c57721a89f511be3dce05d37b92b20736421952179c7c2",
+      "path": "games/shape-builder/voice/en/963e5205.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "963e5205",
+      "sha256": "ffd56595c379bb9b3b2aca43dc7a5899cdcf8fcc8e95f0b60883a3855a1cb657",
+      "git_blob": "c568422d3ac10a5f9524bb362b37e45257927937",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "04ce56744db9a580b3c57721a89f511be3dce05d37b92b20736421952179c7c2",
+      "path": "games/space-station/voice/en/963e5205.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "963e5205",
+      "sha256": "ffd56595c379bb9b3b2aca43dc7a5899cdcf8fcc8e95f0b60883a3855a1cb657",
+      "git_blob": "c568422d3ac10a5f9524bb362b37e45257927937",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "04ce56744db9a580b3c57721a89f511be3dce05d37b92b20736421952179c7c2",
+      "path": "games/story-detective/voice/en/963e5205.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "963e5205",
+      "sha256": "ffd56595c379bb9b3b2aca43dc7a5899cdcf8fcc8e95f0b60883a3855a1cb657",
+      "git_blob": "c568422d3ac10a5f9524bb362b37e45257927937",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "04dc0ab4dc4d710ff72672ec86a3bcfdb476bbb99ab25b335e17fbdaf3f3e269",
+      "path": "games/bug-safari/voice/en/f905d0b1.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f905d0b1",
+      "sha256": "1e05f86f3a081176c5c5bf4e271ab0946fb6b08d04f4e15a12aeb179bdcc009b",
+      "git_blob": "c4008792b470d2766db957285ec2b788803ef652",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "path": "games/robot-courier/voice/en/a36f4fb1.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "a36f4fb1",
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "path": "games/bug-safari/voice/en/a36f4fb1.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "a36f4fb1",
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "path": "games/shape-builder/voice/en/a36f4fb1.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "a36f4fb1",
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "path": "games/space-station/voice/en/a36f4fb1.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "a36f4fb1",
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "path": "games/story-detective/voice/en/a36f4fb1.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "a36f4fb1",
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "path": "games/robot-courier/voice/en/f2892cc4.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f2892cc4",
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "path": "games/bug-safari/voice/en/f2892cc4.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f2892cc4",
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "path": "games/shape-builder/voice/en/f2892cc4.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f2892cc4",
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "path": "games/space-station/voice/en/f2892cc4.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f2892cc4",
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "05571cec18174ff4c53bf9a8cb6b53bee622a8cfa1ace9b033222ce4fc2b6d44",
+      "path": "games/story-detective/voice/en/f2892cc4.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f2892cc4",
+      "sha256": "1d58faa267ac2e7b0f02743ae0bccfa81a0ee29799c0aaa380c80466351ff0b5",
+      "git_blob": "506edac50a5357d329ead4de0b136ecb852d7d69",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "057131202650c88e1f06742e158d669ed9da9ecefc092be4861ded03d47bf310",
+      "path": "games/bug-safari/voice/en/f6e08a2d.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f6e08a2d",
+      "sha256": "30a4169bf5f356dbb62a85ea05b93d3ac71789bec7c8a94bfb9ffd04b5d746c3",
+      "git_blob": "5124ec846ac2b1425e9da1595afab71ed782ae9c",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0583de0caca1561a5ffcd456bc3f5722792992546f621f55190cfc9e5a8bf330",
+      "path": "games/bug-safari/voice/en/f4fc6bf1.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f4fc6bf1",
+      "sha256": "2c91b3c5fd25d7857fcbec41c7ac690a87d2f6273fb0d02a1fe9ef0d7f68bc7d",
+      "git_blob": "614cf12f8fd34eded5e48170eb9ed40418941bda",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "05b10f3e967417b7f33991e738d51547114370cb979b83d30850f1d113acfb7a",
+      "path": "games/robot-courier/voice/en/num/96.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "96",
+      "sha256": "8565cacd424a4ab593f708c5e64f49046c1d1043c1a7d061c23f4974f6020729",
+      "git_blob": "d8bc5b43b0f419cbb657b4610447e90b92421495",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "05b10f3e967417b7f33991e738d51547114370cb979b83d30850f1d113acfb7a",
+      "path": "games/bug-safari/voice/en/num/96.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "96",
+      "sha256": "8565cacd424a4ab593f708c5e64f49046c1d1043c1a7d061c23f4974f6020729",
+      "git_blob": "d8bc5b43b0f419cbb657b4610447e90b92421495",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "05b10f3e967417b7f33991e738d51547114370cb979b83d30850f1d113acfb7a",
+      "path": "games/shape-builder/voice/en/num/96.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "96",
+      "sha256": "8565cacd424a4ab593f708c5e64f49046c1d1043c1a7d061c23f4974f6020729",
+      "git_blob": "d8bc5b43b0f419cbb657b4610447e90b92421495",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "05b10f3e967417b7f33991e738d51547114370cb979b83d30850f1d113acfb7a",
+      "path": "games/space-station/voice/en/num/96.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "96",
+      "sha256": "8565cacd424a4ab593f708c5e64f49046c1d1043c1a7d061c23f4974f6020729",
+      "git_blob": "d8bc5b43b0f419cbb657b4610447e90b92421495",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "05b10f3e967417b7f33991e738d51547114370cb979b83d30850f1d113acfb7a",
+      "path": "games/story-detective/voice/en/num/96.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "96",
+      "sha256": "8565cacd424a4ab593f708c5e64f49046c1d1043c1a7d061c23f4974f6020729",
+      "git_blob": "d8bc5b43b0f419cbb657b4610447e90b92421495",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "05b769e8acd83e3ca7f5a74dfb3e2e29fdaf669e5753f9b6fe4446301e55a85c",
+      "path": "games/bug-safari/voice/en/7dfecc0b.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "7dfecc0b",
+      "sha256": "a46fe5ec489be41de13f9b7e4d0f9dd0d4aea67e0321dd37240243257af8f253",
+      "git_blob": "8caeba422a2c5323caee92048ba8cacf2c5d15c0",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "05fae2cfa44ff02e0147d234b6555b672055501e083bf7c6e0d5b8c1a463c9d1",
+      "path": "games/bug-safari/voice/en/59eff77d.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "59eff77d",
+      "sha256": "c87d31b11aed2cfefc5f9d4fa1b2099ebea56a42eff73cc4120931b2a7c74c05",
+      "git_blob": "ccc24d6626ff6e6b469de49169cf22cab48dfefc",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "061b04a86aa7b7d91d70e4c30b19586f8ee7460ff11c085be1552c558f0e3fea",
+      "path": "games/bug-safari/voice/en/63659acc.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "63659acc",
+      "sha256": "7bbe922a62c450973f66a2eee434e9af045df6b3f4793c9bf8507989ec84769b",
+      "git_blob": "c833222fde93967d9f2e0c1de5c30a97d64635f9",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "064d3d5674ee145c87279b168243ba68e78d6aa7a5f15f66ac5d9bd5ce66e67f",
+      "path": "games/bug-safari/voice/en/b277c1a7.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "b277c1a7",
+      "sha256": "0436105931c4754bfc7d7412603358165e85f6cf4489380a4773745b653e3d50",
+      "git_blob": "59ddf7839f352b2c73e16a910ddf69dfff76ad98",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "064f38250466e48e2e50a011297c5467be4611bfd7cf6190ae33279f5668a1e6",
+      "path": "games/bug-safari/voice/en/ea1739af.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "ea1739af",
+      "sha256": "43735cf34cca0575ae771e97be290175fa669331d65d209808e09e6025f1ff7a",
+      "git_blob": "3c8b6d3188c70656d7a2e5e3f14e3e9a4493d731",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0654aa2503097b8df480ef370d40a2b3c2828bd3bcb7d4f04245710b8d05c21e",
+      "path": "games/robot-courier/voice/en/num/69.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "69",
+      "sha256": "1beda814b09abd1d1f72ac9273aee66a7c42e87ebe2cce827a6ff99978e884ab",
+      "git_blob": "83789e4202ce709039e62e17c17fd387f83f1547",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0654aa2503097b8df480ef370d40a2b3c2828bd3bcb7d4f04245710b8d05c21e",
+      "path": "games/bug-safari/voice/en/num/69.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "69",
+      "sha256": "1beda814b09abd1d1f72ac9273aee66a7c42e87ebe2cce827a6ff99978e884ab",
+      "git_blob": "83789e4202ce709039e62e17c17fd387f83f1547",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0654aa2503097b8df480ef370d40a2b3c2828bd3bcb7d4f04245710b8d05c21e",
+      "path": "games/shape-builder/voice/en/num/69.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "69",
+      "sha256": "1beda814b09abd1d1f72ac9273aee66a7c42e87ebe2cce827a6ff99978e884ab",
+      "git_blob": "83789e4202ce709039e62e17c17fd387f83f1547",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0654aa2503097b8df480ef370d40a2b3c2828bd3bcb7d4f04245710b8d05c21e",
+      "path": "games/space-station/voice/en/num/69.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "69",
+      "sha256": "1beda814b09abd1d1f72ac9273aee66a7c42e87ebe2cce827a6ff99978e884ab",
+      "git_blob": "83789e4202ce709039e62e17c17fd387f83f1547",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0654aa2503097b8df480ef370d40a2b3c2828bd3bcb7d4f04245710b8d05c21e",
+      "path": "games/story-detective/voice/en/num/69.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "69",
+      "sha256": "1beda814b09abd1d1f72ac9273aee66a7c42e87ebe2cce827a6ff99978e884ab",
+      "git_blob": "83789e4202ce709039e62e17c17fd387f83f1547",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0659b131434dce7138aa038173c8d3d968d0fabcaa2602aa8b4a6031b56ed9f1",
+      "path": "games/robot-courier/voice/en/num/53.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "53",
+      "sha256": "7001b5a8c8d72061be1f7546e4544d7ddaf6938923feeaa654229707f43b8219",
+      "git_blob": "a3a605debe851d5dda750ae4da437cce9bd33479",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0659b131434dce7138aa038173c8d3d968d0fabcaa2602aa8b4a6031b56ed9f1",
+      "path": "games/bug-safari/voice/en/num/53.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "53",
+      "sha256": "7001b5a8c8d72061be1f7546e4544d7ddaf6938923feeaa654229707f43b8219",
+      "git_blob": "a3a605debe851d5dda750ae4da437cce9bd33479",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0659b131434dce7138aa038173c8d3d968d0fabcaa2602aa8b4a6031b56ed9f1",
+      "path": "games/shape-builder/voice/en/num/53.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "53",
+      "sha256": "7001b5a8c8d72061be1f7546e4544d7ddaf6938923feeaa654229707f43b8219",
+      "git_blob": "a3a605debe851d5dda750ae4da437cce9bd33479",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0659b131434dce7138aa038173c8d3d968d0fabcaa2602aa8b4a6031b56ed9f1",
+      "path": "games/space-station/voice/en/num/53.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "53",
+      "sha256": "7001b5a8c8d72061be1f7546e4544d7ddaf6938923feeaa654229707f43b8219",
+      "git_blob": "a3a605debe851d5dda750ae4da437cce9bd33479",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0659b131434dce7138aa038173c8d3d968d0fabcaa2602aa8b4a6031b56ed9f1",
+      "path": "games/story-detective/voice/en/num/53.mp3",
+      "language": "en",
+      "category": "numbers",
+      "clip_id": "53",
+      "sha256": "7001b5a8c8d72061be1f7546e4544d7ddaf6938923feeaa654229707f43b8219",
+      "git_blob": "a3a605debe851d5dda750ae4da437cce9bd33479",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "path": "games/robot-courier/voice/en/3ef1cbc0.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "3ef1cbc0",
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "path": "games/bug-safari/voice/en/3ef1cbc0.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "3ef1cbc0",
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "path": "games/shape-builder/voice/en/3ef1cbc0.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "3ef1cbc0",
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "path": "games/space-station/voice/en/3ef1cbc0.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "3ef1cbc0",
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "path": "games/story-detective/voice/en/3ef1cbc0.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "3ef1cbc0",
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "path": "games/robot-courier/voice/en/e11449bb.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "e11449bb",
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "path": "games/bug-safari/voice/en/e11449bb.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "e11449bb",
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "path": "games/shape-builder/voice/en/e11449bb.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "e11449bb",
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "path": "games/space-station/voice/en/e11449bb.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "e11449bb",
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "0668e2002eebd87f810c8bac6b7d2c2d9ef20740c6cfa4e9d0f029634572701c",
+      "path": "games/story-detective/voice/en/e11449bb.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "e11449bb",
+      "sha256": "87dc0ec1d283c69792465bd88db1d21088cf29256ad1c1e8e96478adbdb3e650",
+      "git_blob": "20e065f2dea6fec7fee9bc6dfa89d88e0fe8ec51",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "066da75fe54fe8b4c0323aa89ebe95fd3c0eee5449d341635043a8911b908689",
+      "path": "games/bug-safari/voice/en/a1b0ecfe.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "a1b0ecfe",
+      "sha256": "e5a8492139446d42d3c5d47b7a5efbf6b50d0d8c7f6ddd94d92eb44608615723",
+      "git_blob": "046132d7e94cf1217344ec1747c8472580f2a2be",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "067a73f4991cdb7bcc374d5422ff9a4d95c5f6336a27657d88e09000cdba062e",
+      "path": "games/bug-safari/voice/en/0a0fb113.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "0a0fb113",
+      "sha256": "d9a861047af7c3c03e79daeac63bf37373ef4e3d912bf1f4ce3c685e0970875c",
+      "git_blob": "5e6d7371c362a0240747a643a32247950d94545e",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "06b2c7c42447c2d5391fda739f9302d037b8f854552243ddc260e9f7ed8f0a5b",
+      "path": "games/bug-safari/voice/en/888a7057.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "888a7057",
+      "sha256": "5cb3180e6467f8cd45d8b400d8ad3d17e9fb3a0739746ff75b747485ad522f93",
+      "git_blob": "6b5683934e66801208b3c7d7335dcf06e18bd7aa",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "path": "games/robot-courier/voice/en/f45a1fbc.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f45a1fbc",
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "path": "games/bug-safari/voice/en/f45a1fbc.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f45a1fbc",
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "path": "games/shape-builder/voice/en/f45a1fbc.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f45a1fbc",
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "path": "games/space-station/voice/en/f45a1fbc.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f45a1fbc",
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "path": "games/story-detective/voice/en/f45a1fbc.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f45a1fbc",
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "path": "games/robot-courier/voice/en/7108dafa.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "7108dafa",
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "path": "games/bug-safari/voice/en/7108dafa.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "7108dafa",
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "path": "games/shape-builder/voice/en/7108dafa.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "7108dafa",
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "path": "games/space-station/voice/en/7108dafa.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "7108dafa",
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "06b48fd2e1d40e3fdece71dd957c3ca71a5fd0b45d6e3cb5bb38d5347538c2ec",
+      "path": "games/story-detective/voice/en/7108dafa.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "7108dafa",
+      "sha256": "9e87ba4ca7535a845d99a8360d4c9c4ee556e20d2149e9bc0c81ca29a6fd7dbe",
+      "git_blob": "934d988c9350f8389674b37e5a31faef7ed60e3b",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "06d9a3585cebb954a49054f622e61c2e6ed05efa7becf0f6779b872132f7ce2c",
+      "path": "games/bug-safari/voice/en/9c196ae7.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "9c196ae7",
+      "sha256": "b1aace89feb86804ae931c4ecf195c11c76bd5ba60cc65ed94e2f41db603a8d5",
+      "git_blob": "20f37b0c27b68f52c1480c71a23cd79cc07520dc",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "070db0af2da3f8fc8bf128ca5208ffa7d1e8ce56e0e453b2856d966fe3321d66",
+      "path": "games/bug-safari/voice/en/1cc9bb50.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "1cc9bb50",
+      "sha256": "fcc043a575a1bd75c5476ca0b864be7aa1fa25a4957516b5ab49be42793056d6",
+      "git_blob": "cca493e4dec87503d2c74623671e67f51086d8ec",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "path": "games/robot-courier/voice/en/f62ca4a8.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f62ca4a8",
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "path": "games/bug-safari/voice/en/f62ca4a8.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f62ca4a8",
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "path": "games/shape-builder/voice/en/f62ca4a8.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f62ca4a8",
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "path": "games/space-station/voice/en/f62ca4a8.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f62ca4a8",
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "path": "games/story-detective/voice/en/f62ca4a8.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "f62ca4a8",
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "path": "games/robot-courier/voice/en/cb04ba47.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "cb04ba47",
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "path": "games/bug-safari/voice/en/cb04ba47.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "cb04ba47",
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "path": "games/shape-builder/voice/en/cb04ba47.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "cb04ba47",
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "path": "games/space-station/voice/en/cb04ba47.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "cb04ba47",
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "071daa59a895cfe32480becebf7395980508300317d7c450eb3ce49da515c68f",
+      "path": "games/story-detective/voice/en/cb04ba47.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "cb04ba47",
+      "sha256": "c67c137e13a29f702cc7b388c3f681ff6cca6fcac9929470437d820302bc1bb7",
+      "git_blob": "c6fb2efff49fdd70a6bc2419a0a0800ff28ad036",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "07340d6d2d98a1b9f7fa28d697f481a3e474ea90e38588023986792a5244fadf",
+      "path": "games/robot-courier/voice/en/da97a7d2.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "da97a7d2",
+      "sha256": "87322deeb76ab73cb0b49c44ee1229ae00a730e63efc9ce42a203cc77100b895",
+      "git_blob": "3d1ae2578fe04e0ba781846940d1880cf4af9ab5",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "07340d6d2d98a1b9f7fa28d697f481a3e474ea90e38588023986792a5244fadf",
+      "path": "games/bug-safari/voice/en/da97a7d2.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "da97a7d2",
+      "sha256": "87322deeb76ab73cb0b49c44ee1229ae00a730e63efc9ce42a203cc77100b895",
+      "git_blob": "3d1ae2578fe04e0ba781846940d1880cf4af9ab5",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "07340d6d2d98a1b9f7fa28d697f481a3e474ea90e38588023986792a5244fadf",
+      "path": "games/shape-builder/voice/en/da97a7d2.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "da97a7d2",
+      "sha256": "87322deeb76ab73cb0b49c44ee1229ae00a730e63efc9ce42a203cc77100b895",
+      "git_blob": "3d1ae2578fe04e0ba781846940d1880cf4af9ab5",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "07340d6d2d98a1b9f7fa28d697f481a3e474ea90e38588023986792a5244fadf",
+      "path": "games/space-station/voice/en/da97a7d2.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "da97a7d2",
+      "sha256": "87322deeb76ab73cb0b49c44ee1229ae00a730e63efc9ce42a203cc77100b895",
+      "git_blob": "3d1ae2578fe04e0ba781846940d1880cf4af9ab5",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "07340d6d2d98a1b9f7fa28d697f481a3e474ea90e38588023986792a5244fadf",
+      "path": "games/story-detective/voice/en/da97a7d2.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "da97a7d2",
+      "sha256": "87322deeb76ab73cb0b49c44ee1229ae00a730e63efc9ce42a203cc77100b895",
+      "git_blob": "3d1ae2578fe04e0ba781846940d1880cf4af9ab5",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "path": "games/robot-courier/voice/en/89156b2a.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "89156b2a",
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "path": "games/bug-safari/voice/en/89156b2a.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "89156b2a",
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "path": "games/shape-builder/voice/en/89156b2a.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "89156b2a",
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "path": "games/space-station/voice/en/89156b2a.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "89156b2a",
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "path": "games/story-detective/voice/en/89156b2a.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "89156b2a",
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "path": "games/robot-courier/voice/en/4fbcb2cc.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "4fbcb2cc",
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "path": "games/bug-safari/voice/en/4fbcb2cc.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "4fbcb2cc",
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "path": "games/shape-builder/voice/en/4fbcb2cc.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "4fbcb2cc",
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "path": "games/space-station/voice/en/4fbcb2cc.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "4fbcb2cc",
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "0744456c67354a0d35c5c28bfade350bd9009eb45dd70d263d8e74b2401215e0",
+      "path": "games/story-detective/voice/en/4fbcb2cc.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "4fbcb2cc",
+      "sha256": "44c38696d9ffbd289a09b68e4da0a040055ad13acea997c7fd7da54425fbd7c5",
+      "git_blob": "6daa2049105cc0cfc41dfdb8a22d78b27a4c7602",
+      "remote_blob": null,
+      "coverage_inferred": true
+    },
+    {
+      "item_id": "078e96df179a6fb91ed01ea78370c5c3a78a3e548d6de5bf6e692241ed348609",
+      "path": "games/bug-safari/voice/en/28327843.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "28327843",
+      "sha256": "e0bb2adca772e9790eb768a6778dfcc2b4a3cb777986ca62542b7fc071805e5a",
+      "git_blob": "0184aaf3cc8ba2b6563a687d70260ecbad75df6a",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "07ab26e6f7ae152b2cee7f839fc7d14bf51bd17bcb7df9415e7ddc0c990eb2ee",
+      "path": "games/bug-safari/voice/en/8e4ae797.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "8e4ae797",
+      "sha256": "7e554c47387462bb281a9bd47940e8e63e10f2a721c69b0e427387f653c18d47",
+      "git_blob": "38391e3f9d3fc73c0354e4ac17dbaabe330ef05c",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "07b1c17d7fb7ad9411428b6677149f8598725c1168a5d681f8ccc1da2b23c722",
+      "path": "games/bug-safari/voice/en/0d80dfbd.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "0d80dfbd",
+      "sha256": "638e4b98c1bb3a1863156f269f25d15f84c628ca213d7b3af3d300c295fa3708",
+      "git_blob": "d0fdbe641f82b165d8ea6bbd4a0d03144912df28",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "07ccd022e49a152b7ce9ae9dcfce02a0a3bf756a4562243a678319109e3daec6",
+      "path": "games/bug-safari/voice/en/b5d45bb0.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "b5d45bb0",
+      "sha256": "e76c9ccca262da802620f882cbfdfc4545468a03b9bd10ba1782e7e2ef08dfc6",
+      "git_blob": "c2d112b8bd16da27ac28b83b1cc255b055ffefcc",
+      "remote_blob": null,
+      "coverage_inferred": false
+    },
+    {
+      "item_id": "0856bbe497b46174dcb6fe02033e80d198ba0f9c479276429ced04cacc01975c",
+      "path": "games/bug-safari/voice/en/19932893.mp3",
+      "language": "en",
+      "category": "ids",
+      "clip_id": "19932893",
+      "sha256": "7c4e37276478ba33409458ba55cf15b3f7473dd52275af7d632ababafcd2405a",
+      "git_blob": "dfcbb0cc66374ed41cf919e8424160cd0f0ad15d",
+      "remote_blob": null,
+      "coverage_inferred": false
+    }
+  ],
+  "notes": [
+    "Prepared offline; publishing and deployed URL verification are separate.",
+    "Only approved final generated MP3s and additive game manifests are staged.",
+    "Personal name clips, reference recordings, intermediate waveforms, and model files are excluded."
+  ]
+}
